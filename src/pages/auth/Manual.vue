@@ -1,14 +1,12 @@
 <template>
   <q-page class="flex flex-center">
-    <img alt="Quasar logo" src="~assets/quasar-logo-full.svg">
+    <p>Manuel</p>
+    <router-link to="/home">GO</router-link>
   </q-page>
 </template>
 
-<style>
-</style>
-
 <script>
 export default {
-  name: 'PageIndex'
+  name: 'PageAuthManual'
 }
 </script>

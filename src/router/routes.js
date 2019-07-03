@@ -2,9 +2,17 @@
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/MyLayout.vue'),
+    component: () => import('layouts/AuthLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') }
+      { name: 'auth-home', path: '/', component: () => import('pages/auth/Home.vue') },
+      { name: 'auth-manual', path: '/manual', component: () => import('pages/auth/Manual.vue') }
+    ]
+  },
+  {
+    path: '/home',
+    component: () => import('layouts/HomeLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/home/DropZone.vue') }
     ]
   }
 ]
