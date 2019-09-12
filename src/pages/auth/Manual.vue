@@ -1,12 +1,51 @@
 <template>
-  <q-page class="flex flex-center">
-    <p>Manuel</p>
-    <router-link to="/home">GO</router-link>
+  <q-page class="flex flex-center justify-around">
+    <q-form
+      @submit="onSubmit"
+      class="column flex-center"
+    >
+      <q-input
+        :value="invitationCode"
+        @input="setInvitationCode"
+        outlined
+        label="Code d'invitation"
+      />
+
+      <q-btn
+        flat
+        label="Submit"
+        type="submit"
+        color="primary"
+      />
+    </q-form>
   </q-page>
 </template>
 
 <script>
 export default {
-  name: 'PageAuthManual'
+  name: 'PageAuthManual',
+  computed: {
+    invitationCode () {
+      return this.$store.getters['auth/invitationCode']
+    },
+    logged () {
+      return this.$store.getters['auth/logged']
+    }
+  },
+  watch: {
+    logged (newValue) {
+      if (newValue) {
+        this.$router.push({ name: 'home' })
+      }
+    }
+  },
+  methods: {
+    setInvitationCode (value) {
+      this.$store.commit('auth/setInvitationCode', value)
+    },
+    onSubmit () {
+      this.$store.dispatch('auth/login')
+    }
+  }
 }
 </script>

@@ -12,7 +12,7 @@ const routes = [
     path: '/home',
     component: () => import('layouts/HomeLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/home/DropZone.vue') }
+      { path: '', name: 'home', component: () => import('pages/home/DropZone.vue') }
     ]
   }
 ]
