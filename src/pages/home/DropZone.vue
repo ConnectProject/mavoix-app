@@ -1,19 +1,23 @@
 <template>
-  <div>
-  </div>
+  <q-page class="column">
+    <!-- Available items -->
+    <draggable>
+    </draggable>
+
+    <!-- To play items -->
+    <draggable>
+    </draggable>
+  </q-page>
 </template>
 
 <script>
+import Draggable from 'vuedraggable'
+
 export default {
   name: 'PageHomeDropZone',
   computed: {
     slug () {
       return this.$route.params.slug
-    }
-  },
-  watch: {
-    slug () {
-      this.initDropZone()
     }
   },
   methods: {
@@ -23,6 +27,14 @@ export default {
   },
   mounted () {
     this.initDropZone()
+  },
+  watch: {
+    slug () {
+      this.initDropZone()
+    }
+  },
+  components: {
+    Draggable
   }
 }
 </script>
