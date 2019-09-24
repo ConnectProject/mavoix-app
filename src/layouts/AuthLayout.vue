@@ -17,8 +17,16 @@
 
 <script>
 export default {
-  data () {
-    return {
+  computed: {
+    logged () {
+      return this.$store.getters['auth/logged']
+    }
+  },
+  watch: {
+    logged (newValue) {
+      if (newValue) {
+        this.$router.push({ name: 'home' })
+      }
     }
   }
 }

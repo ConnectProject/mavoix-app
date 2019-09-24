@@ -1,21 +1,16 @@
-import Parse from 'parse'
+import { LocalStorage } from 'quasar'
 
-import DeviceInvitation, {
-  TOKEN_KEY
-} from 'mavoix-core/models/DeviceInvitation'
+import DeviceUser from '~/models/DeviceUser'
 
 export const login = ({ commit, getters: { invitationCode } }) => {
-  new Parse.Query(DeviceInvitation)
-    .equalTo(TOKEN_KEY, invitationCode)
-    .first()
-    .catch(err => {
-      throw err
+  const [ username, password ] = invitationCode.split(':')
+
+  DeviceUser.logIn(username, password)
+    .catch((err) => {
+      commit('setError', err)
     })
-    .then(invitation => {
-      if (!invitation) {
-        return commit('setError', 'Wrong invitation code')
-      }
-      console.log(invitation)
+    .then((user) => {
+      LocalStorage.set('user', user)
       commit('login')
     })
 }

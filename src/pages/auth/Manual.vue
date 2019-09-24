@@ -27,16 +27,6 @@ export default {
   computed: {
     invitationCode () {
       return this.$store.getters['auth/invitationCode']
-    },
-    logged () {
-      return this.$store.getters['auth/logged']
-    }
-  },
-  watch: {
-    logged (newValue) {
-      if (newValue) {
-        this.$router.push({ name: 'home' })
-      }
     }
   },
   methods: {

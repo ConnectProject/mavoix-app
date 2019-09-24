@@ -9,9 +9,7 @@
       </q-toolbar>
 
       <q-tabs align="left">
-        <q-route-tab to="/page1" label="Page One" />
-        <q-route-tab to="/page2" label="Page Two" />
-        <q-route-tab to="/page3" label="Page Three" />
+        <q-route-tab v-for="(tab, index) in tabs" :key="index" :to="{ name: 'dropZone', params: { slug: tab.slug}}" :label="tab.name" />
       </q-tabs>
     </q-header>
 
@@ -24,9 +22,13 @@
 
 <script>
 export default {
-  data () {
-    return {
+  computed: {
+    tabs () {
+      return this.$store.getters['tabs/all']
     }
+  },
+  mounted () {
+    this.$store.dispatch('tabs/loadAndWatch')
   }
 }
 </script>

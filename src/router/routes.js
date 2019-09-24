@@ -1,7 +1,7 @@
 
 const routes = [
   {
-    path: '/',
+    path: '/auth',
     component: () => import('layouts/AuthLayout.vue'),
     children: [
       { name: 'auth-home', path: '/', component: () => import('pages/auth/Home.vue') },
@@ -9,10 +9,11 @@ const routes = [
     ]
   },
   {
-    path: '/home',
+    path: '/',
+    name: 'home',
     component: () => import('layouts/HomeLayout.vue'),
     children: [
-      { path: '', name: 'home', component: () => import('pages/home/DropZone.vue') }
+      { path: '/tabs/:slug', name: 'dropZone', component: () => import('pages/home/DropZone.vue') }
     ]
   }
 ]

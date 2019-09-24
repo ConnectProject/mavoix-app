@@ -7,5 +7,6 @@ export const login = (state) => {
 }
 
 export const setError = (state, error) => {
+  console.error(error)
   state.error = error
 }
