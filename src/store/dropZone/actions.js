@@ -1,9 +1,9 @@
 import Parse from 'parse'
 
-import TabItem, { TAB_KEY } from '~/models/TabItem'
+import TabItem, { TAB_KEY, ORDER_KEY } from '~/models/TabItem'
 import { slugToTabModel } from './utils'
 
-const _itemsQuery = (tabModel) => new Parse.Query(TabItem).equalTo(TAB_KEY, tabModel)
+const _itemsQuery = (tabModel) => new Parse.Query(TabItem).equalTo(TAB_KEY, tabModel).ascending(ORDER_KEY)
 
 export const init = ({ commit, dispatch }, slug) => {
   slugToTabModel(slug)
