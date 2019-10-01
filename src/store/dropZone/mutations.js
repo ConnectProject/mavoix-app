@@ -6,6 +6,10 @@ export const setItems = (state, itemsModels) => {
   })
 }
 
+export const setItemsRaw = (state, items) => {
+  state.items = items
+}
+
 export const addItem = (state, itemModel) => {
   state.items.push(modelToTabItem(itemModel))
 }

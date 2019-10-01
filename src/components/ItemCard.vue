@@ -1,5 +1,10 @@
+<style lang="stylus" scoped>
+.card
+  height fit-content
+</style>
+
 <template>
-  <q-card class="col-2">
+  <q-card class="col-2 card">
     <q-img :ratio="16/9" :src="item.asset.file._url" />
 
     <q-card-section>
