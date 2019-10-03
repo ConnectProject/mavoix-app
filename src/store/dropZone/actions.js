@@ -6,6 +6,7 @@ import { slugToTabModel } from './utils'
 const _itemsQuery = (tabModel) => new Parse.Query(TabItem).equalTo(TAB_KEY, tabModel).ascending(ORDER_KEY)
 
 export const init = ({ commit, dispatch }, slug) => {
+  commit('setActiveItems', [])
   slugToTabModel(slug)
     .catch((err) => {
       commit('setError', err)

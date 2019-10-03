@@ -19,7 +19,7 @@
   <q-page style="overflow-y: hidden">
     <!-- Available items -->
     <draggable
-      tag="div" :sort="false" v-model="items" group="items"
+      tag="div" :sort="false" v-model="items" group="items" @sort="onDragEnd"
       class="q-pa-md row q-gutter-md items-container"
     >
       <item-card v-for="(item, index) in items" :key="index" :item="item"/>
@@ -34,12 +34,16 @@
     </draggable>
 
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn fab icon="play_arrow" @click="onPlaySequence" color="accent" />
+      <div class="column">
+        <q-btn fab icon="play_arrow" @click="onPlaySequence" color="primary" />
+        <q-btn fab icon="delete" @click="onClearActiveItems" color="negative" />
+      </div>
     </q-page-sticky>
   </q-page>
 </template>
 
 <script>
+import { colors } from 'quasar'
 import Draggable from 'vuedraggable'
 import ItemCard from '~/components/ItemCard'
 
@@ -51,7 +55,7 @@ export default {
     },
     items: {
       get () {
-        return this.$store.getters['dropZone/items']
+        return this.$store.getters['dropZone/items'].filter((item) => item.hidden === false)
       },
       set (value) {
         this.$store.commit('dropZone/setItemsRaw', value)
@@ -75,7 +79,6 @@ export default {
   methods: {
     initDropZone () {
       this.$store.dispatch('dropZone/init', this.slug)
-      this.$store.dispatch('global/initTTS')
     },
     onPlaySequence () {
       if (this.tts) {
@@ -89,6 +92,12 @@ export default {
       } else {
         alert('Error tts not loaded')
       }
+    },
+    onDragEnd () {
+      this.$store.commit('dropZone/sortItems')
+    },
+    onClearActiveItems () {
+      this.$store.commit('dropZone/clearActiveItems')
     }
   },
   mounted () {
@@ -97,6 +106,11 @@ export default {
   watch: {
     slug () {
       this.initDropZone()
+    },
+    tab (newValue, oldValue) {
+      if (newValue) {
+        colors.setBrand('primary', this.tab.hexColor)
+      }
     }
   },
   components: {

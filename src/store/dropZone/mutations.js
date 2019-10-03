@@ -14,6 +14,10 @@ export const addItem = (state, itemModel) => {
   state.items.push(modelToTabItem(itemModel))
 }
 
+export const sortItems = (state) => {
+  state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
+}
+
 export const updateItem = (state, itemModel) => {
   const item = modelToTabItem(itemModel)
   const index = itemIndex(item, state.items)
@@ -29,6 +33,16 @@ export const updateItem = (state, itemModel) => {
 
 export const deleteItem = (state, itemModel) => {
   state.items.splice(itemIndex(modelToTabItem(itemModel), state.items), 1)
+}
+
+export const clearActiveItems = (state) => {
+  state.activeItems.forEach((item) => {
+    state.items.push(item)
+  })
+
+  sortItems(state)
+
+  state.activeItems = []
 }
 
 export const setActiveItems = (state, items) => {
