@@ -1,0 +1,7 @@
+{
+  "appId": "io.connect.mavoix",
+  "appName": "Ma Voix",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www"
+}

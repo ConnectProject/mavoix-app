@@ -17,7 +17,7 @@
 </style>
 
 <template>
-  <q-card class="col-1 card" :disabled="!item.available">
+  <q-card class="col-2 card" :disabled="!item.available">
     <q-img :ratio="1" :src="item.asset.file._url">
       <div class="card-img-wrapper" v-if="!item.available">
         <img src="../assets/red_circle.svg"/>

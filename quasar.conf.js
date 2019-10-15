@@ -149,6 +149,10 @@ module.exports = function (ctx) {
       // noIosLegacyBuildFlag: true, // uncomment only if you know what you are doing
     },
 
+    bin: {
+      linuxAndroidStudio: "/run/current-system/sw/bin/android-studio"
+    },
+
     electron: {
       // bundler: 'builder', // or 'packager'
 
