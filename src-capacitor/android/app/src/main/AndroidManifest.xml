@@ -16,6 +16,7 @@
             android:name="io.connect.mavoix.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBarLaunch"
+            android:screenOrientation="landscape"
             android:launchMode="singleTask">
 
             <intent-filter>

@@ -1,57 +1,22 @@
 <style lang="stylus" scoped>
-.items-container
-  position absolute
-  top 0
-  left 0
-  right 0
-  bottom 30%
-
-.active-items-container
-  position absolute
-  top: 70%
-  left 0
-  right 0
-  bottom  0
-  border-top 1px solid black
 </style>
 
 <template>
-  <q-page style="overflow-y: hidden">
-    <!-- Available items -->
-    <draggable
-      tag="div" :sort="false" v-model="items" group="items" @sort="onDragEnd"
-      class="q-pa-md row q-gutter-md items-container"
-    >
-      <item-card v-for="(item, index) in items" :key="index" :item="item"/>
-    </draggable>
-
-    <!-- To play items -->
-    <draggable
-      tag="div" v-model="activeItems" group="items"
-      class="q-pa-md row q-gutter-x-md active-items-container"
-    >
-      <item-card v-for="(item, index) in activeItems" :key="index" :item="item"/>
-    </draggable>
-
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <div class="column">
-        <q-btn fab icon="play_arrow" @click="onPlaySequence" color="primary" />
-        <q-btn fab icon="delete" @click="onClearActiveItems" color="negative" />
-      </div>
-    </q-page-sticky>
+  <q-page class="flex column" :style="`background-color: ${hexColor}`" style="overflow: hidden">
+    <items :items="items"/>
+    <active-items :items="activeItems"/>
   </q-page>
 </template>
 
 <script>
-import { colors } from 'quasar'
-import Draggable from 'vuedraggable'
-import ItemCard from '~/components/ItemCard'
+import Items from '~/components/Items'
+import ActiveItems from '~/components/ActiveItems'
 
 export default {
   name: 'PageHomeDropZone',
   computed: {
-    slug () {
-      return this.$route.params.slug
+    hexColor () {
+      return this.$store.getters['dropZone/hexColor']
     },
     items: {
       get () {
@@ -78,7 +43,7 @@ export default {
   },
   methods: {
     initDropZone () {
-      this.$store.dispatch('dropZone/init', this.slug)
+      this.$store.dispatch('dropZone/init', this.$route.params.slug)
     },
     onPlaySequence () {
       if (this.tts) {
@@ -104,18 +69,13 @@ export default {
     this.initDropZone()
   },
   watch: {
-    slug () {
+    $route () {
       this.initDropZone()
-    },
-    tab (newValue, oldValue) {
-      if (newValue) {
-        colors.setBrand('primary', this.tab.hexColor)
-      }
     }
   },
   components: {
-    Draggable,
-    ItemCard
+    Items,
+    ActiveItems
   }
 }
 </script>

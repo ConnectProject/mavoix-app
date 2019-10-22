@@ -6,6 +6,10 @@ export const setItems = (state, itemsModels) => {
   })
 }
 
+export const setHexColor = (state, hexColor) => {
+  state.hexColor = hexColor
+}
+
 export const setItemsRaw = (state, items) => {
   state.items = items
 }

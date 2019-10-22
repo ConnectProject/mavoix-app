@@ -34,7 +34,8 @@ export default {
       this.$store.commit('auth/setInvitationCode', value)
     },
     onSubmit () {
-      this.$store.dispatch('auth/login')
+      // this.$store.dispatch('auth/login')
+      this.$router.push({ name: 'home' })
     }
   }
 }

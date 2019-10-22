@@ -2,11 +2,11 @@ import Parse from 'parse'
 
 import TabItem, { TAB_KEY, ORDER_KEY } from '~/models/TabItem'
 import { slugToTabModel } from './utils'
+import { HEX_COLOR_KEY } from '~/models/Tab'
 
 const _itemsQuery = (tabModel) => new Parse.Query(TabItem).equalTo(TAB_KEY, tabModel).ascending(ORDER_KEY)
 
 export const init = ({ commit, dispatch }, slug) => {
-  commit('setActiveItems', [])
   slugToTabModel(slug)
     .catch((err) => {
       commit('setError', err)
@@ -18,6 +18,8 @@ export const init = ({ commit, dispatch }, slug) => {
           commit('setError', err)
         })
         .then((itemsModel) => {
+          commit('setActiveItems', [])
+          commit('setHexColor', tabModel.get(HEX_COLOR_KEY))
           commit('setItems', itemsModel)
           dispatch('watch', slug)
         })

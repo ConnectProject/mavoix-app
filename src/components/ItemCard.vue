@@ -1,6 +1,8 @@
 <style lang="stylus" scoped>
 .card
   height fit-content
+  width 20%
+  margin: 0 2em
 .card-img-wrapper
   height 100%
   width 100%
@@ -17,8 +19,10 @@
 </style>
 
 <template>
-  <q-card class="col-2 card" :disabled="!item.available">
-    <q-img :ratio="1" :src="item.asset.file._url">
+  <q-card
+    :class="['card', { 'js-draggable-item': item.available} ]"
+    :disabled="!item.available">
+    <q-img :ratio="1.8" :src="item.asset.file._url">
       <div class="card-img-wrapper" v-if="!item.available">
         <img src="../assets/red_circle.svg"/>
       </div>
