@@ -20,7 +20,8 @@
 
 <template>
   <q-card
-    :class="['card', { 'js-draggable-item': item.available} ]"
+    class="card" :style="`opacity: ${dragged ? 0.1 : 1}`"
+    :draggable="item.available" v-on:dragstart="onDragStart" v-on:dragend="onDragEnd"
     :disabled="!item.available">
     <q-img :ratio="1.8" :src="item.asset.file._url">
       <div class="card-img-wrapper" v-if="!item.available">
@@ -37,6 +38,30 @@
 <script>
 export default {
   name: 'ItemCardComponent',
+  data () {
+    return {
+      dragged: false
+    }
+  },
+  methods: {
+    onDragStart () {
+      this.$store.commit('dropZone/setDragged', this.item)
+      this.dragged = true
+    },
+    onDragEnd () {
+      this.$store.commit('dropZone/setDragged', null)
+      this.dragged = false
+    }
+  },
+  watch: {
+    item (newValue) {
+      if (newValue.dragged) this.dragged = true
+      else this.dragged = false
+    }
+  },
+  mounted () {
+    if (this.item.dragged) this.dragged = true
+  },
   props: [
     'item'
   ]

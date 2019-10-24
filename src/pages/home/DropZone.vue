@@ -58,9 +58,6 @@ export default {
         alert('Error tts not loaded')
       }
     },
-    onDragEnd () {
-      this.$store.commit('dropZone/sortItems')
-    },
     onClearActiveItems () {
       this.$store.commit('dropZone/clearActiveItems')
     }

@@ -2,6 +2,10 @@ import Parse from 'parse'
 
 import Tab from '~/models/Tab'
 
+/**
+ * Load available tabs and watch for changes.
+ * @param {Context} ctx vuex action context.
+ */
 export const loadAndWatch = ({ commit, dispatch }) => {
   new Parse.Query(Tab)
     .find()
@@ -14,6 +18,10 @@ export const loadAndWatch = ({ commit, dispatch }) => {
     })
 }
 
+/**
+ * Watch for changes in tabs
+ * @param {Context} ctx vuex action context.
+ */
 export const watch = ({ commit }) => {
   new Parse.Query(Tab)
     .subscribe()

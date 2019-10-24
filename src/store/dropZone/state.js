@@ -1,5 +1,6 @@
 export default {
   items: [],
   activeItems: [],
-  hexColor: ''
+  hexColor: '',
+  dragged: null
 }

@@ -19,7 +19,8 @@
   <div
     ref="container"
     class="container"
-    v-touch-pan.horizontal.prevent.mouse="handleSwipe">
+    v-touch-pan.horizontal.prevent.mouse="handleSwipe"
+    @dragenter="onDragEnter" @dragleave="onDragLeave" @drop="onDrop">
     <div
       v-for="n in blocksCounts" :key="n"
       class="content-container">
@@ -51,7 +52,6 @@ export default {
       if (isFinal) {
         this.lastX = translateVal
       }
-      console.log(translateVal)
       container.style.transform = `translateX(${translateVal}px)`
     },
     pageItems (n) {
@@ -59,6 +59,12 @@ export default {
       return this.items.filter((_, i) => {
         return (i >= n * 8 && i < (n * 8) + 8)
       })
+    },
+    onDragEnter () {
+    },
+    onDragLeave () {
+    },
+    onDrop () {
     }
   },
   props: [
