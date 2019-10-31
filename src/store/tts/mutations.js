@@ -1,5 +1,5 @@
-export const setTTS = (state, tts) => {
-  state.tts = tts
+export const ttsEnabled = (state) => {
+  state.tts = true
 }
 
 export const setError = (state, err) => {

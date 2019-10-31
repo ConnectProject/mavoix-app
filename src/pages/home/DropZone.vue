@@ -1,10 +1,21 @@
 <style lang="stylus" scoped>
+.page
+  position relative
+  width 100vw
+  height 100%
 </style>
 
 <template>
-  <q-page class="flex column" :style="`background-color: ${hexColor}`" style="overflow: hidden">
+  <q-page class="page" :style="`background-color: ${hexColor}`" style="overflow: hidden">
     <items :items="items"/>
     <active-items :items="activeItems"/>
+
+    <q-page-sticky position="bottom-right" :offset="[18, 85]">
+      <q-btn class="q-mx-xs" fab icon="clear" color="negative" @click="onClearActiveItems" />
+    </q-page-sticky>
+    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <q-btn class="q-mx-xs" fab icon="play_arrow" color="primary" @click="onPlaySequence" />
+    </q-page-sticky>
   </q-page>
 </template>
 
@@ -33,12 +44,6 @@ export default {
       set (value) {
         this.$store.commit('dropZone/setActiveItems', value)
       }
-    },
-    tts () {
-      if (this.$store.getters['global/ttsEnabled']) {
-        return this.$store.getters['global/tts']
-      }
-      return null
     }
   },
   methods: {
@@ -46,17 +51,13 @@ export default {
       this.$store.dispatch('dropZone/init', this.$route.params.slug)
     },
     onPlaySequence () {
-      if (this.tts) {
-        let sequence = ''
+      let sequence = ''
 
-        this.activeItems.forEach((activeItem) => {
-          sequence += `${activeItem.name} `
-        })
+      this.activeItems.forEach((activeItem) => {
+        sequence += `${activeItem.name} `
+      })
 
-        this.tts.speak({ text: sequence })
-      } else {
-        alert('Error tts not loaded')
-      }
+      this.$store.dispatch('tts/speak', sequence)
     },
     onClearActiveItems () {
       this.$store.commit('dropZone/clearActiveItems')

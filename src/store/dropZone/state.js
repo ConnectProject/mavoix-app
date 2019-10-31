@@ -1,6 +1,8 @@
 export default {
+  slug: '',
+  hexColor: '',
   items: [],
   activeItems: [],
-  hexColor: '',
-  dragged: null
+  dragged: null,
+  draggedOver: null
 }

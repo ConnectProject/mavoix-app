@@ -1,18 +1,20 @@
 <style lang="stylus" scoped>
 .container
+  position absolute
+  top 0
+  left 0
+  bottom 30%
   display flex
   flex-direction row
   flex-wrap nowrap
-  flex 1
+  padding: 2em
 .content-container
-  flex 1
   display flex
-  width 100vw
-  justify-content flex-start
-  align-items center
+  flex-direction column
+  justify-content space-evenly
+  align-items stretch
+  width 25vw
   max-height 100%
-  flex-flow row wrap
-  padding 1em
 </style>
 
 <template>
@@ -20,6 +22,7 @@
     ref="container"
     class="container"
     v-touch-pan.horizontal.prevent.mouse="handleSwipe"
+    @dragover="$event.preventDefault()"
     @dragenter="onDragEnter" @dragleave="onDragLeave" @drop="onDrop">
     <div
       v-for="n in blocksCounts" :key="n"
@@ -41,13 +44,13 @@ export default {
   },
   computed: {
     blocksCounts () {
-      return Math.ceil(this.items.length / 8)
+      return Math.ceil(this.items.length / 2)
     }
   },
   methods: {
     handleSwipe ({ offset, isFinal }) {
       let container = this.$refs.container
-      let translateVal = Math.min(0, offset.x + this.lastX)
+      let translateVal = Math.min(0, Math.max(offset.x + this.lastX, -(container.clientWidth - window.innerWidth)))
 
       if (isFinal) {
         this.lastX = translateVal
@@ -57,14 +60,16 @@ export default {
     pageItems (n) {
       n--
       return this.items.filter((_, i) => {
-        return (i >= n * 8 && i < (n * 8) + 8)
+        return (i >= n * 2 && i < (n * 2) + 2)
       })
     },
     onDragEnter () {
+      this.$store.commit('dropZone/setDraggedOver', 'passiv')
     },
     onDragLeave () {
     },
     onDrop () {
+      this.$store.commit('dropZone/dropDragged')
     }
   },
   props: [

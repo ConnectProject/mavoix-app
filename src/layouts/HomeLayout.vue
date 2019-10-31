@@ -53,7 +53,7 @@ export default {
   },
   mounted () {
     this.$store.dispatch('tabs/loadAndWatch')
-    this.$store.dispatch('global/initTTS')
+    this.$store.dispatch('tts/init')
   }
 }
 </script>

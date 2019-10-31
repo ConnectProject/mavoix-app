@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 import auth from './auth'
 import tabs from './tabs'
 import dropZone from './dropZone'
-import global from './global'
+import tts from './tts'
 
 Vue.use(Vuex)
 
@@ -14,7 +14,7 @@ export default function (/* { ssrContext } */) {
       auth,
       tabs,
       dropZone,
-      global
+      tts
     },
 
     strict: process.env.DEV

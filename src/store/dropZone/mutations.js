@@ -1,6 +1,19 @@
 import { modelToTabItem, itemIndex } from './utils'
 
 /**
+ * Set tab's color.
+ * @param {State} state current state.
+ * @param {Number} hexColor tab's color
+ */
+export const setHexColor = (state, hexColor) => {
+  state.hexColor = hexColor
+}
+
+export const setSlug = (state, slug) => {
+  state.slug = slug
+}
+
+/**
  * Set tab items
  * @param {State} state current state.
  * @param {[TabItemModel]} itemsModels array of tab's items model.
@@ -44,21 +57,18 @@ export const deleteItem = (state, itemModel) => {
   state.items.splice(itemIndex(modelToTabItem(itemModel), state.items), 1)
 }
 
-/**
- * Sort tab items.
- * @param {State} state current state.
- */
-export const sortItems = (state) => {
-  state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
+export const setActiveItems = (state, items) => {
+  state.activeItems = []
 }
 
-/**
- * Set tab's color.
- * @param {State} state current state.
- * @param {Number} hexColor tab's color
- */
-export const setHexColor = (state, hexColor) => {
-  state.hexColor = hexColor
+export const clearActiveItems = (state) => {
+  state.activeItems.forEach((activeItem) => {
+    if (activeItem.tabSlug === state.slug) {
+      state.items.push(activeItem)
+    }
+  })
+  state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
+  state.activeItems = []
 }
 
 /**
@@ -70,18 +80,29 @@ export const setDragged = (state, dragged) => {
   state.dragged = dragged
 }
 
-export const addActiveItem = (state, item) => {
-  state.activeItems.push(item)
+export const dropDragged = (state) => {
+  if (state.draggedOver === 'passiv') {
+    if (!state.items.some((item) => {
+      return item.key === state.dragged.key
+    })) {
+      state.items.push(state.dragged)
+      state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
+      state.activeItems.splice(itemIndex(state.dragged, state.activeItems), 1)
+    }
+  } else if (state.draggedOver === 'active') {
+    if (!state.activeItems.some((activeItem) => {
+      return activeItem.key === state.dragged.key
+    })) {
+      state.activeItems.push(state.dragged)
+      state.items.splice(itemIndex(state.dragged, state.items), 1)
+    }
+  }
+  state.dragged = null
+  state.draggedOver = null
 }
 
-export const dropActiveItem = (state) => {
-  state.activeItems.forEach(el => {
-    el.dragged = false
-  })
-}
-
-export const removeActiveItem = (state, item) => {
-  state.activeItems.splice(itemIndex(item, state.activeItems), 1)
+export const setDraggedOver = (state, over) => {
+  state.draggedOver = over
 }
 
 /**

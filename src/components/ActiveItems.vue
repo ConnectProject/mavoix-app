@@ -1,14 +1,28 @@
 <style lang="stylus" scoped>
 .container
-  flex 1.5
+  position absolute
+  bottom 0
+  left 0
+  right 0
+  top 70%
+  display flex
+  flex-direction row
+  align-items center
   border-top 1px solid
+  height 30%
+  padding 2em
+  padding-right 5em
+.item-container
+  width 25vw
 </style>
 
 <template>
   <div
     @dragover="$event.preventDefault()" @dragenter="onDragEnter" @dragleave="onDragLeave" @drop="onDrop"
     class="container">
-      <item-card v-for="(item, index) in items" :key="index" :item="item"/>
+      <div class="item-container" v-for="(item, index) in items" :key="index">
+        <item-card :item="item" />
+      </div>
   </div>
 </template>
 
@@ -27,15 +41,12 @@ export default {
   },
   methods: {
     onDragEnter () {
-      this.$store.commit('dropZone/addActiveItem', Object.assign({}, this.dragged, {
-        dragged: true
-      }))
+      this.$store.commit('dropZone/setDraggedOver', 'active')
     },
     onDragLeave () {
-      this.$store.commit('dropZone/removeActiveItem', this.dragged)
     },
     onDrop () {
-      this.$store.commit('dropZone/dropActiveItem')
+      this.$store.commit('dropZone/dropDragged')
     }
   },
   components: {

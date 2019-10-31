@@ -18,7 +18,7 @@ export const init = ({ commit, dispatch }, slug) => {
           commit('setError', err)
         })
         .then((itemsModel) => {
-          commit('setActiveItems', [])
+          commit('setSlug', slug)
           commit('setHexColor', tabModel.get(HEX_COLOR_KEY))
           commit('setItems', itemsModel)
           dispatch('watch', slug)
