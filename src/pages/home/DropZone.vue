@@ -7,8 +7,8 @@
 
 <template>
   <q-page class="page" :style="`background-color: ${hexColor}`" style="overflow: hidden">
-    <items :items="items"/>
-    <active-items :items="activeItems"/>
+    <items :items="items" :onTouchEnd="onTouchEnd"/>
+    <active-items ref="activeZone" :items="activeItems" :onTouchEnd="onTouchEnd"/>
 
     <q-page-sticky position="bottom-right" :offset="[18, 85]">
       <q-btn class="q-mx-xs" fab icon="clear" color="negative" @click="onClearActiveItems" />
@@ -61,6 +61,14 @@ export default {
     },
     onClearActiveItems () {
       this.$store.commit('dropZone/clearActiveItems')
+    },
+    onTouchEnd ({ changedTouches: [ touch ] }, item) {
+      let zone = 'passiv'
+
+      if (touch.pageY >= this.$refs.activeZone.$el.getBoundingClientRect().top) {
+        zone = 'active'
+      }
+      this.$store.commit('dropZone/drop', { item, zone })
     }
   },
   mounted () {

@@ -22,9 +22,8 @@
 <template>
   <q-card
     ref="card"
-    class="card" :style="`opacity: ${dragged ? 0.1 : 1}; transform: translate(${translateX}px, ${translateY}px)`"
-    :draggable="item.available" @dragstart="onDragStart" @dragend="onDragEnd"
-    v-touch:moving="onTouchMove" v-touch:end="onTouchEnd"
+    class="card" :style="`transform: translate(${translateX}px, ${translateY}px)`"
+    v-touch:moving="onTouchMove" v-touch:end="_onTouchEnd"
     :disabled="!item.available">
     <q-img :ratio="1.8" :src="item.asset.file._url">
       <div class="card-img-wrapper" v-if="!item.available">
@@ -43,7 +42,6 @@ export default {
   name: 'ItemCardComponent',
   data () {
     return {
-      dragged: false,
       translateX: 0,
       translateY: 0,
       initialX: 0,
@@ -51,41 +49,31 @@ export default {
     }
   },
   methods: {
-    onDragStart () {
-      if (this.item.available) {
-        this.$store.commit('dropZone/setDragged', this.item)
-        this.dragged = true
-      }
-    },
-    onDragEnd () {
-      this.$store.commit('dropZone/setDragged', null)
-      this.dragged = false
-    },
     onTouchMove ({ changedTouches: [ touch ] }) {
-      let card = this.$refs.card.$el
-      if (!this.initialX || !this.initialY) {
-        this.initialX = card.getBoundingClientRect().left
-        this.initialY = card.getBoundingClientRect().top
-      }
+      if (this.item.available) {
+        let card = this.$refs.card.$el
+        if (!this.initialX || !this.initialY) {
+          this.initialX = card.getBoundingClientRect().left
+          this.initialY = card.getBoundingClientRect().top
+        }
 
-      this.translateX = (touch.pageX - this.initialX - (card.clientWidth / 2))
-      this.translateY = (touch.pageY - this.initialY - (card.clientHeight / 2))
+        this.translateX = (touch.pageX - this.initialX - (card.clientWidth / 2))
+        this.translateY = (touch.pageY - this.initialY - (card.clientHeight / 2))
+      }
     },
-    onTouchEnd (event) {
-      console.log(event)
+    _onTouchEnd (event) {
+      if (this.item.available) {
+        this.onTouchEnd(event, this.item)
+        this.translateX = 0
+        this.translateY = 0
+        this.initialX = 0
+        this.initialY = 0
+      }
     }
-  },
-  watch: {
-    item (newValue) {
-      if (newValue.dragged) this.dragged = true
-      else this.dragged = false
-    }
-  },
-  mounted () {
-    if (this.item.dragged) this.dragged = true
   },
   props: [
-    'item'
+    'item',
+    'onTouchEnd'
   ]
 }
 </script>

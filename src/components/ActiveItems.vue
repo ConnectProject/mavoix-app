@@ -17,11 +17,9 @@
 </style>
 
 <template>
-  <div
-    @dragover="$event.preventDefault()" @dragenter="onDragEnter" @dragleave="onDragLeave" @drop="onDrop"
-    class="container">
+  <div class="container">
       <div class="item-container" v-for="(item, index) in items" :key="index">
-        <item-card :item="item" />
+        <item-card :item="item" :onTouchEnd="onTouchEnd"/>
       </div>
   </div>
 </template>
@@ -32,23 +30,9 @@ import ItemCard from './ItemCard'
 export default {
   name: 'ActiveItems',
   props: [
-    'items'
+    'items',
+    'onTouchEnd'
   ],
-  computed: {
-    dragged () {
-      return this.$store.getters['dropZone/dragged']
-    }
-  },
-  methods: {
-    onDragEnter () {
-      this.$store.commit('dropZone/setDraggedOver', 'active')
-    },
-    onDragLeave () {
-    },
-    onDrop () {
-      this.$store.commit('dropZone/dropDragged')
-    }
-  },
   components: {
     ItemCard
   }

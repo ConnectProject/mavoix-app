@@ -22,13 +22,11 @@
   <div
     ref="container"
     class="container"
-    v-touch-pan.horizontal.prevent.mouse="handleSwipe"
-    @dragover="$event.preventDefault()"
-    @dragenter="onDragEnter" @dragleave="onDragLeave" @drop="onDrop">
+    v-touch-pan.horizontal.prevent.mouse="handleSwipe">
     <div
       v-for="n in blocksCounts" :key="n"
       class="content-container">
-      <item-card v-for="(item, index) in pageItems(n)" :key="index" :item="item"/>
+      <item-card v-for="(item, index) in pageItems(n)" :key="n * index" :item="item" :onTouchEnd="onTouchEnd"/>
     </div>
   </div>
 </template>
@@ -63,18 +61,11 @@ export default {
       return this.items.filter((_, i) => {
         return (i >= n * 2 && i < (n * 2) + 2)
       })
-    },
-    onDragEnter () {
-      this.$store.commit('dropZone/setDraggedOver', 'passiv')
-    },
-    onDragLeave () {
-    },
-    onDrop () {
-      this.$store.commit('dropZone/dropDragged')
     }
   },
   props: [
-    'items'
+    'items',
+    'onTouchEnd'
   ],
   components: {
     ItemCard

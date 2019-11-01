@@ -71,40 +71,21 @@ export const clearActiveItems = (state) => {
   state.activeItems = []
 }
 
-/**
- * Set the dragged item.
- * @param {State} state current state.
- * @param {{}} dragged the dragged item.
- */
-export const setDragged = (state, dragged) => {
-  state.dragged = dragged
-}
-
-export const dropDragged = (state) => {
-  if (state.draggedOver === 'passiv') {
-    if (!state.items.some((item) => {
-      return item.key === state.dragged.key
-    })) {
-      if (state.dragged.tabSlug === state.slug) {
-        state.items.push(state.dragged)
-        state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
-      }
-      state.activeItems.splice(itemIndex(state.dragged, state.activeItems), 1)
-    }
-  } else if (state.draggedOver === 'active') {
-    if (!state.activeItems.some((activeItem) => {
-      return activeItem.key === state.dragged.key
-    })) {
-      state.activeItems.push(state.dragged)
-      state.items.splice(itemIndex(state.dragged, state.items), 1)
-    }
+export const drop = (state, { item, zone }) => {
+  let i = itemIndex(item, state.items)
+  if (i !== -1) {
+    state.items.splice(i, 1)
   }
-  state.dragged = null
-  state.draggedOver = null
-}
-
-export const setDraggedOver = (state, over) => {
-  state.draggedOver = over
+  i = itemIndex(item, state.activeItems)
+  if (i !== -1) {
+    state.activeItems.splice(i, 1)
+  }
+  if (zone === 'passiv' && item.tabSlug === state.slug) {
+    state.items.push(item)
+    state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
+  } else if (zone === 'active') {
+    state.activeItems.push(item)
+  }
 }
 
 /**
