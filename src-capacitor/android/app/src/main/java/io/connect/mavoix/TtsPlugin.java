@@ -17,7 +17,7 @@ public class TtsPlugin extends Plugin implements TextToSpeech.OnInitListener {
     private PluginCall initCall;
 
     @PluginMethod()
-    public void init(PluginCall call) {
+    public void load(PluginCall call) {
         this.tts = new TextToSpeech(this.getContext(),this);
         this.initCall = call;
     }
