@@ -21,8 +21,10 @@
 
 <template>
   <q-card
-    class="card" :style="`opacity: ${dragged ? 0.1 : 1}`"
-    @click="onClick"
+    ref="card"
+    class="card" :style="`opacity: ${dragged ? 0.1 : 1}; transform: translate(${translateX}px, ${translateY}px)`"
+    :draggable="item.available" @dragstart="onDragStart" @dragend="onDragEnd"
+    v-touch:moving="onTouchMove" v-touch:end="onTouchEnd"
     :disabled="!item.available">
     <q-img :ratio="1.8" :src="item.asset.file._url">
       <div class="card-img-wrapper" v-if="!item.available">
@@ -41,30 +43,36 @@ export default {
   name: 'ItemCardComponent',
   data () {
     return {
-      dragged: false
+      dragged: false,
+      translateX: 0,
+      translateY: 0,
+      initialX: 0,
+      initialY: 0
     }
   },
   methods: {
     onDragStart () {
-      this.$store.commit('dropZone/setDragged', this.item)
-      this.dragged = true
+      if (this.item.available) {
+        this.$store.commit('dropZone/setDragged', this.item)
+        this.dragged = true
+      }
     },
     onDragEnd () {
       this.$store.commit('dropZone/setDragged', null)
       this.dragged = false
     },
-    onClick () {
-      if (this.item.available) {
-        this.onDragStart()
-        if (this.$store.getters['dropZone/items'].some((item) => {
-          return item.key === this.item.key
-        })) {
-          this.$store.commit('dropZone/setDraggedOver', 'active')
-        } else {
-          this.$store.commit('dropZone/setDraggedOver', 'passiv')
-        }
-        this.$store.commit('dropZone/dropDragged')
+    onTouchMove ({ changedTouches: [ touch ] }) {
+      let card = this.$refs.card.$el
+      if (!this.initialX || !this.initialY) {
+        this.initialX = card.getBoundingClientRect().left
+        this.initialY = card.getBoundingClientRect().top
       }
+
+      this.translateX = (touch.pageX - this.initialX - (card.clientWidth / 2))
+      this.translateY = (touch.pageY - this.initialY - (card.clientHeight / 2))
+    },
+    onTouchEnd (event) {
+      console.log(event)
     }
   },
   watch: {

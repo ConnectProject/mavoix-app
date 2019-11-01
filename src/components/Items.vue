@@ -8,6 +8,7 @@
   flex-direction row
   flex-wrap nowrap
   padding: 2em
+  min-width 100vw
 .content-container
   display flex
   flex-direction column

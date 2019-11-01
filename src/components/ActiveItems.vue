@@ -11,7 +11,7 @@
   border-top 1px solid
   height 30%
   padding 2em
-  padding-right 5em
+  padding-right 6em
 .item-container
   width 25vw
 </style>

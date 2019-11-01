@@ -85,8 +85,10 @@ export const dropDragged = (state) => {
     if (!state.items.some((item) => {
       return item.key === state.dragged.key
     })) {
-      state.items.push(state.dragged)
-      state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
+      if (state.dragged.tabSlug === state.slug) {
+        state.items.push(state.dragged)
+        state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
+      }
       state.activeItems.splice(itemIndex(state.dragged, state.activeItems), 1)
     }
   } else if (state.draggedOver === 'active') {

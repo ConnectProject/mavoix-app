@@ -7,7 +7,7 @@ import DeviceUserModel from '~/models/DeviceUser'
 
 export default async ({ app, Vue }) => {
   Parse.initialize('mavoix-api', 'javascriptKey')
-  Parse.serverURL = 'https://silly-vampirebat-31.localtunnel.me/'
+  Parse.serverURL = 'http://localhost:8080/'
 
   /* Models */
   Parse.Object.registerSubclass('Tab', TabModel)
