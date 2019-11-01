@@ -3,7 +3,7 @@ import { Plugins } from '@capacitor/core'
 const { TtsPlugin } = Plugins
 
 export const init = ({ commit }) => {
-  TtsPlugin.init()
+  TtsPlugin.load()
     .then(() => {
       commit('ttsEnabled')
     })
