@@ -25,7 +25,7 @@ public class TtsPlugin extends Plugin implements TextToSpeech.OnInitListener {
     @Override
     public void onInit(int initStatus) {
         if (initStatus == TextToSpeech.SUCCESS) {
-            this.tts.setLanguage(Locale.FRANCE);
+            this.tts.setLanguage(Locale.FRENCH);
             this.initCall.success();
         } else {
             this.initCall.error(initStatus + ": Failed to init TTS");

@@ -84,7 +84,7 @@ export const drop = (state, { item, zone }) => {
   if (i !== -1) {
     state.activeItems.splice(i, 1)
   }
-  if (zone === 'passiv' && item.tabSlug === state.slug) {
+  if (zone === 'passiv' && item.tabSlug === state.tab.slug) {
     state.items.push(item)
     state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
   } else if (zone === 'active') {
