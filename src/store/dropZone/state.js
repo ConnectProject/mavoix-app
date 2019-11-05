@@ -1,6 +1,10 @@
 export default {
-  slug: '',
-  hexColor: '',
+  tab: {
+    id: '',
+    slug: '',
+    color: ''
+  },
   items: [],
-  activeItems: []
+  activeItems: [],
+  subscription: null
 }

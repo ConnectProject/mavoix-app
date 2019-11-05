@@ -1,6 +1,6 @@
 import Parse from 'parse'
 
-import Tab from '~/models/Tab'
+import Tab, { HEX_COLOR_KEY } from '~/models/Tab'
 
 /**
  * Load available tabs and watch for changes.
@@ -22,7 +22,7 @@ export const loadAndWatch = ({ commit, dispatch }) => {
  * Watch for changes in tabs
  * @param {Context} ctx vuex action context.
  */
-export const watch = ({ commit }) => {
+export const watch = ({ commit, rootState, state }) => {
   new Parse.Query(Tab)
     .subscribe()
     .then((subscription) => {
@@ -32,6 +32,9 @@ export const watch = ({ commit }) => {
 
       subscription.on('update', (tab) => {
         commit('updateTab', tab)
+        if (rootState.dropZone.tab.id === tab.id) {
+          commit('dropZone/setTabColor', tab.get(HEX_COLOR_KEY), { root: true })
+        }
       })
 
       subscription.on('delete', (tab) => {

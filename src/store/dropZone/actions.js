@@ -6,7 +6,10 @@ import { HEX_COLOR_KEY } from '~/models/Tab'
 
 const _itemsQuery = (tabModel) => new Parse.Query(TabItem).equalTo(TAB_KEY, tabModel).ascending(ORDER_KEY)
 
-export const init = ({ commit, dispatch }, slug) => {
+export const init = ({ commit, dispatch, state }, slug) => {
+  if (state.subscription) {
+    state.subscription.unsubscribe()
+  }
   slugToTabModel(slug)
     .catch((err) => {
       commit('setError', err)
@@ -18,8 +21,9 @@ export const init = ({ commit, dispatch }, slug) => {
           commit('setError', err)
         })
         .then((itemsModel) => {
-          commit('setSlug', slug)
-          commit('setHexColor', tabModel.get(HEX_COLOR_KEY))
+          commit('setTabSlug', slug)
+          commit('setTabId', tabModel.id)
+          commit('setTabColor', tabModel.get(HEX_COLOR_KEY))
           commit('setItems', itemsModel)
           dispatch('watch', slug)
         })
@@ -46,6 +50,7 @@ export const watch = ({ commit }, slug) => {
           subscription.on('delete', (tabModel) => {
             commit('deleteItem', tabModel)
           })
+          commit('setSubscription', subscription)
         })
     })
 }

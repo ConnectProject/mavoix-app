@@ -2,7 +2,7 @@
   <q-layout view="hHh lpR fFf">
 
     <q-header elevated class="bg-primary text-white">
-      <q-tabs :style="`background-color: ${activeColor}; height: 4.5em`" align="center">
+      <q-tabs v-model="active" :style="`background-color: ${activeColor}; height: 4.5em`" align="center">
         <q-route-tab
           v-for="(tab, index) in tabs"
           :key="index"
@@ -29,6 +29,14 @@ export default {
   computed: {
     tabs () {
       return this.$store.getters['tabs/all']
+    },
+    active: {
+      get () {
+        return this.$store.getters['tabs/active']
+      },
+      set (active) {
+        this.$store.commit('tabs/setActive', active)
+      }
     }
   },
   methods: {

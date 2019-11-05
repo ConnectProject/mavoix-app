@@ -5,12 +5,16 @@ import { modelToTabItem, itemIndex } from './utils'
  * @param {State} state current state.
  * @param {Number} hexColor tab's color
  */
-export const setHexColor = (state, hexColor) => {
-  state.hexColor = hexColor
+export const setTabColor = (state, color) => {
+  state.tab.color = color
 }
 
-export const setSlug = (state, slug) => {
-  state.slug = slug
+export const setTabSlug = (state, slug) => {
+  state.tab.slug = slug
+}
+
+export const setTabId = (state, id) => {
+  state.tab.id = id
 }
 
 /**
@@ -63,7 +67,7 @@ export const setActiveItems = (state, items) => {
 
 export const clearActiveItems = (state) => {
   state.activeItems.forEach((activeItem) => {
-    if (activeItem.tabSlug === state.slug) {
+    if (activeItem.tabSlug === state.tab.slug) {
       state.items.push(activeItem)
     }
   })
@@ -86,6 +90,10 @@ export const drop = (state, { item, zone }) => {
   } else if (zone === 'active') {
     state.activeItems.push(item)
   }
+}
+
+export const setSubscription = (state, subscription) => {
+  state.subscription = subscription
 }
 
 /**

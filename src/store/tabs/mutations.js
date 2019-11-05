@@ -43,6 +43,10 @@ export const deleteTab = (state, tabModel) => {
   state.tabs.splice(tabIndex(modelToTab(tabModel), state.tabs), 1)
 }
 
+export const setActive = (state, active) => {
+  state.active = active
+}
+
 export const setError = (state, error) => {
   console.error(error)
   state.error = error
