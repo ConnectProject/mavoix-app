@@ -1,9 +1,24 @@
 import Parse from 'parse'
 
 import Tab, { SLUG_KEY } from '~/models/Tab'
-import { NAME_KEY, ASSET_KEY, AVAILABLE_KEY, HIDDEN_KEY, KEY_KEY, ORDER_KEY, TAB_KEY } from '~/models/TabItem'
+import {
+  NAME_KEY,
+  ASSET_KEY,
+  AVAILABLE_KEY,
+  HIDDEN_KEY,
+  KEY_KEY,
+  ORDER_KEY,
+  TAB_KEY
+} from '~/models/TabItem'
 
-export const itemIndex = (item, items) => items.findIndex((pItem) => item.key === pItem.key)
+/**
+ * Return the index of a tab in a list of tabs
+ * @param {TabItem} item needle
+ * @param {[TabItem]} items haystack
+ */
+export const itemIndex = (item, items) => (
+  items.findIndex((pItem) => item.key === pItem.key)
+)
 
 export const modelToTabItem = (itemModel) => ({
   name: itemModel.get(NAME_KEY),

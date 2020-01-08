@@ -29,21 +29,11 @@ export default {
     hexColor () {
       return this.$store.getters['dropZone/hexColor']
     },
-    items: {
-      get () {
-        return this.$store.getters['dropZone/items'].filter((item) => item.hidden === false)
-      },
-      set (value) {
-        this.$store.commit('dropZone/setItemsRaw', value)
-      }
+    items () {
+      return this.$store.getters['dropZone/items'].filter((item) => item.hidden === false)
     },
-    activeItems: {
-      get () {
-        return this.$store.getters['dropZone/activeItems']
-      },
-      set (value) {
-        this.$store.commit('dropZone/setActiveItems', value)
-      }
+    activeItems () {
+      return this.$store.getters['dropZone/activeItems']
     }
   },
   methods: {

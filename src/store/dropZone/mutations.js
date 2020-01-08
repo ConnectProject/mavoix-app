@@ -2,24 +2,34 @@ import { modelToTabItem, itemIndex } from './utils'
 
 /**
  * Set tab's color.
- * @param {State} state current state.
- * @param {Number} hexColor tab's color
+ * @param {State} state
+ * @param {Number} hexColor new color
  */
 export const setTabColor = (state, color) => {
   state.tab.color = color
 }
 
+/**
+ * Set tab's slug
+ * @param {State} state
+ * @param {*} slug new slug
+ */
 export const setTabSlug = (state, slug) => {
   state.tab.slug = slug
 }
 
+/**
+ * Set tab's id
+ * @param {State} state
+ * @param {String} id new id
+ */
 export const setTabId = (state, id) => {
   state.tab.id = id
 }
 
 /**
  * Set tab items
- * @param {State} state current state.
+ * @param {State} state
  * @param {[TabItemModel]} itemsModels array of tab's items model.
  */
 export const setItems = (state, itemsModels) => {
@@ -29,7 +39,7 @@ export const setItems = (state, itemsModels) => {
 }
 /**
  * Add a tab item.
- * @param {State} state current state.
+ * @param {State} state
  * @param {TabItemModel} itemModel tab's item model.
  */
 export const addItem = (state, itemModel) => {
@@ -37,7 +47,7 @@ export const addItem = (state, itemModel) => {
 }
 /**
  * Update a tab item.
- * @param {State} state current state.
+ * @param {State} state
  * @param {TabItemModel} itemModel tab's item model.
  */
 export const updateItem = (state, itemModel) => {
@@ -52,19 +62,20 @@ export const updateItem = (state, itemModel) => {
 
   state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
 }
+
 /**
  * Delete a tab item.
- * @param {State} state current state.
+ * @param {State} state
  * @param {TabItemModel} itemModel tab's item model.
  */
 export const deleteItem = (state, itemModel) => {
   state.items.splice(itemIndex(modelToTabItem(itemModel), state.items), 1)
 }
 
-export const setActiveItems = (state, items) => {
-  state.activeItems = []
-}
-
+/**
+ * Clear active items
+ * @param {State} state
+ */
 export const clearActiveItems = (state) => {
   state.activeItems.forEach((activeItem) => {
     if (activeItem.tabSlug === state.tab.slug) {
@@ -92,6 +103,11 @@ export const drop = (state, { item, zone }) => {
   }
 }
 
+/**
+ * Set subscription
+ * @param {State} state
+ * @param {Subscription} subscription Parse Subscription
+ */
 export const setSubscription = (state, subscription) => {
   state.subscription = subscription
 }

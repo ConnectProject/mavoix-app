@@ -1,10 +1,10 @@
 export default {
   tab: {
-    id: '',
-    slug: '',
-    color: ''
+    id: '', // Parse id
+    slug: '', // Slug
+    color: '' // Color
   },
-  items: [],
-  activeItems: [],
-  subscription: null
+  items: [], // Items
+  activeItems: [], // Active items
+  subscription: null // Parse subscription
 }
