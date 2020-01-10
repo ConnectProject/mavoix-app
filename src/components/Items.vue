@@ -22,11 +22,21 @@
   <div
     ref="container"
     class="container"
-    v-touch-pan.horizontal.prevent.mouse="handleSwipe">
+    v-touch-pan.horizontal.prevent.mouse="handleScroll"
+  >
+    <!-- Colums of 2 items -->
     <div
-      v-for="n in blocksCounts" :key="n"
-      class="content-container">
-      <item-card v-for="(item, index) in pageItems(n)" :key="n * index" :item="item" :onTouchEnd="onTouchEnd"/>
+      v-for="n in blocksCounts"
+      :key="n"
+      class="content-container"
+    >
+      <!-- The two items -->
+      <item-card
+        v-for="(item, index) in pageItems(n)"
+        :key="n * index"
+        :item="item"
+        :onTouchEnd="onTouchEnd"
+      />
     </div>
   </div>
 </template>
@@ -36,18 +46,31 @@ import ItemCard from './ItemCard'
 
 export default {
   name: 'Items',
+  props: [
+    'items',
+    'onTouchEnd'
+  ],
+  components: {
+    ItemCard
+  },
   data () {
     return {
       lastX: 0
     }
   },
   computed: {
+    /**
+     * Return the number of colums
+     */
     blocksCounts () {
       return Math.ceil(this.items.length / 2)
     }
   },
   methods: {
-    handleSwipe ({ offset, isFinal }) {
+    /**
+     * Handle horizontal scroll
+     */
+    handleScroll ({ offset, isFinal }) {
       let container = this.$refs.container
       let translateVal = Math.min(0, Math.max(offset.x + this.lastX, -(container.clientWidth - window.innerWidth)))
 
@@ -56,19 +79,15 @@ export default {
       }
       container.style.transform = `translateX(${translateVal}px)`
     },
+    /**
+     * Return array of items of a spectific column
+     */
     pageItems (n) {
       n--
       return this.items.filter((_, i) => {
         return (i >= n * 2 && i < (n * 2) + 2)
       })
     }
-  },
-  props: [
-    'items',
-    'onTouchEnd'
-  ],
-  components: {
-    ItemCard
   }
 }
 </script>

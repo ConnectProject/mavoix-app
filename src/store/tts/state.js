@@ -1,3 +1,3 @@
 export default {
-  tts: null
+  tts: false // True if text to speech plugin enabled
 }

@@ -1,4 +1,4 @@
 export default {
-  active: null,
-  tabs: []
+  active: null, // The active tab
+  tabs: [] // Array of tabs
 }

@@ -2,7 +2,7 @@ import { modelToTab, tabIndex } from './utils'
 
 /**
  * Set tabs.
- * @param {State} state current state.
+ * @param {State} state
  * @param {[TabModel]} tabsModel array of tabs models.
  */
 export const setTabs = (state, tabsModel) => {
@@ -13,7 +13,7 @@ export const setTabs = (state, tabsModel) => {
 
 /**
  * Add a tab.
- * @param {State} state current state.
+ * @param {State} state
  * @param {TabModel} tabModel a tab model.
  */
 export const addTab = (state, tabModel) => {
@@ -22,7 +22,7 @@ export const addTab = (state, tabModel) => {
 
 /**
  * Update a tab.
- * @param {State} state current state.
+ * @param {State} state
  * @param {TabModel} tabModel a tab model.
  */
 export const updateTab = (state, tabModel) => {
@@ -36,17 +36,26 @@ export const updateTab = (state, tabModel) => {
 
 /**
  * Delete a tab.
- * @param {State} state current state.
+ * @param {State} state
  * @param {TabModel} tabModel a tab model.
  */
 export const deleteTab = (state, tabModel) => {
   state.tabs.splice(tabIndex(modelToTab(tabModel), state.tabs), 1)
 }
 
+/**
+ * Set the active tab
+ * @param {State} state
+ * @param {Tab} active a tab object
+ */
 export const setActive = (state, active) => {
   state.active = active
 }
-
+/**
+ * Set an error
+ * @param {State} state current state
+ * @param {*} error an error to print
+ */
 export const setError = (state, error) => {
   console.error(error)
   state.error = error

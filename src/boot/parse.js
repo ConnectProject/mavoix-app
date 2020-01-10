@@ -5,6 +5,10 @@ import TabItemModel from '~/models/TabItem'
 import AssetModel from '~/models/Asset'
 import DeviceUserModel from '~/models/DeviceUser'
 
+/**
+ * - Initialize parse
+ * - Load parse models
+ */
 export default async ({ app, Vue }) => {
   Parse.initialize(process.env.PARSE_APP_ID, process.env.PARSE_JS_KEY)
   Parse.serverURL = process.env.PARSE_URL

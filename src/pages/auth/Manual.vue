@@ -4,6 +4,7 @@
       @submit="onSubmit"
       class="column flex-center"
     >
+      <!-- Invitation code input -->
       <q-input
         :value="invitationCode"
         @input="setInvitationCode"
@@ -11,6 +12,7 @@
         label="Code d'invitation"
       />
 
+      <!-- Submit -->
       <q-btn
         flat
         label="Submit"
@@ -34,7 +36,7 @@ export default {
       this.$store.commit('auth/setInvitationCode', value)
     },
     onSubmit () {
-      // this.$store.dispatch('auth/login')
+      this.$store.dispatch('auth/login')
       this.$router.push({ name: 'home' })
     }
   }

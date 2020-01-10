@@ -18,8 +18,15 @@
 
 <template>
   <div class="container">
-      <div class="item-container" v-for="(item, index) in items" :key="index">
-        <item-card :item="item" :onTouchEnd="onTouchEnd"/>
+      <div
+        class="item-container"
+        v-for="(item, index) in items"
+        :key="index"
+      >
+        <item-card
+          :item="item"
+          :onTouchEnd="onTouchEnd"
+        />
       </div>
   </div>
 </template>
@@ -29,12 +36,12 @@ import ItemCard from './ItemCard'
 
 export default {
   name: 'ActiveItems',
+  components: {
+    ItemCard
+  },
   props: [
     'items',
     'onTouchEnd'
-  ],
-  components: {
-    ItemCard
-  }
+  ]
 }
 </script>

@@ -1,10 +1,12 @@
 <template>
   <q-layout view="hHh lpR fFf">
-     <q-header elevated class="bg-primary text-white">
+    <q-header
+      class="bg-primary text-white"
+      elevated
+    >
       <q-toolbar>
-        <q-btn flat round dense icon="arrow-back-ios" />
         <q-toolbar-title>
-          Title
+          Ma voix
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -23,6 +25,9 @@ export default {
     }
   },
   watch: {
+    /**
+     * When the user is logged go to home page
+     */
     logged (newValue) {
       if (newValue) {
         this.$router.push({ name: 'home' })
