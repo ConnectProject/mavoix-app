@@ -1,25 +1,32 @@
 <style lang="stylus" scoped>
 .container
   position absolute
-  bottom 0
-  left 0
-  right 0
   top 70%
+  left 0
+  height 30%
   display flex
   flex-direction row
-  align-items center
-  border-top 1px solid
-  height 30%
-  padding 2em
-  padding-right 6em
-.item-container
+  flex-wrap nowrap
+  padding: 2em
+  min-width 100vw
+  border-top 1px solid black
+.content-container
+  display flex
+  flex-direction column
+  justify-content space-evenly
+  align-items stretch
   width 25vw
+  max-height 100%
 </style>
 
 <template>
-  <div class="container">
+  <div
+    ref="container"
+    class="container"
+    v-touch-pan.horizontal.prevent.mouse="handleScroll"
+  >
       <div
-        class="item-container"
+        class="content-container"
         v-for="(item, index) in items"
         :key="index"
       >
@@ -39,9 +46,28 @@ export default {
   components: {
     ItemCard
   },
+  data () {
+    return {
+      lastX: 0
+    }
+  },
   props: [
     'items',
     'onTouchEnd'
-  ]
+  ],
+  methods: {
+    /**
+     * Handle horizontal scroll
+     */
+    handleScroll ({ offset, isFinal }) {
+      let container = this.$refs.container
+      let translateVal = Math.min(0, Math.max(offset.x + this.lastX, -(container.clientWidth - window.innerWidth)))
+
+      if (isFinal) {
+        this.lastX = translateVal
+      }
+      container.style.transform = `translateX(${translateVal}px)`
+    }
+  }
 }
 </script>

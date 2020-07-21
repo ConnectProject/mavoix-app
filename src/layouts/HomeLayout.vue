@@ -29,10 +29,14 @@
 export default {
   data () {
     return {
-      activeColor: 'white'
+      activeColor: 'white',
+      test: 'ok'
     }
   },
   computed: {
+    store () {
+      return this.$store.getters['auth/invitationCode']
+    },
     tabs () {
       return this.$store.getters['tabs/all']
     },
@@ -46,6 +50,10 @@ export default {
     }
   },
   methods: {
+    testClick () {
+      this.$store.dispatch('tabs/loadAndWatch')
+      alert(this.tabs)
+    },
     /**
      * Change the active color by loading the color in the right tab object
      */

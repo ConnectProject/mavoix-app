@@ -7,6 +7,15 @@ export const ttsEnabled = (state) => {
 }
 
 /**
+ * Set playing boolean
+ * @param {State} state
+ * @param {Boolean} playing new value
+ */
+export const setPlaying = (state, playing) => {
+  state.playing = playing
+}
+
+/**
  * Set an error
  * @param {State} state current state
  * @param {*} error an error to print

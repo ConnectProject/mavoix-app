@@ -11,9 +11,11 @@ export const login = ({ commit, getters: { invitationCode } }) => {
 
   DeviceUser.logIn(username, password)
     .catch((err) => {
+      alert('test login :' + err)
       commit('setError', err)
     })
     .then((user) => {
+      alert('test login good :' + user)
       LocalStorage.set('user', user)
       commit('login')
     })

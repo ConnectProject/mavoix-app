@@ -15,14 +15,17 @@
     <items
       :items="items"
       :onTouchEnd="onTouchEnd"
+      :onClickEnd="onTouchEnd"
     />
     <!-- Active items -->
     <active-items
       ref="activeZone"
       :items="activeItems"
       :onTouchEnd="onTouchEnd"
+      :onClickEnd="onTouchEnd"
     />
-
+<!--       <q-btn @click="changePlay">{{ playing }}</q-btn>
+ -->
     <!-- Clear active items button -->
     <q-page-sticky
       position="bottom-right"
@@ -44,7 +47,7 @@
       <q-btn
         class="q-mx-xs"
         fab
-        icon="play_arrow"
+        :icon="playing ? 'pause' : 'play_arrow'"
         color="primary"
         @click="onPlaySequence"
       />
@@ -61,6 +64,11 @@ export default {
   components: {
     Items,
     ActiveItems
+  },
+  data () {
+    return {
+      playing: false
+    }
   },
   mounted () {
     this.initDropZone()
@@ -80,6 +88,9 @@ export default {
     }
   },
   methods: {
+    changePlay () {
+      this.playing = !this.playing
+    },
     initDropZone () {
       this.$store.dispatch('dropZone/init', this.$route.params.slug)
     },
@@ -88,12 +99,13 @@ export default {
      */
     onPlaySequence () {
       let sequence = ''
-
       this.activeItems.forEach((activeItem) => {
         sequence += `${activeItem.name} `
       })
+      this.playing = true
 
-      this.$store.dispatch('tts/speak', sequence)
+      this.$store.dispatch('tts/speak', sequence).then(() => {
+      })
     },
     onClearActiveItems () {
       this.$store.commit('dropZone/clearActiveItems')

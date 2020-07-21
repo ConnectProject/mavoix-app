@@ -10,6 +10,7 @@ export const loadAndWatch = ({ commit, dispatch }) => {
   new Parse.Query(Tab)
     .find()
     .catch((err) => {
+      alert(err)
       commit('setError', err)
     })
     .then((tabs) => {
