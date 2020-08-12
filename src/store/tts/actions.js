@@ -21,11 +21,15 @@ export const init = ({ commit }) => {
  * @param {Context} context
  * @param {String} text the phrase to speek
  */
-export const speak = ({ commit, getters: { tts } }, text) => {
+export const speak = ({ commit, getters: { playing, tts } }, text) => {
   if (tts) {
+    commit('setPlaying', true)
     TtsPlugin.speak({ text })
-      .then(() => {
-
+      .then(res => {
+        let timer = text.length * 50
+        setTimeout(() => {
+          commit('setPlaying', false)
+        }, timer)
       })
       .catch((err) => {
         commit('setError', err)

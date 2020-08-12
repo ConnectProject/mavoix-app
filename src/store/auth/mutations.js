@@ -4,6 +4,7 @@
  * @param {String} invitationCode is the new invitation code
  */
 export const setInvitationCode = (state, invitationCode) => {
+  console.log('setInvitationCode: ' + invitationCode)
   state.invitationCode = invitationCode
 }
 
@@ -23,4 +24,8 @@ export const login = (state) => {
 export const setError = (state, error) => {
   console.error(error)
   state.error = error
+}
+
+export const sessionId = (state, value) => {
+  state.sessionId = value
 }

@@ -9,3 +9,5 @@ export const invitationCode = ({ invitationCode }) => invitationCode
  * @param {State} state
  */
 export const logged = ({ logged }) => logged
+
+export const sessionId = ({ sessionId }) => sessionId

@@ -26,6 +26,7 @@
     :style="`transform: translate(${translateX}px, ${translateY}px)`"
     v-touch:moving="onTouchMove"
     v-touch:end="internalOnTouchEnd"
+    v-touch:start="internalOnTouchStart"
     :disabled="!item.available"
   >
     <q-img
@@ -53,7 +54,10 @@ export default {
   name: 'ItemCardComponent',
   props: [
     'item',
-    'onTouchEnd'
+    'index',
+    'onTouchEnd',
+    'onTouchStart',
+    'onTouchMoveProps'
   ],
   data () {
     return {
@@ -70,7 +74,7 @@ export default {
     onTouchMove ({ changedTouches: [ touch ] }) {
       if (this.item.available) {
         const card = this.$refs.card.$el
-
+        this.onTouchMoveProps(touch, this.item, this.index)
         /**
          * Set the card initial position if previously unset
          */
@@ -89,13 +93,18 @@ export default {
     /**
      * Call the prop's callback and reset data
      */
-    internalOnTouchEnd (event) {
+    internalOnTouchEnd ($event) {
       if (this.item.available) {
-        this.onTouchEnd(event, this.item)
+        this.onTouchEnd($event, this.item, this.index)
         this.translateX = 0
         this.translateY = 0
         this.initialX = 0
         this.initialY = 0
+      }
+    },
+    internalOnTouchStart (event) {
+      if (this.onTouchStart) {
+        this.onTouchStart(event, this.item, this.index)
       }
     }
   }

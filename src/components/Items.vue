@@ -7,8 +7,9 @@
   display flex
   flex-direction row
   flex-wrap nowrap
-  padding: 2em
+  padding 2em
   min-width 100vw
+  z-index 10
 .content-container
   display flex
   flex-direction column
@@ -34,8 +35,12 @@
       <item-card
         v-for="(item, index) in pageItems(n)"
         :key="n * index"
+        :index="index"
         :item="item"
-        :onTouchEnd="onTouchEnd"
+        ref="card"
+        :on-touch-end="onTouchEnd"
+        :on-touch-start="onTouchStart"
+        :onTouchMoveProps="onTouchMoveProps"
       />
     </div>
   </div>
@@ -48,7 +53,9 @@ export default {
   name: 'Items',
   props: [
     'items',
-    'onTouchEnd'
+    'onTouchEnd',
+    'onTouchMoveProps',
+    'onTouchStart'
   ],
   components: {
     ItemCard

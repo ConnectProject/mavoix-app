@@ -85,7 +85,12 @@ export const clearActiveItems = (state) => {
   state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
   state.activeItems = []
 }
-
+/**
+ * Clear active items
+ * @param {State} state
+ * @param {item} item
+  * @param {zone} zone
+ */
 export const drop = (state, { item, zone }) => {
   let i = itemIndex(item, state.items)
   if (i !== -1) {
@@ -101,6 +106,46 @@ export const drop = (state, { item, zone }) => {
   } else if (zone === 'active') {
     state.activeItems.push(item)
   }
+}
+/**
+ * Clear active items
+ * @param {State} state
+ * @param {item} item
+ * @param {zone} zone
+ * @param {position} position
+ */
+export const dropCustom = (state, { item, position, zone }) => {
+  state.activeItems = state.activeItems.filter((e) => { return typeof e.drop === 'undefined' })
+  let i = itemIndex(item, state.items)
+  if (i !== -1) {
+    state.items.splice(i, 1)
+  }
+  i = itemIndex(item, state.activeItems)
+  if (i !== -1) {
+    state.activeItems.splice(i, 1)
+  }
+  if (zone === 'passiv' && item.tabSlug === state.tab.slug) {
+    state.items.push(item)
+    state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
+  } else if (zone === 'active') {
+    state.activeItems.splice(position, 0, item)
+  }
+}
+
+/**
+ * Add fake item at specified position, remove old fake item
+ * fake item is here to emulate a dropzone
+ * @param {State} state
+ * @param {item} item
+ * @param {zone} zone
+ * @param {position} position
+ */
+
+export const moveCustom = (state, position) => {
+  console.log(position)
+  let item = { 'drop': true }
+  state.activeItems = state.activeItems.filter((e) => { return typeof e.drop === 'undefined' })
+  state.activeItems.splice(position, 0, item)
 }
 
 /**

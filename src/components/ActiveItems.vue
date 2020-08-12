@@ -17,6 +17,64 @@
   align-items stretch
   width 25vw
   max-height 100%
+.card-drop
+  height 100%
+  background transparent
+  border 2px dotted white
+  font-size 2em
+  color white
+  width 80%
+  position relative
+.text-drop
+  position absolute
+  top 0
+  bottom 0
+  margin auto
+  left 0
+  right 0
+  height fit-content
+  width fit-content
+.next-card
+ transform none !important
+ position relative
+.card-item
+ position relative
+.next-card .card-item:after
+ position absolute
+ top: 0px
+ left: 0px
+ width 100%
+ max-width 100%
+ text-align: center
+ transform translate(-25vw,0)
+ height 100%
+ display flex
+ flex-direction row
+ align-items center
+ justify-content center
+ content: 'drop'
+ color white
+ font-size 2em
+ border-radius 4px
+ border 2px dotted white
+.next-card-last .card-item:after
+ position absolute
+ top: 0px
+ left: 50vw
+ width 100%
+ max-width 100%
+ text-align: center
+ transform translate(-25vw,0)
+ height 100%
+ display flex
+ flex-direction row
+ align-items center
+ justify-content center
+ content: 'drop'
+ color white
+ font-size 2em
+ border-radius 4px
+ border 2px dotted white
 </style>
 
 <template>
@@ -31,9 +89,18 @@
         :key="index"
       >
         <item-card
+          class="card-item"
+          v-if="typeof item.drop === 'undefined'"
           :item="item"
-          :onTouchEnd="onTouchEnd"
+          :index="index"
+          ref="card"
+          :on-touch-end="onTouchEnd"
+          :on-touch-start="onTouchStart"
+          :onTouchMoveProps="onTouchMoveProps"
         />
+        <q-card v-else class="card-drop" ref="card">
+          <div class="text-drop">drop here</div>
+        </q-card>
       </div>
   </div>
 </template>
@@ -53,7 +120,9 @@ export default {
   },
   props: [
     'items',
-    'onTouchEnd'
+    'onTouchEnd',
+    'onTouchStart',
+    'onTouchMoveProps'
   ],
   methods: {
     /**
