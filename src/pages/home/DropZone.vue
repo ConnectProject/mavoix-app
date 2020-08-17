@@ -261,6 +261,8 @@ export default {
     resetAllElement () {
       let cardEls = this.$refs.activeZone.$refs.card
       for (let j = 0; j < cardEls.length; j++) {
+        console.log('jreset:' + j)
+        cardEls[j].$el.style.transform = 'none'
         cardEls[j].$el.closest('.content-container').style.transform = 'none'
         cardEls[j].$el.closest('.content-container').classList.remove('next-card')
         cardEls[j].$el.closest('.content-container').classList.remove('next-card-last')
