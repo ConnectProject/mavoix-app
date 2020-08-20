@@ -81,6 +81,12 @@ export default {
     hexColor () {
       return this.$store.getters['dropZone/hexColor']
     },
+    // language () {
+    //   return this.$store.getters['dropZone/language']
+    // },
+    // speed () {
+    //   return this.$store.getters['dropZone/speed']
+    // },
     playing () {
       return this.$store.getters['tts/playing']
     },

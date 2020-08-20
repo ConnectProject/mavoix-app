@@ -1,6 +1,6 @@
 import Parse from 'parse'
 
-import Tab, { HEX_COLOR_KEY } from '~/models/Tab'
+import Tab, { HEX_COLOR_KEY, SPEED_KEY, LANGUAGE_KEY } from '~/models/Tab'
 
 /**
  * Load available tabs and watch for changes.
@@ -35,6 +35,8 @@ export const watch = ({ commit, rootState, state }) => {
         commit('updateTab', tab)
         if (rootState.dropZone.tab.id === tab.id) {
           commit('dropZone/setTabColor', tab.get(HEX_COLOR_KEY), { root: true })
+          commit('dropZone/setTabSpeed', tab.get(SPEED_KEY), { root: true })
+          commit('dropZone/setTabLanguage', tab.get(LANGUAGE_KEY), { root: true })
         }
       })
 

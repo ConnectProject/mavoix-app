@@ -7,7 +7,7 @@ const { TtsPlugin } = Plugins
  * @param {Context} context
  */
 export const init = ({ commit }) => {
-  TtsPlugin.load()
+  TtsPlugin.load({ locale: 'en_US', voice: 4 })
     .then(() => {
       commit('ttsEnabled')
     })
@@ -21,12 +21,18 @@ export const init = ({ commit }) => {
  * @param {Context} context
  * @param {String} text the phrase to speek
  */
-export const speak = ({ commit, getters: { playing, tts } }, text) => {
+export const speak = ({ commit, rootState, getters: { playing, tts } }, text) => {
   if (tts) {
     commit('setPlaying', true)
-    TtsPlugin.speak({ text })
+    console.log(rootState.dropZone.tab.language)
+    console.log(rootState.dropZone.tab.speed)
+    TtsPlugin.speak({ text: text, locale: rootState.dropZone.tab.language, rate: '' + rootState.dropZone.tab.speed })
       .then(res => {
-        let timer = text.length * 50
+        let rate = 1
+        if (rootState.dropZone.tab.speed) {
+          rate = rootState.dropZone.tab.speed
+        }
+        let timer = text.length * 50 / rate
         setTimeout(() => {
           commit('setPlaying', false)
         }, timer)

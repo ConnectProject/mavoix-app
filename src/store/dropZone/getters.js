@@ -3,6 +3,8 @@
  * @param State state
  */
 export const hexColor = ({ tab: { color } }) => color
+export const language = ({ tab: { language } }) => language
+export const speed = ({ tab: { speed } }) => speed
 
 /**
  * Return all unactive items

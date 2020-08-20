@@ -31,7 +31,7 @@
   >
     <q-img
       :ratio="1.8"
-      :src="item.asset.file._url"
+      :src="item.asset.file._url.replace('localhost:8080','0befff06c419.ngrok.io')"
     >
       <div
         v-if="!item.available"

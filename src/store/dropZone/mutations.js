@@ -9,6 +9,14 @@ export const setTabColor = (state, color) => {
   state.tab.color = color
 }
 
+export const setTabLanguage = (state, language) => {
+  state.tab.language = language
+}
+
+export const setTabSpeed = (state, speed) => {
+  state.tab.speed = speed
+}
+
 /**
  * Set tab's slug
  * @param {State} state
