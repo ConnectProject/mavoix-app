@@ -12,8 +12,12 @@ export const setInvitationCode = (state, invitationCode) => {
  * Used to log in the user
  * @param {State} state
  */
-export const login = (state) => {
+export const login = (state, user) => {
   state.logged = true
+}
+
+export const logout = (state, user) => {
+  state.logged = false
 }
 
 /**

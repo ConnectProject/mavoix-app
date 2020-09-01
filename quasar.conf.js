@@ -16,6 +16,10 @@ module.exports = function (ctx) {
       'app.styl'
     ],
 
+    plugins: [
+      'LocalStorage' // add this :)
+    ],
+
     extras: [
       // 'ionicons-v4',
       // 'mdi-v3',

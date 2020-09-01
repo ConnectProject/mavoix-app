@@ -24,6 +24,9 @@ export default {
       return this.$store.getters['auth/logged']
     }
   },
+  mounted () {
+    this.$store.commit('auth/logout')
+  },
   watch: {
     /**
      * When the user is logged go to home page

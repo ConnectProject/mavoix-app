@@ -31,7 +31,7 @@
   >
     <q-img
       :ratio="1.8"
-      :src="item.asset.file._url.replace('localhost:8080','0befff06c419.ngrok.io')"
+      :src="item.asset.url"
     >
       <div
         v-if="!item.available"
@@ -44,6 +44,7 @@
     <q-card-section>
       <div class="text-h6 text-center name">
         {{ item.name }}
+        {{ item.url }}
       </div>
     </q-card-section>
   </q-card>

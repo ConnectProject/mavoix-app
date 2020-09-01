@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import { LocalStorage } from 'quasar'
+
 export default {
   data () {
     return {
@@ -36,6 +38,9 @@ export default {
   computed: {
     store () {
       return this.$store.getters['auth/invitationCode']
+    },
+    logged () {
+      return this.$store.getters['auth/logged']
     },
     tabs () {
       return this.$store.getters['tabs/all']
@@ -50,10 +55,6 @@ export default {
     }
   },
   methods: {
-    testClick () {
-      this.$store.dispatch('tabs/loadAndWatch')
-      alert(this.tabs)
-    },
     /**
      * Change the active color by loading the color in the right tab object
      */
@@ -65,6 +66,13 @@ export default {
     }
   },
   watch: {
+    logged (n, o) {
+      if (n) {
+        console.log('mounted')
+        console.log(LocalStorage.id)
+        this.$store.dispatch('tabs/loadAndWatch')
+      }
+    },
     /**
      * When change route (tab) change the header color
      */
@@ -85,7 +93,9 @@ export default {
     }
   },
   mounted () {
-    this.$store.dispatch('tabs/loadAndWatch')
+    if (this.logged) {
+      this.$store.dispatch('tabs/loadAndWatch')
+    }
     this.$store.dispatch('tts/init')
   }
 }

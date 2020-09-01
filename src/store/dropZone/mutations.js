@@ -13,6 +13,10 @@ export const setTabLanguage = (state, language) => {
   state.tab.language = language
 }
 
+export const setTabUser = (state, user) => {
+  state.tab.user = user
+}
+
 export const setTabSpeed = (state, speed) => {
   state.tab.speed = speed
 }
