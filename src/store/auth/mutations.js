@@ -4,8 +4,15 @@
  * @param {String} invitationCode is the new invitation code
  */
 export const setInvitationCode = (state, invitationCode) => {
-  console.log('setInvitationCode: ' + invitationCode)
   state.invitationCode = invitationCode
+}
+
+export const setUsername = (state, username) => {
+  state.username = username.toLowerCase()
+}
+
+export const setPassword = (state, password) => {
+  state.password = password
 }
 
 /**

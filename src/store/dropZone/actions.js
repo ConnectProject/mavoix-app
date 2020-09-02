@@ -1,5 +1,5 @@
 import Parse from 'parse'
-import { LocalStorage } from 'quasar'
+// import { LocalStorage } from 'quasar'
 
 import TabItem, { TAB_KEY, ORDER_KEY } from '~/models/TabItem'
 import { slugToTabModel } from './utils'
@@ -26,8 +26,8 @@ export const init = ({ commit, dispatch, state }, slug) => {
   if (state.subscription) {
     state.subscription.unsubscribe()
   }
-  console.log('LocalStorage.id')
-  console.log(LocalStorage.id)
+  // console.log('LocalStorage.id')
+  // console.log(LocalStorage.id)
   slugToTabModel(slug)
     .catch((err) => {
       commit('setError', err)
@@ -40,7 +40,7 @@ export const init = ({ commit, dispatch, state }, slug) => {
         })
         .then((itemsModel) => {
           // Set tab's data
-          console.log(tabModel)
+          // console.log(tabModel)
           commit('setTabSlug', slug)
           commit('setTabId', tabModel.id)
           commit('setTabUser', tabModel.get('user'))

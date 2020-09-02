@@ -6,12 +6,20 @@
     >
       <!-- Invitation code input -->
       <q-input
-        :value="invitationCode"
-        @input="setInvitationCode"
+        :value="username"
+        @input="setUsername"
         outlined
-        label="Code d'invitation"
+        label="nom d'utilisateur"
       />
-
+      <br/>
+      <q-input
+        :value="password"
+        @input="setPassword"
+        outlined
+        type="password"
+        label="mot de passe"
+      />
+      <br/>
       <!-- Submit -->
       <q-btn
         flat
@@ -29,11 +37,20 @@ export default {
   computed: {
     invitationCode () {
       return this.$store.getters['auth/invitationCode']
+    },
+    username () {
+      return this.$store.getters['auth/username']
+    },
+    password () {
+      return this.$store.getters['auth/password']
     }
   },
   methods: {
-    setInvitationCode (value) {
-      this.$store.commit('auth/setInvitationCode', value)
+    setUsername (value) {
+      this.$store.commit('auth/setUsername', value)
+    },
+    setPassword (value) {
+      this.$store.commit('auth/setPassword', value)
     },
     onSubmit () {
       this.$store.dispatch('auth/login')

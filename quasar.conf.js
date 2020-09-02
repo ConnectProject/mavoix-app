@@ -9,7 +9,8 @@ module.exports = function (ctx) {
     boot: [
       'i18n',
       'parse',
-      'touch'
+      'touch',
+      'axios'
     ],
 
     css: [
@@ -17,7 +18,8 @@ module.exports = function (ctx) {
     ],
 
     plugins: [
-      'LocalStorage' // add this :)
+      'LocalStorage', // add this :)
+      'axios'
     ],
 
     extras: [

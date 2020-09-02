@@ -154,7 +154,7 @@ export const dropCustom = (state, { item, position, zone }) => {
  */
 
 export const moveCustom = (state, position) => {
-  console.log(position)
+  // console.log(position)
   let item = { 'drop': true }
   state.activeItems = state.activeItems.filter((e) => { return typeof e.drop === 'undefined' })
   state.activeItems.splice(position, 0, item)

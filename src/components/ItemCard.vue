@@ -16,7 +16,13 @@
   font-size 100%
   color red
 .name
-  white-space nowrap
+  padding 8px
+  width 100%
+  left 0px
+  border-radius 0px 0px 8px 8px
+  background white
+  position absolute
+  bottom 0
 </style>
 
 <template>
