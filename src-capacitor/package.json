@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "SPECS communication app",
   "author": "pierre <pierreguthauser@gmail.com>",
+  "scripts": {
+    "postinstall": "npx patch-package"
+  },
   "private": true,
   "dependencies": {
     "@capacitor/android": "^2.2.1",
