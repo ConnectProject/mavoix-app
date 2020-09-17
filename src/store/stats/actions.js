@@ -10,7 +10,7 @@ const username = '70sfwc-maVoix'
  * connect to connect...
  */
 
-export const connectConnect = ({ commit }) => {
+export const connectConnect = function ({ commit }) {
   this.$axios.get('parse/login?password=' + password + '&username=' + username + 'x&=', {
     headers: {
       'x-parse-application-id': 'connect',
@@ -21,7 +21,7 @@ export const connectConnect = ({ commit }) => {
   })
 }
 
-export const startSession = ({ commit }) => {
+export const startSession = function ({ commit }) {
   let headers = {
     'content-type': 'application/json',
     'x-parse-application-id': 'connect',
@@ -45,7 +45,7 @@ export const startSession = ({ commit }) => {
   })
 }
 
-export const endSession = ({ commit }) => {
+export const endSession = function ({ commit }) {
   let headers = {
     'content-type': 'application/json',
     'x-parse-application-id': 'connect',
@@ -63,5 +63,4 @@ export const endSession = ({ commit }) => {
     console.log('end session:')
     console.log(response)
   })
-  
 }

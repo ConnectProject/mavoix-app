@@ -1,5 +1,6 @@
 import Parse from 'parse'
 // import { LocalStorage } from 'quasar'
+import { LocalStorage } from 'quasar'
 
 import TabItem, { TAB_KEY, ORDER_KEY } from '~/models/TabItem'
 import { slugToTabModel } from './utils'
@@ -87,13 +88,11 @@ export const watch = ({ commit }, slug) => {
     })
 }
 
-
-export const saveSentence = ({ commit, getters: { activeItems }  }) => {
-
+export const saveSentence = ({ commit, getters: { activeItems } }) => {
   const activeImages = activeItems.map(item => {
-      const container = {}
-      container['imageURL'] = item.asset.url
-      return container
+    const container = {}
+    container['imageURL'] = item.asset.url
+    return container
   })
 
   let headers = {
