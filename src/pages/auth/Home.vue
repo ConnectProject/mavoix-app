@@ -4,6 +4,7 @@
     <q-btn
       class="q-my-sm q-px-xl"
       color="teal"
+      :to="{ name: 'auth-qrcode' }"
     >
       <q-icon
         left

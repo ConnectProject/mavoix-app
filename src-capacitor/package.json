@@ -8,6 +8,10 @@
     "@capacitor/android": "^2.2.1",
     "@capacitor/cli": "^2.2.1",
     "@capacitor/core": "^2.2.1",
-    "@capacitor/ios": "^2.2.1"
+    "@capacitor/ios": "^2.2.1",
+    "@ionic-native/barcode-scanner": "^5.28.0",
+    "@ionic-native/core": "^5.28.0",
+    "capacitor-qrscanner": "0.0.2",
+    "cordova-plugin-qrscanner": "^3.0.1"
   }
 }

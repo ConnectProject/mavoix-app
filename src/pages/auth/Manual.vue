@@ -35,9 +35,6 @@
 export default {
   name: 'PageAuthManual',
   computed: {
-    invitationCode () {
-      return this.$store.getters['auth/invitationCode']
-    },
     username () {
       return this.$store.getters['auth/username']
     },

@@ -8,9 +8,10 @@ const routes = [
       { name: 'auth', path: '/', component: () => import('pages/auth/Home.vue') },
 
       /* Auth manual mode */
-      { name: 'auth-manual', path: '/manual', component: () => import('pages/auth/Manual.vue') }
+      { name: 'auth-manual', path: '/manual', component: () => import('pages/auth/Manual.vue') },
 
       /* Auth qrcode mode */
+      { name: 'auth-qrcode', path: '/qrcode', component: () => import('pages/auth/QRCode.vue') }
     ]
   },
   {

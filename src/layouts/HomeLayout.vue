@@ -93,13 +93,14 @@ export default {
     }
   },
   mounted () {
+    console.log(LocalStorage)
     if (this.logged) {
       this.$store.dispatch('tabs/loadAndWatch')
     }
     let that = this
-    this.$axios.get('parse-sandbox/login?password=d6b9fa2c-2c9a-4a05-8a4a-ffe54e373dbc&username=70sfwc-maVoix&=', {
+    this.$axios.get('parse/login?password=16121a27-2b93-4e93-b69e-d7958e9f3cf0&username=70sfwc-maVoix&=', {
       headers: {
-        'x-parse-application-id': 'connect-sandbox',
+        'x-parse-application-id': 'connect',
         'x-parse-revocable-session': '1'
       }
     }).then(function (response) {
@@ -107,7 +108,7 @@ export default {
       LocalStorage.session = response.data.sessionToken
       let headers = {
         'content-type': 'application/json',
-        'x-parse-application-id': 'connect-sandbox',
+        'x-parse-application-id': 'connect',
         'x-parse-session-token': LocalStorage.session
       }
       console.log('username:')
@@ -117,7 +118,7 @@ export default {
         'playerName': LocalStorage.id,
         'cheatMode': false
       }
-      that.$axios.post('parse-sandbox/classes/GameScore', data, {
+      that.$axios.post('parse/classes/GameScore', data, {
         headers: headers
       }).then(function (response) {
         console.log('resp:')
