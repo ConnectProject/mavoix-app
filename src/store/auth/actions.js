@@ -18,6 +18,7 @@ export const loginCode = ({ commit, getters: { invitationCode } }) => {
       commit('setError', err)
     })
     .then((user) => {
+      console.log(user)
       console.log(LocalStorage)
       LocalStorage.user = user
       LocalStorage.username = username
@@ -33,6 +34,7 @@ export const login = ({ commit, getters: { username, password } }) => {
       commit('setError', err)
     })
     .then((user) => {
+      console.log(user)
       LocalStorage.user = user
       LocalStorage.username = username
       LocalStorage.id = user.id

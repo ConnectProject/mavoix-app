@@ -79,6 +79,13 @@ export default {
     $route () {
       this.setActiveColor()
     },
+    '$q.appVisible' (val) {
+      if (!val) {
+        console.log('hidden')
+      } else {
+        console.log('shown')
+      }
+    },
     /**
      * When tabs change and at least one tab is available:
      *   If no tab is selected go to the first one
@@ -97,34 +104,6 @@ export default {
     if (this.logged) {
       this.$store.dispatch('tabs/loadAndWatch')
     }
-    let that = this
-    this.$axios.get('parse/login?password=16121a27-2b93-4e93-b69e-d7958e9f3cf0&username=70sfwc-maVoix&=', {
-      headers: {
-        'x-parse-application-id': 'connect',
-        'x-parse-revocable-session': '1'
-      }
-    }).then(function (response) {
-      console.log(response)
-      LocalStorage.session = response.data.sessionToken
-      let headers = {
-        'content-type': 'application/json',
-        'x-parse-application-id': 'connect',
-        'x-parse-session-token': LocalStorage.session
-      }
-      console.log('username:')
-      console.log(LocalStorage.id)
-      let data = {
-        'score': 0,
-        'playerName': LocalStorage.id,
-        'cheatMode': false
-      }
-      that.$axios.post('parse/classes/GameScore', data, {
-        headers: headers
-      }).then(function (response) {
-        console.log('resp:')
-        console.log(response)
-      })
-    })
     this.$store.dispatch('tts/init')
   }
 }
