@@ -50,7 +50,6 @@
     <q-card-section>
       <div class="text-h6 text-center name">
         {{ item.name }}
-        {{ item.url }}
       </div>
     </q-card-section>
   </q-card>

@@ -39,7 +39,29 @@ export const startSession = ({ commit }) => {
   this.$axios.post('parse/classes/jsonSchemaData', data, {
     headers: headers
   }).then(function (response) {
+    LocalStorage.objectId = response.objectId
     console.log('resp:')
     console.log(response)
   })
+}
+
+export const endSession = ({ commit }) => {
+  let headers = {
+    'content-type': 'application/json',
+    'x-parse-application-id': 'connect',
+    'x-parse-session-token': LocalStorage.session
+  }
+  let data = {
+    'schemaURL': 'http://connect-project.io/schemas/sessionTimestamp.schema.json',
+    'data': {
+      'sessionEnd': Date.now()
+    }
+  }
+  this.$axios.put('parse/classes/jsonSchemaData/' + LocalStorage.objectId, data, {
+    headers: headers
+  }).then(function (response) {
+    console.log('end session:')
+    console.log(response)
+  })
+  
 }

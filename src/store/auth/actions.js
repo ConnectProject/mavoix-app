@@ -10,7 +10,6 @@ import DeviceUser from '~/models/DeviceUser'
  * @param {Context} ctx
  */
 export const loginCode = ({ commit, getters: { invitationCode } }) => {
-  console.log(invitationCode)
   const [ username, password ] = invitationCode.split(':')
   console.log('login')
   DeviceUser.logIn(username, password)

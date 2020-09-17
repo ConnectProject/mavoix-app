@@ -86,3 +86,35 @@ export const watch = ({ commit }, slug) => {
         })
     })
 }
+
+
+export const saveSentence = ({ commit, getters: { activeItems }  }) => {
+
+  const activeImages = activeItems.map(item => {
+      const container = {}
+      container['imageURL'] = item.asset.url
+      return container
+  })
+
+  let headers = {
+    'content-type': 'application/json',
+    'x-parse-application-id': 'connect',
+    'x-parse-session-token': LocalStorage.session
+  }
+  let data = {
+    'schemaURL': 'http://connect-project.io/schemas/phraseProduced.schema.json',
+    'data': {
+      'appId': 'mavoix-app',
+      'sessionId': LocalStorage.session,
+      'userId': LocalStorage.id,
+      'timestamp': Date.now(),
+      'phrase': activeImages
+    }
+  }
+  this.$axios.post('parse/classes/jsonSchemaData', data, {
+    headers: headers
+  }).then(function (response) {
+    console.log('sentence saved:')
+    console.log(response)
+  })
+}

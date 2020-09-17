@@ -81,7 +81,7 @@ export default {
     },
     '$q.appVisible' (val) {
       if (!val) {
-        console.log('hidden')
+        this.$store.dispatch('stats/endSession')
       } else {
         console.log('shown')
       }
@@ -104,6 +104,12 @@ export default {
     if (this.logged) {
       this.$store.dispatch('tabs/loadAndWatch')
     }
+    this.$store.dispatch('stats/connectConnect').then(() => {
+      console.log('connected')
+      this.$store.dispatch('stats/startSession').then(() => {
+        console.log('session started')
+      })
+    })
     this.$store.dispatch('tts/init')
   }
 }

@@ -113,6 +113,7 @@ export default {
         sequence += `${activeItem.name} `
       })
       this.$store.dispatch('tts/speak', sequence).then(() => {
+        this.$store.dispatch('dropzone/saveSentence')
       })
     },
     onClearActiveItems () {
