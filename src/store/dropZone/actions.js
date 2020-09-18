@@ -92,19 +92,20 @@ export const saveSentence = ({ commit, getters: { activeItems } }) => {
   const activeImages = activeItems.map(item => {
     const container = {}
     container['imageURL'] = item.asset.url
+    container['wordPronounced'] = item.name
     return container
   })
-
+  console.log(activeImages)
   let headers = {
     'content-type': 'application/json',
     'x-parse-application-id': 'connect',
-    'x-parse-session-token': LocalStorage.session
+    'x-parse-session-token': LocalStorage.sessionToken
   }
   let data = {
     'schemaURL': 'http://connect-project.io/schemas/phraseProduced.schema.json',
     'data': {
       'appId': 'mavoix-app',
-      'sessionId': LocalStorage.session,
+      'sessionId': LocalStorage.sessionToken,
       'userId': LocalStorage.id,
       'timestamp': Date.now(),
       'phrase': activeImages
