@@ -88,7 +88,7 @@ export const watch = ({ commit }, slug) => {
     })
 }
 
-export const saveSentence = ({ commit, getters: { activeItems } }) => {
+export const saveSentence = function ({ commit, getters: { activeItems } }) {
   const activeImages = activeItems.map(item => {
     const container = {}
     container['imageURL'] = item.asset.url
