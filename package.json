@@ -16,7 +16,7 @@
     "@quasar/extras": "^1.9.4",
     "axios": "^0.20.0",
     "cordova-plugin-qrscanner": "^3.0.1",
-    "parse": "^2.7.1",
+    "parse": "^2.10.0",
     "quasar": "^1.12.13",
     "vue-i18n": "^8.0.0",
     "vue-qrcode-reader": "^2.3.13",
