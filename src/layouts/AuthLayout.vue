@@ -5,9 +5,12 @@
       elevated
     >
       <q-toolbar>
-        <q-toolbar-title>
+        <q-btn  stretch flat class="q-mr-sm">
           Ma voix
-        </q-toolbar-title>
+        </q-btn>
+        <q-separator dark vertical inset v-if="$route.path !== '/'" />
+        <q-btn stretch flat label="back" v-if="$route.path !== '/'" @click="$router.push({ name: 'auth' })" />
+        <q-space />
       </q-toolbar>
     </q-header>
 
