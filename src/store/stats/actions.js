@@ -31,7 +31,7 @@ export const startSession = async function ({ commit }) {
     'x-parse-session-token': LocalStorage.sessionToken
   }
   let data = {
-    'schemaURL': 'http://connect-project.io/schemas/sessionTimestamp.schema.json',
+    'schemaURL': 'https://connect-project.io/schemas/sessionTimestamp.schema.json',
     'data': {
       'appId': 'mavoix-app',
       'sessionId': LocalStorage.sessionToken,
@@ -55,7 +55,7 @@ export const endSession = async function ({ commit }) {
     'x-parse-session-token': LocalStorage.sessionToken
   }
   let data = {
-    'schemaURL': 'http://connect-project.io/schemas/sessionTimestamp.schema.json',
+    'schemaURL': 'https://connect-project.io/schemas/sessionTimestamp.schema.json',
     'data': {
       'sessionEnd': Date.now()
     }
