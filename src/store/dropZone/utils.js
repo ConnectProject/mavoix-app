@@ -21,15 +21,23 @@ export const itemIndex = (item, items) => (
   items.findIndex((pItem) => item.key === pItem.key)
 )
 
-export const modelToTabItem = (itemModel) => ({
-  name: itemModel.get(NAME_KEY),
-  asset: itemModel.get(ASSET_KEY),
-  available: itemModel.get(AVAILABLE_KEY),
-  hidden: itemModel.get(HIDDEN_KEY),
-  key: itemModel.get(KEY_KEY),
-  order: itemModel.get(ORDER_KEY),
-  tabSlug: itemModel.get(TAB_KEY).get(SLUG_KEY)
-})
+export const modelToTabItem = (itemModel) => {
+  var asset = itemModel.get(ASSET_KEY)
+  const parseFile = asset.file
+  // update asset url if asset is a Parse file
+  if (parseFile) {
+    asset.url = `${Parse.serverURL}/files/${Parse.applicationId}/${parseFile._name}`
+  }
+  return {
+    name: itemModel.get(NAME_KEY),
+    asset: asset,
+    available: itemModel.get(AVAILABLE_KEY),
+    hidden: itemModel.get(HIDDEN_KEY),
+    key: itemModel.get(KEY_KEY),
+    order: itemModel.get(ORDER_KEY),
+    tabSlug: itemModel.get(TAB_KEY).get(SLUG_KEY)
+  }
+}
 
 export const slugToTabModel = (slug) => {
   return new Parse.Query(Tab)
