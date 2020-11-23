@@ -102,7 +102,7 @@ export const saveSentence = function ({ commit, getters: { activeItems } }) {
     'x-parse-session-token': LocalStorage.sessionToken
   }
   let data = {
-    'schemaURL': 'http://connect-project.io/schemas/phraseProduced.schema.json',
+    'schemaURL': 'https://connect-project.io/schemas/phraseProduced.schema.json',
     'data': {
       'appId': 'mavoix-app',
       'sessionId': LocalStorage.sessionToken,
