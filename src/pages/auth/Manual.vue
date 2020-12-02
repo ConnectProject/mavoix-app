@@ -40,6 +40,9 @@ export default {
     },
     password () {
       return this.$store.getters['auth/password']
+    },
+    error () {
+      return this.$store.getters['auth/error']
     }
   },
   methods: {
@@ -51,7 +54,13 @@ export default {
     },
     onSubmit () {
       this.$store.dispatch('auth/login')
-      this.$router.push({ name: 'home' })
+      // already handled by watching 'auth/logged' in layouts/AuthLayout.vue
+      // this.$router.push({ name: 'home' })
+    }
+  },
+  watch: {
+    error (newVal, oldVal) {
+      this.$q.notify({ position: 'top-right', message: newVal, color: 'blue' })
     }
   }
 }
