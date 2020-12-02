@@ -34,7 +34,7 @@ export const logout = (state, user) => {
  */
 export const setError = (state, error) => {
   console.error(error)
-  state.error = error
+  state.error = error.message
 }
 
 export const sessionId = (state, value) => {

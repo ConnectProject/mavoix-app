@@ -38,7 +38,8 @@ module.exports = function (ctx) {
       // iconSet: 'ionicons-v4',
       // lang: 'de', // Quasar language
       plugins: [
-        'AppVisibility'
+        'AppVisibility',
+        'Notify'
       ],
       all: 'auto'
     },

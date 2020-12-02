@@ -30,15 +30,9 @@ export const init = ({ commit, dispatch, state }, slug) => {
   // console.log('LocalStorage.id')
   // console.log(LocalStorage.id)
   slugToTabModel(slug)
-    .catch((err) => {
-      commit('setError', err)
-    })
-    .then((tabModel) => {
+    .then((tabModel) =>
       itemsQuery(tabModel)
         .find()
-        .catch((err) => {
-          commit('setError', err)
-        })
         .then((itemsModel) => {
           // Set tab's data
           // console.log(tabModel)
@@ -51,8 +45,11 @@ export const init = ({ commit, dispatch, state }, slug) => {
           commit('setItems', itemsModel)
 
           // Launch subscriptions
-          dispatch('watch', slug)
+          return dispatch('watch', slug)
         })
+    )
+    .catch((err) => {
+      commit('setError', err)
     })
 }
 
@@ -65,9 +62,6 @@ export const init = ({ commit, dispatch, state }, slug) => {
  */
 export const watch = ({ commit }, slug) => {
   slugToTabModel(slug)
-    .catch((err) => {
-      commit('setError', err)
-    })
     .then((tabModel) => {
       itemsQuery(tabModel)
         .subscribe()
@@ -85,6 +79,9 @@ export const watch = ({ commit }, slug) => {
           })
           commit('setSubscription', subscription)
         })
+    })
+    .catch((err) => {
+      commit('setError', err)
     })
 }
 

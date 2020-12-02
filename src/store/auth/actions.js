@@ -13,9 +13,6 @@ export const loginCode = ({ commit, getters: { invitationCode } }) => {
   const [ username, password ] = invitationCode.split(':')
   console.log('login')
   DeviceUser.logIn(username, password)
-    .catch((err) => {
-      commit('setError', err)
-    })
     .then((user) => {
       console.log(user)
       console.log(LocalStorage)
@@ -25,13 +22,13 @@ export const loginCode = ({ commit, getters: { invitationCode } }) => {
       console.log(LocalStorage.id)
       commit('login', user)
     })
+    .catch((err) => {
+      commit('setError', err)
+    })
 }
 
 export const login = ({ commit, getters: { username, password } }) => {
   DeviceUser.logIn(username, password)
-    .catch((err) => {
-      commit('setError', err)
-    })
     .then((user) => {
       console.log(user)
       LocalStorage.user = user
@@ -39,5 +36,8 @@ export const login = ({ commit, getters: { username, password } }) => {
       LocalStorage.id = user.id
       console.log(LocalStorage.id)
       commit('login', user)
+    })
+    .catch((err) => {
+      commit('setError', err)
     })
 }
