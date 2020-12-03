@@ -47,6 +47,7 @@ module.exports = function (ctx) {
     supportIE: false,
 
     build: {
+      devtool: 'source-map',
       scopeHoisting: true,
       // vueRouterMode: 'history',
       // vueCompiler: true,
@@ -63,12 +64,15 @@ module.exports = function (ctx) {
             formatter: require('eslint').CLIEngine.getFormatter('stylish')
           }
         })
+      },
+      uglifyOptions: {
+        compress: { drop_console: !ctx.dev }
       }
     },
 
     devServer: {
       // https: true,
-      // port: 8080,
+      port: 9010,
       open: true // opens browser window automatically
     },
 
