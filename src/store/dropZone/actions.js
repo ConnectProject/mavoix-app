@@ -1,6 +1,4 @@
 import Parse from 'parse'
-// import { LocalStorage } from 'quasar'
-import { LocalStorage } from 'quasar'
 
 import TabItem, { TAB_KEY, ORDER_KEY } from '~/models/TabItem'
 import { slugToTabModel } from './utils'
@@ -96,14 +94,14 @@ export const saveSentence = function ({ commit, getters: { activeItems } }) {
   let headers = {
     'content-type': 'application/json',
     'x-parse-application-id': 'connect',
-    'x-parse-session-token': LocalStorage.sessionToken
+    'x-parse-session-token': localStorage.sessionToken
   }
   let data = {
     'schemaURL': 'https://connect-project.io/schemas/phraseProduced.schema.json',
     'data': {
       'appId': 'mavoix-app',
-      'sessionId': LocalStorage.sessionToken,
-      'userId': LocalStorage.id,
+      'sessionId': localStorage.sessionToken,
+      'userId': localStorage.id,
       'timestamp': Date.now(),
       'phrase': activeImages
     }

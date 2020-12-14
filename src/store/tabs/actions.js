@@ -1,5 +1,4 @@
 import Parse from 'parse'
-import { LocalStorage } from 'quasar'
 
 import Tab, { HEX_COLOR_KEY, SPEED_KEY, LANGUAGE_KEY } from '~/models/Tab'
 
@@ -9,7 +8,7 @@ import Tab, { HEX_COLOR_KEY, SPEED_KEY, LANGUAGE_KEY } from '~/models/Tab'
  */
 export const loadAndWatch = ({ commit, dispatch }) => {
   new Parse.Query(Tab)
-    .equalTo('user', LocalStorage.id)
+    .equalTo('user', localStorage.id)
     .find()
     .then((tabs) => {
       console.log('length:')

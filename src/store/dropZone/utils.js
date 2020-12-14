@@ -1,5 +1,4 @@
 import Parse from 'parse'
-import { LocalStorage } from 'quasar'
 
 import Tab, { SLUG_KEY } from '~/models/Tab'
 import {
@@ -42,6 +41,6 @@ export const modelToTabItem = (itemModel) => {
 export const slugToTabModel = (slug) => {
   return new Parse.Query(Tab)
     .equalTo(SLUG_KEY, slug)
-    .equalTo('user', LocalStorage.id)
+    .equalTo('user', localStorage.id)
     .first()
 }

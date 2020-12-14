@@ -18,7 +18,6 @@ module.exports = function (ctx) {
     ],
 
     plugins: [
-      'LocalStorage', // add this :)
       'axios'
     ],
 
