@@ -1,7 +1,7 @@
 <style lang="stylus" scoped>
 .card
   height fit-content
-  width 80%
+  width 90%
 .card-img-wrapper
   height 100%
   width 100%
@@ -36,7 +36,7 @@
     :disabled="!item.available"
   >
     <q-img
-      :ratio="1.8"
+      :ratio="0.8"
       :src="item.asset.url"
     >
       <div
