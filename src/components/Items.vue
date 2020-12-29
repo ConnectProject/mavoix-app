@@ -7,7 +7,7 @@
   display flex
   flex-direction row
   flex-wrap nowrap
-  padding 2em
+  padding 1em
   min-width 100vw
   z-index 10
 .content-container
@@ -15,7 +15,7 @@
   flex-direction column
   justify-content space-evenly
   align-items stretch
-  width 25vw
+  width 15vw
   max-height 100%
 </style>
 
