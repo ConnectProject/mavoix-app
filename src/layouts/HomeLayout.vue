@@ -31,7 +31,6 @@
 </template>
 
 <script>
-import { LocalStorage } from 'quasar'
 
 export default {
   data () {
@@ -77,7 +76,7 @@ export default {
     logged (n, o) {
       if (n) {
         console.log('mounted')
-        console.log(LocalStorage.id)
+        console.log(localStorage.id)
         this.$store.dispatch('tabs/loadAndWatch')
       }
     },
@@ -108,7 +107,7 @@ export default {
     }
   },
   mounted () {
-    console.log(LocalStorage)
+    console.log(localStorage)
     if (this.logged) {
       this.$store.dispatch('tabs/loadAndWatch')
     }

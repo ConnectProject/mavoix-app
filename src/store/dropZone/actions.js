@@ -1,6 +1,4 @@
 import Parse from 'parse'
-// import { LocalStorage } from 'quasar'
-import { LocalStorage } from 'quasar'
 
 import TabItem, { TAB_KEY, ORDER_KEY } from '~/models/TabItem'
 import { slugToTabModel } from './utils'
@@ -30,15 +28,9 @@ export const init = ({ commit, dispatch, state }, slug) => {
   // console.log('LocalStorage.id')
   // console.log(LocalStorage.id)
   slugToTabModel(slug)
-    .catch((err) => {
-      commit('setError', err)
-    })
-    .then((tabModel) => {
+    .then((tabModel) =>
       itemsQuery(tabModel)
         .find()
-        .catch((err) => {
-          commit('setError', err)
-        })
         .then((itemsModel) => {
           // Set tab's data
           // console.log(tabModel)
@@ -51,8 +43,11 @@ export const init = ({ commit, dispatch, state }, slug) => {
           commit('setItems', itemsModel)
 
           // Launch subscriptions
-          dispatch('watch', slug)
+          return dispatch('watch', slug)
         })
+    )
+    .catch((err) => {
+      commit('setError', err)
     })
 }
 
@@ -65,9 +60,6 @@ export const init = ({ commit, dispatch, state }, slug) => {
  */
 export const watch = ({ commit }, slug) => {
   slugToTabModel(slug)
-    .catch((err) => {
-      commit('setError', err)
-    })
     .then((tabModel) => {
       itemsQuery(tabModel)
         .subscribe()
@@ -86,6 +78,9 @@ export const watch = ({ commit }, slug) => {
           commit('setSubscription', subscription)
         })
     })
+    .catch((err) => {
+      commit('setError', err)
+    })
 }
 
 export const saveSentence = function ({ commit, getters: { activeItems } }) {
@@ -99,14 +94,14 @@ export const saveSentence = function ({ commit, getters: { activeItems } }) {
   let headers = {
     'content-type': 'application/json',
     'x-parse-application-id': 'connect',
-    'x-parse-session-token': LocalStorage.sessionToken
+    'x-parse-session-token': localStorage.sessionToken
   }
   let data = {
-    'schemaURL': 'http://connect-project.io/schemas/phraseProduced.schema.json',
+    'schemaURL': 'https://connect-project.io/schemas/phraseProduced.schema.json',
     'data': {
       'appId': 'mavoix-app',
-      'sessionId': LocalStorage.sessionToken,
-      'userId': LocalStorage.id,
+      'sessionId': localStorage.sessionToken,
+      'userId': localStorage.id,
       'timestamp': Date.now(),
       'phrase': activeImages
     }

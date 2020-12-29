@@ -22,9 +22,10 @@ export default function (/* { store, ssrContext } */) {
     base: process.env.VUE_ROUTER_BASE
   })
 
-  Router.replace({
-    name: 'auth'
-  })
+  // Seems to do nothing and end up with an uncaught promise
+  // Router.replace({
+  //   name: 'auth'
+  // })
 
   return Router
 }

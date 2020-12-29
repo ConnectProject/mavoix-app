@@ -1,5 +1,3 @@
-import { LocalStorage } from 'quasar'
-
 import DeviceUser from '~/models/DeviceUser'
 // import SessionModel from '~/models/Session'
 // 70sfwc-maVoix
@@ -13,31 +11,26 @@ export const loginCode = ({ commit, getters: { invitationCode } }) => {
   const [ username, password ] = invitationCode.split(':')
   console.log('login')
   DeviceUser.logIn(username, password)
-    .catch((err) => {
-      commit('setError', err)
-    })
     .then((user) => {
       console.log(user)
-      console.log(LocalStorage)
-      LocalStorage.user = user
-      LocalStorage.username = username
-      LocalStorage.id = user.id
-      console.log(LocalStorage.id)
+      localStorage.id = user.id
+      console.log(localStorage.id)
       commit('login', user)
+    })
+    .catch((err) => {
+      commit('setError', err)
     })
 }
 
 export const login = ({ commit, getters: { username, password } }) => {
   DeviceUser.logIn(username, password)
-    .catch((err) => {
-      commit('setError', err)
-    })
     .then((user) => {
       console.log(user)
-      LocalStorage.user = user
-      LocalStorage.username = username
-      LocalStorage.id = user.id
-      console.log(LocalStorage.id)
+      localStorage.id = user.id
+      console.log(localStorage.id)
       commit('login', user)
+    })
+    .catch((err) => {
+      commit('setError', err)
     })
 }
