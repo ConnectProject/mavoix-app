@@ -8,14 +8,15 @@
 <template>
   <q-page
     class="page"
-    :style="`background-color: ${hexColor}`"
-    style="overflow: hidden"
+    style="overflow: hidden; background:grey"
     ref="page"
   >
     <!-- Available items -->
     <items
-      :items="items"
+      class="shadow-10"
       ref="itemsZone"
+      :items="items"
+      :style="`background-color: ${hexColor}`"
       :on-touch-end="onTouchEnd"
       :on-touch-start="onTouchStart"
       :onTouchMoveProps="onTouchMoveProps"
@@ -42,6 +43,7 @@
         @click="onClearActiveItems"
       />
     </q-page-sticky>
+
     <!-- Play active items button -->
     <q-page-sticky
       position="bottom-right"

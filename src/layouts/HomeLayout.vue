@@ -2,18 +2,23 @@
   <q-layout view="hHh lpR fFf">
 
     <q-header
-      class="bg-primary text-white"
-      elevated
+      class="text-black"
+      style="background:grey"
     >
       <q-tabs
+        align="left"
+        indicator-color="transparent"
         v-model="active"
-        :style="`background-color: ${activeColor}; height: 4.5em`" align="center"
       >
         <q-route-tab
           v-for="(tab, index) in tabs"
           :key="index"
           :to="{ name: 'dropZone', params: { slug: tab.slug}}"
-          :style="{ backgroundColor: tab.hexColor }"
+          style="border-radius: 24px 24px 0 0;text-transform:none"
+          :style="{
+            backgroundColor: tab.hexColor,
+            margin: (tab.slug===activeTabName)?'1px 0 0 1px':'10px 0 1px 1px'
+          }"
           :label="tab.name" />
       </q-tabs>
     </q-header>
@@ -44,6 +49,9 @@ export default {
     },
     tabs () {
       return this.$store.getters['tabs/all']
+    },
+    activeTabName () {
+      return this.$route.params.slug
     },
     active: {
       get () {
