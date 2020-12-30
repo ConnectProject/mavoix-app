@@ -96,7 +96,7 @@ export default {
      * Return all items except the hidden ones
      */
     items () {
-      return this.$store.getters['dropZone/items'].filter((item) => item.hidden === false)
+      return this.$store.getters['dropZone/items']
     },
     activeItems () {
       return this.$store.getters['dropZone/activeItems']

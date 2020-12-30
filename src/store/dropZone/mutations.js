@@ -106,15 +106,17 @@ export const clearActiveItems = (state) => {
 export const drop = (state, { item, zone }) => {
   let i = itemIndex(item, state.items)
   if (i !== -1) {
-    state.items.splice(i, 1)
+    state.items[i].active = true
+    // state.items.splice(i, 1)
   }
   i = itemIndex(item, state.activeItems)
   if (i !== -1) {
     state.activeItems.splice(i, 1)
   }
   if (zone === 'passiv' && item.tabSlug === state.tab.slug) {
-    state.items.push(item)
-    state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
+    // state.items.push(item)
+    state.items[i].active = false
+    // state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
   } else if (zone === 'active') {
     state.activeItems.push(item)
   }
@@ -129,16 +131,21 @@ export const drop = (state, { item, zone }) => {
 export const dropCustom = (state, { item, position, zone }) => {
   state.activeItems = state.activeItems.filter((e) => { return typeof e.drop === 'undefined' })
   let i = itemIndex(item, state.items)
-  if (i !== -1) {
-    state.items.splice(i, 1)
+  if (i !== -1 && zone === 'active') {
+    state.items[i].active = true
   }
   i = itemIndex(item, state.activeItems)
+  let activeItemOrder = -1
   if (i !== -1) {
+    activeItemOrder = state.activeItems[i].order
     state.activeItems.splice(i, 1)
   }
   if (zone === 'passiv' && item.tabSlug === state.tab.slug) {
-    state.items.push(item)
-    state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
+    if (activeItemOrder !== -1) {
+      state.items[activeItemOrder].active = false
+    }
+    // state.items.push(item)
+    // state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
   } else if (zone === 'active') {
     state.activeItems.splice(position, 0, item)
   }

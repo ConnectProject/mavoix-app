@@ -38,6 +38,7 @@
     <q-img
       :ratio="0.8"
       :src="item.asset.url"
+      contain
     >
       <div
         v-if="!item.available"

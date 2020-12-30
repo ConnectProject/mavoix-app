@@ -37,6 +37,7 @@
         :key="n * index"
         :index="index"
         :item="item"
+        :style="item.active ? 'opacity:0' : ''"
         ref="card"
         :on-touch-end="onTouchEnd"
         :on-touch-start="onTouchStart"
