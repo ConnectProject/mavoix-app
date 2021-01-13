@@ -34,7 +34,7 @@ export const modelToTabItem = (itemModel) => {
     hidden: itemModel.get(HIDDEN_KEY),
     key: itemModel.get(KEY_KEY),
     order: itemModel.get(ORDER_KEY),
-    active: false,
+    activeOrder: 0,
     tabSlug: itemModel.get(TAB_KEY).get(SLUG_KEY)
   }
 }
