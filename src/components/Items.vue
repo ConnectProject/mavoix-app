@@ -42,6 +42,7 @@
         :on-touch-end="onTouchEnd"
         :on-touch-start="onTouchStart"
         :onTouchMoveProps="onTouchMoveProps"
+        :disabled="!item.available || item.activeOrder"
       />
     </div>
   </div>
