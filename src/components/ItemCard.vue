@@ -33,14 +33,14 @@
     v-touch:moving="onTouchMove"
     v-touch:end="internalOnTouchEnd"
     v-touch:start="internalOnTouchStart"
-    :disabled="!item.available"
   >
     <q-img
       :ratio="0.8"
       :src="item.asset.url"
+      contain
     >
       <div
-        v-if="!item.available"
+        v-if="disabled"
         class="card-img-wrapper"
       >
         <img src="../assets/red_circle.svg"/>
@@ -58,13 +58,17 @@
 <script>
 export default {
   name: 'ItemCardComponent',
-  props: [
-    'item',
-    'index',
-    'onTouchEnd',
-    'onTouchStart',
-    'onTouchMoveProps'
-  ],
+  props: {
+    item: Object,
+    index: Number,
+    onTouchEnd: Function,
+    onTouchStart: Function,
+    onTouchMoveProps: Function,
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
   data () {
     return {
       translateX: 0,
@@ -78,7 +82,7 @@ export default {
      * Handle drag item
      */
     onTouchMove ({ changedTouches: [ touch ] }) {
-      if (this.item.available) {
+      if (!this.disabled) {
         const card = this.$refs.card.$el
         this.onTouchMoveProps(touch, this.item, this.index)
         /**

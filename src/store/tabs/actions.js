@@ -11,8 +11,6 @@ export const loadAndWatch = ({ commit, dispatch }) => {
     .equalTo('user', localStorage.id)
     .find()
     .then((tabs) => {
-      console.log('length:')
-      console.log(tabs.length)
       commit('setTabs', tabs)
       dispatch('watch')
     })

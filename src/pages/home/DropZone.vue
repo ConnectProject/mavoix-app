@@ -136,7 +136,7 @@ export default {
       if (touch.pageY >= this.$refs.activeZone.$el.getBoundingClientRect().top) {
         zone = 'active'
       }
-      this.$store.commit('dropZone/dropCustom', { item, position, zone })
+      this.$store.commit('dropZone/drop', { item, position, zone })
       this.active = false
     },
     // put the active element to its new place
@@ -157,7 +157,7 @@ export default {
       if (touch.pageY >= this.$refs.activeZone.$el.getBoundingClientRect().top) {
         zone = 'active'
       }
-      this.$store.commit('dropZone/dropCustom', { item, position, zone })
+      this.$store.commit('dropZone/drop', { item, position, zone })
       this.active = false
       // reset element from the active zone
       this.resetAllElement()
@@ -193,7 +193,7 @@ export default {
           this.index = i
           if (!this.active) {
             // we come from the resources part, just have to include a "fake" card in the set from the store
-            this.$store.commit('dropZone/moveCustom', i)
+            this.$store.commit('dropZone/move', i)
           } else {
             // reinit cards to choose the one to modify
             this.resetAllElement()
@@ -230,7 +230,7 @@ export default {
           this.index = cards.length
           // still no problem when the item comes from the top part
           if (!this.active) {
-            this.$store.commit('dropZone/moveCustom', this.index)
+            this.$store.commit('dropZone/move', this.index)
           } else {
             this.resetAllElement()
             let start = 0

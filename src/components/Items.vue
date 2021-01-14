@@ -37,10 +37,12 @@
         :key="n * index"
         :index="index"
         :item="item"
+        :style="item.activeOrder ? 'opacity:0' : ''"
         ref="card"
         :on-touch-end="onTouchEnd"
         :on-touch-start="onTouchStart"
         :onTouchMoveProps="onTouchMoveProps"
+        :disabled="!item.available || item.activeOrder"
       />
     </div>
   </div>

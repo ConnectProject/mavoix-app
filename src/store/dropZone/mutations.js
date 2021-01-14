@@ -89,58 +89,47 @@ export const deleteItem = (state, itemModel) => {
  * @param {State} state
  */
 export const clearActiveItems = (state) => {
-  state.activeItems.forEach((activeItem) => {
-    if (activeItem.tabSlug === state.tab.slug) {
-      state.items.push(activeItem)
+  state.items.forEach((item) => {
+    if (item.activeOrder) {
+      item.activeOrder = 0
     }
   })
-  state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
-  state.activeItems = []
+  // seems useless
+  // state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
 }
+
 /**
- * Clear active items
- * @param {State} state
- * @param {item} item
-  * @param {zone} zone
- */
-export const drop = (state, { item, zone }) => {
-  let i = itemIndex(item, state.items)
-  if (i !== -1) {
-    state.items.splice(i, 1)
-  }
-  i = itemIndex(item, state.activeItems)
-  if (i !== -1) {
-    state.activeItems.splice(i, 1)
-  }
-  if (zone === 'passiv' && item.tabSlug === state.tab.slug) {
-    state.items.push(item)
-    state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
-  } else if (zone === 'active') {
-    state.activeItems.push(item)
-  }
-}
-/**
- * Clear active items
+ * Update active items
  * @param {State} state
  * @param {item} item
  * @param {zone} zone
  * @param {position} position
  */
-export const dropCustom = (state, { item, position, zone }) => {
-  state.activeItems = state.activeItems.filter((e) => { return typeof e.drop === 'undefined' })
+export const drop = (state, { item, position, zone }) => {
+  const activeItems = state.items.filter(item => item.activeOrder)
+    .sort((a, b) => a.activeOrder < b.activeOrder ? -1 : (a.activeOrder > b.activeOrder ? 1 : 0))
+  state.dropPosition = null
+  let activeItemIndex = itemIndex(item, activeItems)
   let i = itemIndex(item, state.items)
-  if (i !== -1) {
-    state.items.splice(i, 1)
-  }
-  i = itemIndex(item, state.activeItems)
-  if (i !== -1) {
-    state.activeItems.splice(i, 1)
-  }
   if (zone === 'passiv' && item.tabSlug === state.tab.slug) {
-    state.items.push(item)
-    state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
+    if (activeItemIndex !== -1) {
+      state.items[i].activeOrder = false
+    }
+    // state.items.push(item)
+    // state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
   } else if (zone === 'active') {
-    state.activeItems.splice(position, 0, item)
+    if (activeItemIndex !== -1) {
+      activeItems.splice(activeItemIndex, 1)
+    }
+    if (activeItems.length === 0) {
+      state.items[i].activeOrder = 1
+    } else if (position === 0) {
+      state.items[i].activeOrder = activeItems[position].activeOrder / 2
+    } else if (position > 0 && position < activeItems.length) {
+      state.items[i].activeOrder = (activeItems[position - 1].activeOrder + activeItems[position].activeOrder) / 2
+    } else if (position === activeItems.length) {
+      state.items[i].activeOrder = activeItems[position - 1].activeOrder + 1
+    }
   }
 }
 
@@ -148,16 +137,10 @@ export const dropCustom = (state, { item, position, zone }) => {
  * Add fake item at specified position, remove old fake item
  * fake item is here to emulate a dropzone
  * @param {State} state
- * @param {item} item
- * @param {zone} zone
  * @param {position} position
  */
-
-export const moveCustom = (state, position) => {
-  // console.log(position)
-  let item = { 'drop': true }
-  state.activeItems = state.activeItems.filter((e) => { return typeof e.drop === 'undefined' })
-  state.activeItems.splice(position, 0, item)
+export const move = (state, position) => {
+  state.dropPosition = position
 }
 
 /**
