@@ -16,6 +16,10 @@
       class="shadow-10"
       ref="itemsZone"
       :items="items"
+      :rowHeight="rowHeight"
+      :rows="rows"
+      :columns="columns"
+      :columnWidth="columnWidth"
       :style="`background-color: ${hexColor}`"
       :on-touch-end="onTouchEnd"
       :on-touch-start="onTouchStart"
@@ -23,6 +27,9 @@
     />
     <!-- Active items -->
     <active-items
+      :rowHeight="rowHeight"
+      :columnWidth="columnWidth"
+      :rows="rows"
       ref="activeZone"
       :items="activeItems"
       :on-touch-end="onTouchEndActive"
@@ -73,11 +80,20 @@ export default {
   data () {
     return {
       index: 0,
-      active: false
+      active: false,
+      rowHeight: 0,
+      columnWidth: 0,
+      rows: 1,
+      columns: 1
     }
   },
   mounted () {
     this.initDropZone()
+    this.handleOrientation()
+    window.addEventListener(
+      'orientationchange',
+      this.handleOrientation
+    )
   },
   computed: {
     hexColor () {
@@ -105,6 +121,22 @@ export default {
   methods: {
     initDropZone () {
       this.$store.dispatch('dropZone/init', this.$route.params.slug)
+    },
+    handleOrientation () {
+      console.log('change orientationchange')
+      let width = this.$q.screen.width
+      // 59 is header tabs list height
+      let height = this.$q.screen.height - 59
+      if (height > width) {
+        this.rows = 4
+        this.rowHeight = height / 4
+      } else {
+        this.rows = 3
+        this.rowHeight = height / 3
+      }
+      this.columns = Math.floor(width / this.rowHeight)
+      this.columnWidth = width / this.columns
+      this.$nextTick()
     },
     /**
      * Tranform a list of word into a string (join array members with ` `) and send it to the text to speech plugin

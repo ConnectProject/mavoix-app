@@ -1,29 +1,26 @@
 <style lang="stylus" scoped>
 .container
   position absolute
-  top 70%
   left 0
-  height 30%
   display flex
   flex-direction row
   flex-wrap nowrap
-  padding: 2em
   min-width 100vw
   border-top 1px solid black
+  bottom: 0px
 .content-container
   display flex
   flex-direction column
   justify-content space-evenly
   align-items stretch
-  width 25vw
   max-height 100%
 .card-drop
   height 100%
+  margin 10%
   background transparent
   border 2px dotted white
   font-size 2em
   color white
-  width 80%
   position relative
 .text-drop
   position absolute
@@ -43,15 +40,15 @@
  position absolute
  top: 0px
  left: 0px
- width 100%
- max-width 100%
+ width 80%
+ max-width 80%
  text-align: center
- transform translate(-25vw,0)
- height 100%
+ height 80%
  display flex
  flex-direction row
  align-items center
  justify-content center
+ margin: 10%
  content: 'drop'
  color white
  font-size 2em
@@ -60,12 +57,11 @@
 .next-card-last .card-item:after
  position absolute
  top: 0px
- left: 50vw
- width 100%
- max-width 100%
+ width 80%
+ margin: 10%
+ max-width 80%
  text-align: center
- transform translate(-25vw,0)
- height 100%
+ height 80%
  display flex
  flex-direction row
  align-items center
@@ -81,10 +77,12 @@
   <div
     ref="container"
     class="container"
+    :style="{height: rowHeight + 'px'}"
     v-touch-pan.horizontal.prevent.mouse="handleScroll"
   >
       <div
         class="content-container"
+        :style="{width: columnWidth + 'px'}"
         v-for="(item, index) in items"
         :key="index"
       >
@@ -93,13 +91,15 @@
           v-if="typeof item.drop === 'undefined'"
           :item="item"
           :index="index"
+          :rowHeight='rowHeight'
+          :columnWidth='columnWidth'
           ref="card"
           :on-touch-end="onTouchEnd"
           :on-touch-start="onTouchStart"
           :onTouchMoveProps="onTouchMoveProps"
         />
         <q-card v-else class="card-drop" ref="card">
-          <div class="text-drop">drop here</div>
+          <div class="text-drop">drop</div>
         </q-card>
       </div>
   </div>
@@ -118,11 +118,19 @@ export default {
       lastX: 0
     }
   },
+  mounted () {
+    console.log(this.columnWidth)
+    document.styleSheets[0].addRule('.card-item:after', 'transform: translate(-' + this.columnWidth + 'px,0)')
+    document.styleSheets[0].addRule('.next-card-last .card-item:after', 'left: ' + 2 * this.columnWidth + 'px')
+  },
   props: [
     'items',
     'onTouchEnd',
     'onTouchStart',
-    'onTouchMoveProps'
+    'onTouchMoveProps',
+    'rowHeight',
+    'columnWidth',
+    'rows'
   ],
   methods: {
     /**

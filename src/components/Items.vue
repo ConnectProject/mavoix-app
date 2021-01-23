@@ -1,21 +1,18 @@
 <style lang="stylus" scoped>
 .container
   position absolute
-  top 0
   left 0
-  bottom 30%
   display flex
   flex-direction row
   flex-wrap nowrap
-  padding 1em
   min-width 100vw
   z-index 10
+  top 0px
 .content-container
   display flex
   flex-direction column
-  justify-content space-evenly
+  justify-content flex-start
   align-items stretch
-  width 15vw
   max-height 100%
 </style>
 
@@ -24,19 +21,22 @@
     ref="container"
     class="container"
     v-touch-pan.horizontal.prevent.mouse="handleScroll"
+    :style="{ height: (rowHeight * (rows - 1)) + 'px' }"
   >
-    <!-- Colums of 2 items -->
+    <!-- Colums of x items -->
     <div
-      v-for="n in blocksCounts"
+      v-for="n in blocksCounts(items,rows)"
       :key="n"
       class="content-container"
     >
       <!-- The two items -->
       <item-card
-        v-for="(item, index) in pageItems(n)"
+        v-for="(item, index) in pageItems(n, items, rows)"
         :key="n * index"
         :index="index"
         :item="item"
+        :rowHeight='rowHeight'
+        :columnWidth='columnWidth'
         :style="item.activeOrder ? 'opacity:0' : ''"
         ref="card"
         :on-touch-end="onTouchEnd"
@@ -57,7 +57,11 @@ export default {
     'items',
     'onTouchEnd',
     'onTouchMoveProps',
-    'onTouchStart'
+    'onTouchStart',
+    'rowHeight',
+    'rows',
+    'columnWidth',
+    'columns'
   ],
   components: {
     ItemCard
@@ -67,15 +71,17 @@ export default {
       lastX: 0
     }
   },
-  computed: {
+  methods: {
     /**
      * Return the number of colums
      */
-    blocksCounts () {
-      return Math.ceil(this.items.length / 2)
-    }
-  },
-  methods: {
+    blocksCounts (items, rows) {
+      if (items.length) {
+        return Math.ceil(items.length / (rows - 1))
+      } else {
+        return 0
+      }
+    },
     /**
      * Handle horizontal scroll
      */
@@ -91,10 +97,10 @@ export default {
     /**
      * Return array of items of a spectific column
      */
-    pageItems (n) {
+    pageItems (n, items, rows) {
       n--
-      return this.items.filter((_, i) => {
-        return (i >= n * 2 && i < (n * 2) + 2)
+      return items.filter((_, i) => {
+        return (i >= n * (rows - 1) && i < (n * (rows - 1)) + (rows - 1))
       })
     }
   }
