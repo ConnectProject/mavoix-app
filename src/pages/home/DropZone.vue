@@ -141,7 +141,7 @@ export default {
         this.rows = 3
         this.rowHeight = height / 3
       }
-      this.columns = Math.floor(width / this.rowHeight)
+      this.columns = Math.max(2, Math.floor(width / this.rowHeight))
       this.columnWidth = width / this.columns
       this.triggered = true
     },
