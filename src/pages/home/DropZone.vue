@@ -84,7 +84,8 @@ export default {
       rowHeight: 0,
       columnWidth: 0,
       rows: 1,
-      columns: 1
+      columns: 1,
+      triggered: false
     }
   },
   mounted () {
@@ -127,6 +128,12 @@ export default {
       let width = this.$q.screen.width
       // 59 is header tabs list height
       let height = this.$q.screen.height - 59
+      if (this.triggered) {
+        let inter = width
+        width = height
+        height = inter
+      }
+
       if (height > width) {
         this.rows = 4
         this.rowHeight = height / 4
@@ -136,7 +143,7 @@ export default {
       }
       this.columns = Math.floor(width / this.rowHeight)
       this.columnWidth = width / this.columns
-      this.$nextTick()
+      this.triggered = true
     },
     /**
      * Tranform a list of word into a string (join array members with ` `) and send it to the text to speech plugin
