@@ -119,9 +119,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.columnWidth)
-    document.styleSheets[0].addRule('.card-item:after', 'transform: translate(-' + this.columnWidth + 'px,0)')
-    document.styleSheets[0].addRule('.next-card-last .card-item:after', 'left: ' + 2 * this.columnWidth + 'px')
+    this.editCSS(this.columnWidth)
   },
   props: [
     'items',
@@ -132,7 +130,16 @@ export default {
     'columnWidth',
     'rows'
   ],
+  watch: {
+    columnWidth (newVal) {
+      this.editCSS(newVal)
+    }
+  },
   methods: {
+    editCSS (columnWidth) {
+      document.styleSheets[0].addRule('.card-item:after', 'transform: translate(-' + columnWidth + 'px,0)')
+      document.styleSheets[0].addRule('.next-card-last .card-item:after', 'left: ' + 2 * columnWidth + 'px')
+    },
     /**
      * Handle horizontal scroll
      */
