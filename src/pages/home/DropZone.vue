@@ -11,6 +11,8 @@
     style="overflow: hidden; background:grey"
     ref="page"
   >
+    <q-resize-observer @resize="onResize" />
+
     <!-- Available items -->
     <items
       class="shadow-10"
@@ -123,16 +125,10 @@ export default {
     initDropZone () {
       this.$store.dispatch('dropZone/init', this.$route.params.slug)
     },
-    handleOrientation () {
+    onResize (size) {
       console.log('change orientationchange')
-      let width = this.$q.screen.width
-      // 59 is header tabs list height
-      let height = this.$q.screen.height - 59
-      if (this.triggered) {
-        let inter = width
-        width = height
-        height = inter
-      }
+      let width = size.width
+      let height = size.height
 
       if (height > width) {
         this.rows = 4
