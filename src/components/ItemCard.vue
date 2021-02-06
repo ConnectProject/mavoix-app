@@ -10,7 +10,11 @@
   height: 80%
 .card-img-wrapper
   position absolute
-  top: 0
+  height 100%
+  width 100%
+  display flex
+  justify-content center
+  align-items center
 .circle:before
   content '\25CF'
   font-size 100%
@@ -19,7 +23,7 @@
   padding 0
   height: 20%
 .name
-  padding 0
+  line-height: normal;
 </style>
 
 <template>
@@ -30,7 +34,7 @@
     <q-card
       ref="card"
       class="card"
-      :style="{transform: 'translate('+translateX +'px, '+ translateY+ 'px)'}"
+      :style="`transform: translate(${translateX}px, ${translateY}px)`"
       v-touch:moving="onTouchMove"
       v-touch:end="internalOnTouchEnd"
       v-touch:start="internalOnTouchStart"
@@ -47,7 +51,10 @@
         </div>
       </q-img>
       <q-card-section>
-        <div class="text-h6 text-center name">
+        <div
+          class="text-h6 text-center name"
+          :style="`font-size: ${rowHeight/8}px`"
+        >
           {{ item.name }}
         </div>
       </q-card-section>
@@ -65,7 +72,7 @@ export default {
     onTouchStart: Function,
     onTouchMoveProps: Function,
     disabled: {
-      type: [Boolean, Number],
+      type: [Boolean],
       default: false
     },
     rowHeight: Number,

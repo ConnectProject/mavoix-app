@@ -42,7 +42,7 @@
         :on-touch-end="onTouchEnd"
         :on-touch-start="onTouchStart"
         :onTouchMoveProps="onTouchMoveProps"
-        :disabled="!item.available || item.activeOrder"
+        :disabled="!item.available || Boolean(item.activeOrder)"
       />
     </div>
   </div>
