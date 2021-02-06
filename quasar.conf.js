@@ -48,7 +48,7 @@ module.exports = function (ctx) {
     build: {
       devtool: 'source-map',
       scopeHoisting: true,
-      // vueRouterMode: 'history',
+      vueRouterMode: 'history',
       // vueCompiler: true,
       // gzip: true,
       // analyze: true,
@@ -126,10 +126,6 @@ module.exports = function (ctx) {
     cordova: {
       // id: 'io.connect.mavoix',
       // noIosLegacyBuildFlag: true, // uncomment only if you know what you are doing
-    },
-
-    bin: {
-      linuxAndroidStudio: "/run/current-system/sw/bin/android-studio"
     },
 
     electron: {
