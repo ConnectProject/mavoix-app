@@ -1,58 +1,58 @@
 <style lang="stylus" scoped>
+.card-container
+  padding 10%
+  box-sizing border-box
 .card
-  height fit-content
-  width 90%
-.card-img-wrapper
   height 100%
-  width 100%
-  display flex
-  justify-content center
-  align-items center
-  & img
-    width 80%
-    height 80%
+  background white
+  position relative
+.q-img
+  height: 80%
+.card-img-wrapper
+  position absolute
+  top: 0
 .circle:before
   content '\25CF'
   font-size 100%
   color red
+.q-card__section
+  padding 0
+  height: 20%
 .name
-  padding 8px
-  width 100%
-  left 0px
-  border-radius 0px 0px 8px 8px
-  background white
-  position absolute
-  bottom 0
+  padding 0
 </style>
 
 <template>
-  <q-card
-    ref="card"
-    class="card"
-    :style="`transform: translate(${translateX}px, ${translateY}px)`"
-    v-touch:moving="onTouchMove"
-    v-touch:end="internalOnTouchEnd"
-    v-touch:start="internalOnTouchStart"
+  <div
+    class="card-container"
+    :style="{height: rowHeight + 'px', width: columnWidth + 'px'}"
   >
-    <q-img
-      :ratio="0.8"
-      :src="item.asset.url"
-      contain
+    <q-card
+      ref="card"
+      class="card"
+      :style="{transform: 'translate('+translateX +'px, '+ translateY+ 'px)'}"
+      v-touch:moving="onTouchMove"
+      v-touch:end="internalOnTouchEnd"
+      v-touch:start="internalOnTouchStart"
     >
-      <div
-        v-if="disabled"
-        class="card-img-wrapper"
+      <q-img
+        :src="item.asset.url"
+        contain
       >
-        <img src="../assets/red_circle.svg"/>
-      </div>
-    </q-img>
-
-    <q-card-section>
-      <div class="text-h6 text-center name">
-        {{ item.name }}
-      </div>
-    </q-card-section>
-  </q-card>
+        <div
+          v-if="disabled"
+          class="card-img-wrapper"
+        >
+          <img src="../assets/red_circle.svg"/>
+        </div>
+      </q-img>
+      <q-card-section>
+        <div class="text-h6 text-center name">
+          {{ item.name }}
+        </div>
+      </q-card-section>
+    </q-card>
+  </div>
 </template>
 
 <script>
@@ -65,9 +65,11 @@ export default {
     onTouchStart: Function,
     onTouchMoveProps: Function,
     disabled: {
-      type: Boolean,
+      type: [Boolean, Number],
       default: false
-    }
+    },
+    rowHeight: Number,
+    columnWidth: Number
   },
   data () {
     return {
