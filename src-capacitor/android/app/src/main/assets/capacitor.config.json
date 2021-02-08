@@ -3,5 +3,8 @@
   "appName": "Ma Voix",
   "bundledWebRuntime": false,
   "npmClient": "npm",
-  "webDir": "www"
+  "webDir": "www",
+  "server": {
+    "url": "http://192.168.8.205:9010"
+  }
 }
