@@ -1,3 +1,5 @@
+import { itemIndex } from './utils'
+
 /**
  * Return tab's color
  * @param State state
@@ -10,20 +12,15 @@ export const speed = ({ tab: { speed } }) => speed
  * Return all unactive items
  * @param State state
  */
-export const items = ({ items }) => items
+export const items = ({ items, activeItems }) => (
+  items.map(item => ({ ...item, active: itemIndex(item, activeItems) > -1 }))
+)
 
 /**
  * Return all active items
  * @param State state
  */
-export const activeItems = ({ items, dropPosition }) => {
-  const activeItems = items.filter(item => item.activeOrder)
-    .sort((a, b) => a.activeOrder < b.activeOrder ? -1 : (a.activeOrder > b.activeOrder ? 1 : 0))
-  if (dropPosition !== null) {
-    activeItems.splice(dropPosition, 0, { 'drop': true })
-  }
-  return activeItems
-}
+export const activeItems = ({ activeItems }) => activeItems
 
 /**
  * Return Parse Subscription

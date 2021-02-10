@@ -7,6 +7,6 @@ export default {
     language: ''
   },
   items: [], // Items
-  dropPosition: null,
+  activeItems: [], // Active items
   subscription: null // Parse subscription
 }

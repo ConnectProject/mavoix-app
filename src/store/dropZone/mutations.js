@@ -89,13 +89,9 @@ export const deleteItem = (state, itemModel) => {
  * @param {State} state
  */
 export const clearActiveItems = (state) => {
-  state.items.forEach((item) => {
-    if (item.activeOrder) {
-      item.activeOrder = 0
-    }
-  })
   // seems useless
   // state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
+  state.activeItems = []
 }
 
 /**
@@ -106,30 +102,13 @@ export const clearActiveItems = (state) => {
  * @param {position} position
  */
 export const drop = (state, { item, position, zone }) => {
-  const activeItems = state.items.filter(item => item.activeOrder)
-    .sort((a, b) => a.activeOrder < b.activeOrder ? -1 : (a.activeOrder > b.activeOrder ? 1 : 0))
-  state.dropPosition = null
-  let activeItemIndex = itemIndex(item, activeItems)
-  let i = itemIndex(item, state.items)
-  if (zone === 'passiv' && item.tabSlug === state.tab.slug) {
-    if (activeItemIndex !== -1) {
-      state.items[i].activeOrder = false
-    }
-    // state.items.push(item)
-    // state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
-  } else if (zone === 'active') {
-    if (activeItemIndex !== -1) {
-      activeItems.splice(activeItemIndex, 1)
-    }
-    if (activeItems.length === 0) {
-      state.items[i].activeOrder = 1
-    } else if (position === 0) {
-      state.items[i].activeOrder = activeItems[position].activeOrder / 2
-    } else if (position > 0 && position < activeItems.length) {
-      state.items[i].activeOrder = (activeItems[position - 1].activeOrder + activeItems[position].activeOrder) / 2
-    } else if (position === activeItems.length) {
-      state.items[i].activeOrder = activeItems[position - 1].activeOrder + 1
-    }
+  state.activeItems = state.activeItems.filter((e) => { return typeof e.drop === 'undefined' })
+  let i = itemIndex(item, state.activeItems)
+  if (i !== -1) {
+    state.activeItems.splice(i, 1)
+  }
+  if (zone === 'active') {
+    state.activeItems.splice(position, 0, item)
   }
 }
 
@@ -140,7 +119,9 @@ export const drop = (state, { item, position, zone }) => {
  * @param {position} position
  */
 export const move = (state, position) => {
-  state.dropPosition = position
+  let item = { 'drop': true }
+  state.activeItems = state.activeItems.filter((e) => { return typeof e.drop === 'undefined' })
+  state.activeItems.splice(position, 0, item)
 }
 
 /**

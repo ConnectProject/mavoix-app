@@ -37,12 +37,12 @@
         :item="item"
         :rowHeight='rowHeight'
         :columnWidth='columnWidth'
-        :style="item.activeOrder ? 'opacity:0' : ''"
+        :style="item.active ? 'opacity:0' : ''"
         ref="card"
         :on-touch-end="onTouchEnd"
         :on-touch-start="onTouchStart"
         :onTouchMoveProps="onTouchMoveProps"
-        :disabled="!item.available || Boolean(item.activeOrder)"
+        :disabled="!item.available || item.active"
       />
     </div>
   </div>
