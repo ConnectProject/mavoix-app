@@ -92,11 +92,6 @@ export default {
   },
   mounted () {
     this.initDropZone()
-    this.handleOrientation()
-    window.addEventListener(
-      'orientationchange',
-      this.handleOrientation
-    )
   },
   computed: {
     hexColor () {
@@ -126,7 +121,6 @@ export default {
       this.$store.dispatch('dropZone/init', this.$route.params.slug)
     },
     onResize (size) {
-      console.log('change orientationchange')
       let width = size.width
       let height = size.height
 
