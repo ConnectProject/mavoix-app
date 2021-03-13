@@ -14,7 +14,6 @@ export const loginCode = ({ commit, getters: { invitationCode } }) => {
     .then((user) => {
       console.log(user)
       localStorage.id = user.id
-      console.log(localStorage.id)
       commit('login', user)
     })
     .catch((err) => {

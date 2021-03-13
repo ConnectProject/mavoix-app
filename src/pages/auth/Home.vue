@@ -32,6 +32,16 @@
 
 <script>
 export default {
-  name: 'PageAuthHome'
+  name: 'PageAuthHome',
+  mounted () {
+    console.log(localStorage.active)
+    if (localStorage.id) {
+      let tabs = JSON.parse(localStorage.tabs)
+      let active = parseInt(localStorage.active.substring(2))
+      this.$router.push(
+        { path: '/tabs/' + tabs[active].slug }
+      )
+    }
+  }
 }
 </script>
