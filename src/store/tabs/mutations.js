@@ -3,6 +3,15 @@ import { modelToTab, tabIndex } from './utils'
 function storeTabs (tabs) {
   localStorage.tabs = JSON.stringify(tabs)
 }
+
+/**
+ * Initiate Tabs for saved state
+ * @param {State} state
+ */
+export const InitiateState = (state) => {
+  state.tabs = localStorage.tabs ? JSON.parse(localStorage.tabs) : []
+}
+
 /**
  * Set tabs.
  * @param {State} state

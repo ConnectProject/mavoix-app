@@ -75,8 +75,6 @@ export default {
   watch: {
     logged (n, o) {
       if (n) {
-        console.log('mounted')
-        console.log(localStorage.id)
         this.$store.dispatch('tabs/loadAndWatch')
       }
     },
@@ -107,16 +105,15 @@ export default {
     }
   },
   mounted () {
-    console.log(localStorage)
     if (this.logged) {
       this.$store.dispatch('tabs/loadAndWatch')
     }
     this.$store.dispatch('stats/connectConnect').then(() => {
-      console.log('connected')
       this.$store.dispatch('stats/startSession').then(() => {
-        console.log('session started')
       })
     })
+    this.$store.commit('dropZone/InitiateState')
+    this.$store.commit('tabs/InitiateState')
     this.$store.dispatch('tts/init')
   }
 }

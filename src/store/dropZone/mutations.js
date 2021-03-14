@@ -5,6 +5,15 @@ import { modelToTabItem, itemIndex } from './utils'
  * @param {State} state
  * @param {Number} hexColor new color
  */
+
+function storeItems (items) {
+  localStorage.items = JSON.stringify(items)
+}
+
+function storeActiveItems (activeItems) {
+  localStorage.activeItems = JSON.stringify(activeItems)
+}
+
 export const setTabColor = (state, color) => {
   state.tab.color = color
 }
@@ -48,6 +57,7 @@ export const setItems = (state, itemsModels) => {
   state.items = itemsModels.map((itemModel) => {
     return modelToTabItem(itemModel)
   })
+  storeItems(state.items)
 }
 /**
  * Add a tab item.
@@ -56,6 +66,7 @@ export const setItems = (state, itemsModels) => {
  */
 export const addItem = (state, itemModel) => {
   state.items.push(modelToTabItem(itemModel))
+  storeItems(state.items)
 }
 /**
  * Update a tab item.
@@ -73,6 +84,7 @@ export const updateItem = (state, itemModel) => {
   state.items[index].order = item.order
 
   state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
+  storeItems(state.items)
 }
 
 /**
@@ -82,6 +94,7 @@ export const updateItem = (state, itemModel) => {
  */
 export const deleteItem = (state, itemModel) => {
   state.items.splice(itemIndex(modelToTabItem(itemModel), state.items), 1)
+  storeItems(state.items)
 }
 
 /**
@@ -92,6 +105,16 @@ export const clearActiveItems = (state) => {
   // seems useless
   // state.items.sort((a, b) => a.order < b.order ? -1 : (a.order > b.order ? 1 : 0))
   state.activeItems = []
+  storeActiveItems(state.activeItems)
+}
+
+/**
+ * Initiate Items for save state
+ * @param {State} state
+ */
+export const InitiateState = (state) => {
+  state.activeItems = localStorage.activeItems ? JSON.parse(localStorage.activeItems) : []
+  state.items = localStorage.items ? JSON.parse(localStorage.items) : []
 }
 
 /**
@@ -110,6 +133,7 @@ export const drop = (state, { item, position, zone }) => {
   if (zone === 'active') {
     state.activeItems.splice(position, 0, item)
   }
+  storeActiveItems(state.activeItems)
 }
 
 /**
@@ -122,6 +146,7 @@ export const move = (state, position) => {
   let item = { 'drop': true }
   state.activeItems = state.activeItems.filter((e) => { return typeof e.drop === 'undefined' })
   state.activeItems.splice(position, 0, item)
+  storeActiveItems(state.activeItems)
 }
 
 /**
