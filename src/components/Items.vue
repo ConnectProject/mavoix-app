@@ -89,8 +89,7 @@ export default {
      */
     handleScroll ({ evt, offset, isFinal }) {
       let scrolledElement = evt.target.closest('.card-container')
-      console.log(scrolledElement && scrolledElement.classList.contains('active-card'))
-      if ((scrolledElement && scrolledElement.classList.contains('active-card')) || (event.target.classList.contains('card-container'))) {
+      if ((scrolledElement && scrolledElement.classList.contains('active-card')) || (evt.target.classList.contains('card-container')) || (evt.target.classList.contains('content-container'))) {
         let container = this.$refs.container
         let translateVal = Math.min(0, Math.max(offset.x + this.lastX, -(container.clientWidth - window.innerWidth)))
 
