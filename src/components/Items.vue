@@ -73,6 +73,11 @@ export default {
       lastX: 0
     }
   },
+  watch: {
+    items () {
+      this.$refs.container.style.transform = 'translateX(0px)'
+    }
+  },
   methods: {
     /**
      * Return the number of colums
