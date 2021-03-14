@@ -156,17 +156,19 @@ export default {
      *   else if touch end over the list of available items drop it into it
      */
     onTouchEnd ($event, item) {
-      this.$refs.itemsZone.$el.style.zIndex = '0'
-      $event.target.closest('.card').style.zIndex = '0'
-      let position = this.index
-      // check whether we are in the active or passive zone to know what to do:
-      let zone = 'passiv'
-      let touch = $event.changedTouches[0]
-      if (touch.pageY >= this.$refs.activeZone.$el.getBoundingClientRect().top) {
-        zone = 'active'
+      if (!item.active) {
+        this.$refs.itemsZone.$el.style.zIndex = '0'
+        $event.target.closest('.card').style.zIndex = '0'
+        let position = this.index
+        // check whether we are in the active or passive zone to know what to do:
+        let zone = 'passiv'
+        let touch = $event.changedTouches[0]
+        if (touch.pageY >= this.$refs.activeZone.$el.getBoundingClientRect().top) {
+          zone = 'active'
+        }
+        this.$store.commit('dropZone/drop', { item, position, zone })
+        this.active = false
       }
-      this.$store.commit('dropZone/drop', { item, position, zone })
-      this.active = false
     },
     // put the active element to its new place
     onTouchEndActive ($event, item, index) {
@@ -193,9 +195,11 @@ export default {
     },
     // when starting to drag an element from the top part, make it over the others, not below
     onTouchStart ($event, item, index) {
-      this.$refs.itemsZone.$el.style.zIndex = '50'
-      $event.target.closest('.card').style.zIndex = '50'
-      this.active = false
+      if (!item.active) {
+        this.$refs.itemsZone.$el.style.zIndex = '50'
+        $event.target.closest('.card').style.zIndex = '50'
+        this.active = false
+      }
     },
     // when starting to drag an element from the active part, make it over the others, not below
     onTouchStartActive ($event, item, index) {

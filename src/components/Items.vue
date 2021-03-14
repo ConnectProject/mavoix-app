@@ -14,6 +14,8 @@
   justify-content flex-start
   align-items stretch
   max-height 100%
+.active-card
+  opacity 0
 </style>
 
 <template>
@@ -37,7 +39,7 @@
         :item="item"
         :rowHeight='rowHeight'
         :columnWidth='columnWidth'
-        :style="item.active ? 'opacity:0' : ''"
+        :class="item.active ? 'active-card' : ''"
         ref="card"
         :on-touch-end="onTouchEnd"
         :on-touch-start="onTouchStart"
@@ -85,14 +87,18 @@ export default {
     /**
      * Handle horizontal scroll
      */
-    handleScroll ({ offset, isFinal }) {
-      let container = this.$refs.container
-      let translateVal = Math.min(0, Math.max(offset.x + this.lastX, -(container.clientWidth - window.innerWidth)))
+    handleScroll ({ evt, offset, isFinal }) {
+      let scrolledElement = evt.target.closest('.card-container')
+      console.log(scrolledElement && scrolledElement.classList.contains('active-card'))
+      if ((scrolledElement && scrolledElement.classList.contains('active-card')) || (event.target.classList.contains('card-container'))) {
+        let container = this.$refs.container
+        let translateVal = Math.min(0, Math.max(offset.x + this.lastX, -(container.clientWidth - window.innerWidth)))
 
-      if (isFinal) {
-        this.lastX = translateVal
+        if (isFinal) {
+          this.lastX = translateVal
+        }
+        container.style.transform = `translateX(${translateVal}px)`
       }
-      container.style.transform = `translateX(${translateVal}px)`
     },
     /**
      * Return array of items of a spectific column
