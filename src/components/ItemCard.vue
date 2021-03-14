@@ -22,8 +22,8 @@
 .q-card__section
   padding 0
   height: 20%
-.name
-  line-height: normal;
+  vertical-align: middle
+  font-family: Menlo-bold
 </style>
 
 <template>
@@ -50,13 +50,8 @@
           <img src="../assets/red_circle.svg"/>
         </div>
       </q-img>
-      <q-card-section>
-        <div
-          class="text-h6 text-center name"
-          :style="`font-size: ${rowHeight/8}px`"
-        >
-          {{ item.name }}
-        </div>
+      <q-card-section class="text-h6 text-center" :style="'font-size: ' + Math.min((columnWidth / Math.min(item.name.length,27))*1.2, rowHeight/10) +'px'">
+          {{ item.name.substring(0,24) }}{{ item.name.length > 27 ? '...' : '' }}
       </q-card-section>
     </q-card>
   </div>
