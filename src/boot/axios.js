@@ -1,6 +1,6 @@
 import axios from 'axios'
 const axiosInstance = axios.create({
-  baseURL: 'https://connect-project.io/'
+  baseURL: process.env.CONNECT_URL
 })
 export default ({ Vue, store }) => {
   Vue.prototype.$axios = axiosInstance

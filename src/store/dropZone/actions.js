@@ -97,16 +97,13 @@ export const saveSentence = function ({ commit, getters: { activeItems } }) {
     'x-parse-session-token': localStorage.sessionToken
   }
   let data = {
-    'schemaURL': 'https://connect-project.io/schemas/phraseProduced.schema.json',
-    'data': {
-      'appId': 'mavoix-app',
-      'sessionId': localStorage.sessionToken,
-      'userId': localStorage.id,
-      'timestamp': Date.now(),
-      'phrase': activeImages
-    }
+    'appId': 'mavoix-app',
+    'sessionId': localStorage.sessionToken,
+    'userId': localStorage.id,
+    'timestamp': (new Date()).toISOString(),
+    'phrase': activeImages
   }
-  this.$axios.post('parse/classes/jsonSchemaData', data, {
+  this.$axios.post('parse/classes/phraseProduced', data, {
     headers: headers
   }).then(function (response) {
     console.log('sentence saved:')

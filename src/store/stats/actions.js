@@ -1,8 +1,8 @@
 /**
  * Here are the credentials to connect to connect
  */
-const password = '8a761417-4fc9-4de1-8462-8936283ef857'
-const username = 'hkt4j7-test'
+const password = process.env.CONNECT_TOKEN
+const username = process.env.CONNECT_APP_ID
 
 /**
  * connect to connect...
@@ -10,7 +10,7 @@ const username = 'hkt4j7-test'
 
 export const connectConnect = async function ({ commit }) {
   let response
-  response = await this.$axios.get('parse/login?password=' + password + '&username=' + username + '&=', {
+  response = await this.$axios.get(`parse/login?password=${password}&username=${username}&=`, {
     headers: {
       'x-parse-application-id': 'connect',
       'x-parse-revocable-session': '1'
@@ -29,16 +29,13 @@ export const startSession = async function ({ commit }) {
     'x-parse-session-token': localStorage.sessionToken
   }
   let data = {
-    'schemaURL': 'https://connect-project.io/schemas/sessionTimestamp.schema.json',
-    'data': {
-      'appId': 'mavoix-app',
-      'sessionId': localStorage.sessionToken,
-      'userId': localStorage.id,
-      'sessionBegin': Date.now()
-    }
+    'appId': 'mavoix-app',
+    'sessionId': localStorage.sessionToken,
+    'userId': localStorage.id,
+    'sessionBegin': (new Date()).toISOString()
   }
   let response
-  response = await this.$axios.post('parse/classes/jsonSchemaData', data, {
+  response = await this.$axios.post('parse/classes/sessionTimestamp', data, {
     headers: headers
   })
   // does not seem to be working, objectId is undefined
@@ -54,13 +51,10 @@ export const endSession = async function ({ commit }) {
     'x-parse-session-token': localStorage.sessionToken
   }
   let data = {
-    'schemaURL': 'https://connect-project.io/schemas/sessionTimestamp.schema.json',
-    'data': {
-      'sessionEnd': Date.now()
-    }
+    'sessionEnd': (new Date()).toISOString()
   }
   let response
-  response = await this.$axios.put('parse/classes/jsonSchemaData/' + localStorage.objectId, data, {
+  response = await this.$axios.put('parse/classes/sessionTimestamp/' + localStorage.objectId, data, {
     headers: headers
   })
   console.log('end session:')
