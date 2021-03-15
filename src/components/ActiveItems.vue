@@ -82,7 +82,7 @@
   >
       <div
         class="content-container"
-        :style="{width: columnWidth + 'px'}"
+        :style="{width: 0.9 * Math.min(rowHeight, columnWidth) + 'px'}"
         v-for="(item, index) in items"
         :key="index"
       >
@@ -119,7 +119,7 @@ export default {
     }
   },
   mounted () {
-    this.editCSS(this.columnWidth)
+    this.editCSS(this.rowHeight, this.columnWidth)
   },
   props: [
     'items',
@@ -137,8 +137,8 @@ export default {
   },
   methods: {
     editCSS (columnWidth) {
-      document.styleSheets[0].addRule('.card-item:after', 'transform: translate(-' + columnWidth + 'px,0)')
-      document.styleSheets[0].addRule('.next-card-last .card-item:after', 'left: ' + 2 * columnWidth + 'px')
+      document.styleSheets[0].addRule('.card-item:after', 'transform: translate(-' + 0.9 * Math.min(this.rowHeight, columnWidth) + 'px,0)')
+      document.styleSheets[0].addRule('.next-card-last .card-item:after', 'left: ' + 2 * 0.9 * Math.min(this.rowHeight, columnWidth) + 'px')
     },
     /**
      * Handle horizontal scroll
