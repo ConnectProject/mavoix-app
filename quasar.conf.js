@@ -1,5 +1,6 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
+const Dotenv = require('dotenv-webpack')
 
 module.exports = function (ctx) {
   return {
@@ -61,6 +62,11 @@ module.exports = function (ctx) {
             formatter: require('eslint').CLIEngine.getFormatter('stylish')
           }
         })
+        cfg.plugins.push(
+          new Dotenv({
+            systemvars: true
+          })
+        )
       },
       uglifyOptions: {
         compress: { drop_console: !ctx.dev }
