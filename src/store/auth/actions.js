@@ -10,27 +10,35 @@ import DeviceUser from '~/models/DeviceUser'
 export const loginCode = ({ commit, getters: { invitationCode } }) => {
   const [ username, password ] = invitationCode.split(':')
   console.log('login')
-  DeviceUser.logIn(username, password)
-    .then((user) => {
-      console.log(user)
-      localStorage.id = user.id
-      console.log(localStorage.id)
-      commit('login', user)
-    })
-    .catch((err) => {
-      commit('setError', err)
-    })
+  try {
+    DeviceUser.logIn(username, password)
+      .then((user) => {
+        console.log(user)
+        localStorage.id = user.id
+        console.log(localStorage.id)
+        commit('login', user)
+      })
+      .catch((err) => {
+        commit('setError', err)
+      })
+  } catch (e) {
+    commit('setError', new Error('Unable to initiate Parse: ' + e))
+  }
 }
 
 export const login = ({ commit, getters: { username, password } }) => {
-  DeviceUser.logIn(username, password)
-    .then((user) => {
-      console.log(user)
-      localStorage.id = user.id
-      console.log(localStorage.id)
-      commit('login', user)
-    })
-    .catch((err) => {
-      commit('setError', err)
-    })
+  try {
+    DeviceUser.logIn(username, password)
+      .then((user) => {
+        console.log(user)
+        localStorage.id = user.id
+        console.log(localStorage.id)
+        commit('login', user)
+      })
+      .catch((err) => {
+        commit('setError', err)
+      })
+  } catch (e) {
+    commit('setError', new Error('Unable to initiate Parse: ' + e))
+  }
 }
