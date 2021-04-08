@@ -107,6 +107,7 @@ export default {
     }
   },
   mounted () {
+    localStorage.removeItem('objectId')
     console.log(localStorage)
     if (this.logged) {
       this.$store.dispatch('tabs/loadAndWatch')
