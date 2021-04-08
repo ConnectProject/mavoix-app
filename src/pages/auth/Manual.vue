@@ -59,8 +59,11 @@ export default {
     }
   },
   watch: {
-    error (newVal, oldVal) {
-      this.$q.notify({ position: 'top-right', message: newVal, color: 'blue' })
+    error (newVal) {
+      if (newVal) {
+        this.$q.notify({ position: 'top-right', message: newVal, color: 'red' })
+        this.$store.commit('auth/resetError')
+      }
     }
   }
 }
