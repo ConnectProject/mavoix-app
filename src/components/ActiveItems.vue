@@ -38,7 +38,7 @@
  position relative
 .card-item
  position relative
-.next-card .card-item:after
+.card-item:after
  position absolute
  top: 0px
  left: 0
@@ -46,7 +46,6 @@
  max-width 8rem
  text-align: center
  height 10rem
- display flex
  flex-direction row
  align-items center
  justify-content center
@@ -56,26 +55,14 @@
  font-size 2em
  border-radius 4px
  border 2px dotted white
- transform: translate(-10rem,0)
+ display none
+.next-card .card-item:after
+ display flex
+ transform translate(-10rem,0)
 .next-card-last .card-item:after
- position absolute
- top: 0px
- width 8rem
- transform: translate(0em,0)
- margin: 1rem
- max-width 8rem
- text-align: center
- height 10rem
  display flex
- flex-direction row
- align-items center
- justify-content center
- content: 'drop'
- color white
- font-size 2em
- border-radius 4px
- border 2px dotted white
- left: 10rem
+ transform translate(0em,0)
+ left 10rem
 
 </style>
 
