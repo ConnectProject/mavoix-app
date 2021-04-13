@@ -41,30 +41,31 @@
 .next-card .card-item:after
  position absolute
  top: 0px
- left: 0px
- width 80%
- max-width 80%
+ left: 0
+ width 8rem
+ max-width 8rem
  text-align: center
- height 80%
+ height 10rem
  display flex
  flex-direction row
  align-items center
  justify-content center
- margin: 10%
+ margin: 1rem
  content: 'drop'
  color white
  font-size 2em
  border-radius 4px
  border 2px dotted white
- transform: translate(-10em,0)
+ transform: translate(-10rem,0)
 .next-card-last .card-item:after
  position absolute
  top: 0px
- width 80%
- margin: 10%
- max-width 80%
+ width 8rem
+ transform: translate(0em,0)
+ margin: 1rem
+ max-width 8rem
  text-align: center
- height 80%
+ height 10rem
  display flex
  flex-direction row
  align-items center
@@ -74,7 +75,7 @@
  font-size 2em
  border-radius 4px
  border 2px dotted white
- left: 10em
+ left: 10rem
 
 </style>
 
