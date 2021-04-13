@@ -108,15 +108,28 @@ export default {
     }
   },
   mounted () {
-    let text = this.$refs.text
-    console.log(text.offsetHeight)
-    console.log(1.25 * parseFloat(getComputedStyle(document.documentElement).fontSize))
-    console.log('ok')
-    if (text.offsetHeight > (1.25 * parseFloat(getComputedStyle(document.documentElement).fontSize))) {
-      text.className += ' two-lines'
+    this.resizeText()
+  },
+  watch: {
+    item (newVal, oldVal) {
+      console.log(newVal.name)
+      console.log(oldVal.name)
+      if (newVal.name !== oldVal.name) {
+        this.$nextTick(function () {
+          this.resizeText()
+        })
+      }
     }
   },
   methods: {
+    resizeText () {
+      let text = this.$refs.text
+      console.log(text.innerText)
+      text.classList.remove('two-lines')
+      if (text.offsetHeight > (1.25 * parseFloat(getComputedStyle(document.documentElement).fontSize))) {
+        text.classList.add('two-lines')
+      }
+    },
     /**
      * Handle drag item
      */
