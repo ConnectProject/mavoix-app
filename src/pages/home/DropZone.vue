@@ -185,43 +185,46 @@ export default {
       this.active = true
       this.resetAllElement()
     },
+    retrieveDragCardPosition (touch, cards) {
+      // we are know trying to find "i" where is the index of the card our dragged item is over
+      let i = 0
+      if (cards[i] && touch.pageX > cards[i].getBoundingClientRect().right - (cards[i].closest('.content-container').getBoundingClientRect().width / 2)) {
+        while (cards[i] && cards[i].getBoundingClientRect().right - (cards[i].closest('.content-container').getBoundingClientRect().width / 2) < touch.pageX) {
+          i++
+        }
+      }
+      return i
+    },
+    translateToLeft (start, end, index, cardsEl) {
+      // translate those element to the left so it doesn't show a hole in place of the dragged element
+      for (let j = start; j < end; j++) {
+        if (j !== index) {
+          cardsEl[j].closest('.content-container').style.transform = 'translate(-' + (cardsEl[j].closest('.content-container').offsetWidth) + 'px , 0px)'
+        }
+      }
+    },
     onTouchMoveProps (touch, item, index) {
       // is pointer in the active zone ?
       if (touch.pageY >= this.$refs.activeZone.$el.getBoundingClientRect().top) {
         let cards = this.$refs.activeZone.$el.getElementsByClassName('card')
         let cardsEl = this.$refs.activeZone.$el.getElementsByClassName('card-item')
-        // we are know trying to find "i" where is the index of the card our dragged item is over
-        let i = 0
-        if (cards[i] && touch.pageX > cards[i].getBoundingClientRect().right - (cards[i].closest('.content-container').getBoundingClientRect().width / 2)) {
-          while (cards[i] && cards[i].getBoundingClientRect().right - (cards[i].closest('.content-container').getBoundingClientRect().width / 2) < touch.pageX) {
-            i++
-          }
-        }
-        // if the index is in the card (it could also be after the last one)
-        if (cards[i]) {
-          this.index = i
-          if (!this.active) {
-            // we come from the resources part, just have to include a "fake" card in the set from the store
-            this.$store.commit('dropZone/move', i)
-          } else {
-            // reinit cards to choose the one to modify
-            this.resetAllElement()
-            let start = 0
-            let end = 0
-            // when moving an element it leave a blank space that we need to remove
-            // it can be to its left or to its right, hence this two cases
+        let i = this.retrieveDragCardPosition(touch, cards)
+        this.index = Math.min(i, cards.length)
+        if (!this.active) {
+          // we come from the resources part, just have to include a "fake" card in the set from the store
+          this.$store.commit('dropZone/move', this.index)
+        } else {
+          // reinit cards to choose the one to modify
+          this.resetAllElement()
+          // when moving an element it leave a blank space that we need to remove
+          // it can be to its left or to its right, hence this two cases
+          if (this.index < cards.length) {
             if (this.index > index) {
-              start = index
-              end = this.index
-              for (let j = start; j < end; j++) {
-                if (j !== index) {
-                  cardsEl[j].closest('.content-container').style.transform = 'translate(-' + (cardsEl[j].closest('.content-container').offsetWidth) + 'px , 0px)'
-                }
-              }
+              this.translateToLeft(index, this.index, index, cardsEl)
             // second case:
             } else {
-              start = this.index
-              end = index
+              let start = this.index
+              let end = index
               for (let j = start; j < end; j++) {
                 if (j !== index) {
                   cardsEl[j].style.transform = 'translateX(' + (cardsEl[j].closest('.content-container').offsetWidth) + 'px)'
@@ -229,18 +232,10 @@ export default {
               }
             }
             // if the hovered index is not our dragged element index, show a dotted drop space to its left (this class adds a pseudo element)
-            if (index !== i) {
+            if (index !== i && cardsEl[i]) {
               cardsEl[i].closest('.content-container').classList.add('next-card')
             }
-          }
-        // know we are treating the edge case that happen when i is greater than the number of active items
-        } else {
-          this.index = cards.length
-          // still no problem when the item comes from the top part
-          if (!this.active) {
-            this.$store.commit('dropZone/move', this.index)
           } else {
-            this.resetAllElement()
             let start = 0
             let end = 0
             // check whether the dragged element is before or after the hovered one: basically, are we moving the last element ?
@@ -251,12 +246,7 @@ export default {
               start = this.index
               end = index
             }
-            // translate those element to the left so it doesn't show a hole in place of the dragged element
-            for (let j = start; j < end; j++) {
-              if (j !== index) {
-                cardsEl[j].closest('.content-container').style.transform = 'translate(-' + (cardsEl[j].closest('.content-container').offsetWidth) + 'px , 0px)'
-              }
-            }
+            this.translateToLeft(start, end, index, cardsEl)
             // if the dragged element is the last of the list, add to the one prior to it
             // a dotted drop space to its right
             if (index === cards.length - 1) {
@@ -268,21 +258,24 @@ export default {
               cardsEl[cards.length - 1].closest('.content-container').classList.add('next-card-last')
             }
           }
+        // know we are treating the edge case that happen when i is greater than the number of active items
         }
       // we are not on the active zone, we can reset the element
-      } else if (this.$refs.activeZone.$refs.card) {
+      } else {
         this.resetAllElement()
       }
     },
     // reset active elements
     resetAllElement () {
-      let cardEls = this.$refs.activeZone.$refs.card
-      for (let j = 0; j < cardEls.length; j++) {
-        cardEls[j].$el.style.transform = 'none'
-        cardEls[j].$el.closest('.content-container').style.transform = 'none'
-        cardEls[j].$el.closest('.content-container').classList.remove('next-card')
-        cardEls[j].$el.closest('.content-container').classList.remove('next-card-last')
-        cardEls[j].$el.style.marginLeft = '0px'
+      if (this.$refs.activeZone.$refs.card) {
+        let cardEls = this.$refs.activeZone.$refs.card
+        for (let j = 0; j < cardEls.length; j++) {
+          cardEls[j].$el.style.transform = 'none'
+          cardEls[j].$el.closest('.content-container').style.transform = 'none'
+          cardEls[j].$el.closest('.content-container').classList.remove('next-card')
+          cardEls[j].$el.closest('.content-container').classList.remove('next-card-last')
+          cardEls[j].$el.style.marginLeft = '0px'
+        }
       }
     }
   },
