@@ -2,26 +2,25 @@
 .page
   position relative
   width 100vw
-  height 100%
+  height calc(100vh - 60px)
+  overflow hidden
+  background grey
+.force-portait .page
+  width 100vh
+  height calc(100vw - 60px)
 </style>
 
 <template>
   <q-page
     class="page"
-    style="overflow: hidden; background:grey"
     ref="page"
   >
-    <q-resize-observer @resize="onResize" />
 
     <!-- Available items -->
     <items
       class="shadow-10"
       ref="itemsZone"
       :items="items"
-      :rowHeight="rowHeight"
-      :rows="rows"
-      :columns="columns"
-      :columnWidth="columnWidth"
       :style="`background-color: ${hexColor}`"
       :on-touch-end="onTouchEnd"
       :on-touch-start="onTouchStart"
@@ -29,9 +28,6 @@
     />
     <!-- Active items -->
     <active-items
-      :rowHeight="rowHeight"
-      :columnWidth="columnWidth"
-      :rows="rows"
       ref="activeZone"
       :items="activeItems"
       :on-touch-end="onTouchEndActive"
@@ -83,8 +79,6 @@ export default {
     return {
       index: 0,
       active: false,
-      rowHeight: 0,
-      columnWidth: 0,
       rows: 1,
       columns: 1,
       triggered: false
@@ -119,21 +113,6 @@ export default {
   methods: {
     initDropZone () {
       this.$store.dispatch('dropZone/init', this.$route.params.slug)
-    },
-    onResize (size) {
-      let width = size.width
-      let height = size.height
-
-      if (height > width) {
-        this.rows = 4
-        this.rowHeight = height / 4
-      } else {
-        this.rows = 3
-        this.rowHeight = height / 3
-      }
-      this.columns = Math.max(2, Math.floor(width / this.rowHeight))
-      this.columnWidth = width / this.columns
-      this.triggered = true
     },
     /**
      * Tranform a list of word into a string (join array members with ` `) and send it to the text to speech plugin
@@ -248,7 +227,6 @@ export default {
               end = index
               for (let j = start; j < end; j++) {
                 if (j !== index) {
-                  // console.log('j:' + j)
                   cardsEl[j].$el.style.transform = 'translateX(' + (cardsEl[j].$el.closest('.content-container').offsetWidth) + 'px)'
                 }
               }

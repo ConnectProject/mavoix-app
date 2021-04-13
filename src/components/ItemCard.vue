@@ -2,7 +2,11 @@
 .card-container
   position relative
   box-sizing border-box
+  height 12rem
+  width 10rem
 .card-inside
+  height 10rem
+  width 8rem
   position absolute
   margin auto
   left 0
@@ -31,7 +35,6 @@
   height 20%
   position relative
   vertical-align middle
-  font-family Menlo-bold
   overflow hidden
 .name
   position absolute
@@ -46,11 +49,9 @@
 <template>
   <div
     class="card-container"
-    :style="{height: rowHeight + 'px', width: 0.9 * Math.min(rowHeight, columnWidth) + 'px'}"
   >
     <div
       class="card-inside"
-      :style="{height: 0.8 * Math.min(rowHeight,columnWidth) + 'px', width: 0.68 * Math.min(rowHeight,columnWidth) + 'px'}"
     >
       <q-card
         ref="card"
@@ -71,7 +72,7 @@
             <img src="../assets/red_circle.svg"/>
           </div>
         </q-img>
-        <q-card-section class="text-h6 text-center" :style="'font-size: ' + Math.min((0.72 * Math.min(rowHeight,columnWidth) / Math.min(item.name.length,27))*1.4, rowHeight/10) +'px'">
+        <q-card-section class="text-h6 text-center" >
             <span class="name">{{ item.name.substring(0,24) }}{{ item.name.length > 27 ? '...' : '' }}</span>
         </q-card-section>
       </q-card>
@@ -91,9 +92,7 @@ export default {
     disabled: {
       type: [Boolean],
       default: false
-    },
-    rowHeight: Number,
-    columnWidth: Number
+    }
   },
   data () {
     return {

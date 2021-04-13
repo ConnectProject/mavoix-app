@@ -7,13 +7,15 @@
   flex-wrap nowrap
   min-width 100vw
   border-top 1px solid black
-  bottom: 0px
+  bottom 0px
+  height 12rem
 .content-container
   display flex
   flex-direction column
   justify-content space-evenly
   align-items stretch
   max-height 100%
+  width 10 rem
 .card-drop
   height 100%
   margin 10%
@@ -54,6 +56,7 @@
  font-size 2em
  border-radius 4px
  border 2px dotted white
+ transform: translate(-10em,0)
 .next-card-last .card-item:after
  position absolute
  top: 0px
@@ -71,18 +74,18 @@
  font-size 2em
  border-radius 4px
  border 2px dotted white
+ left: 10em
+
 </style>
 
 <template>
   <div
     ref="container"
     class="container"
-    :style="{height: rowHeight + 'px'}"
     v-touch-pan.horizontal.prevent.mouse="handleScroll"
   >
       <div
         class="content-container"
-        :style="{width: 0.9 * Math.min(rowHeight, columnWidth) + 'px'}"
         v-for="(item, index) in items"
         :key="index"
       >
@@ -91,8 +94,6 @@
           v-if="typeof item.drop === 'undefined'"
           :item="item"
           :index="index"
-          :rowHeight='rowHeight'
-          :columnWidth='columnWidth'
           ref="card"
           :on-touch-end="onTouchEnd"
           :on-touch-start="onTouchStart"
@@ -118,28 +119,13 @@ export default {
       lastX: 0
     }
   },
-  mounted () {
-    this.editCSS(this.rowHeight, this.columnWidth)
-  },
   props: [
     'items',
     'onTouchEnd',
     'onTouchStart',
-    'onTouchMoveProps',
-    'rowHeight',
-    'columnWidth',
-    'rows'
+    'onTouchMoveProps'
   ],
-  watch: {
-    columnWidth (newVal) {
-      this.editCSS(newVal)
-    }
-  },
   methods: {
-    editCSS (columnWidth) {
-      document.styleSheets[0].addRule('.card-item:after', 'transform: translate(-' + 0.9 * Math.min(this.rowHeight, columnWidth) + 'px,0)')
-      document.styleSheets[0].addRule('.next-card-last .card-item:after', 'left: ' + 2 * 0.9 * Math.min(this.rowHeight, columnWidth) + 'px')
-    },
     /**
      * Handle horizontal scroll
      */
