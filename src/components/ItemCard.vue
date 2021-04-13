@@ -39,11 +39,16 @@
 .name
   position absolute
   margin auto
+  font-size 1.25rem
+  line-height 1.25rem
   top 0
   bottom 0
   right 0
   left 0
   height fit-content
+.two-lines
+  font-size .9rem
+  line-height .9rem
 </style>
 
 <template>
@@ -72,8 +77,8 @@
             <img src="../assets/red_circle.svg"/>
           </div>
         </q-img>
-        <q-card-section class="text-h6 text-center" >
-            <span class="name">{{ item.name.substring(0,24) }}{{ item.name.length > 27 ? '...' : '' }}</span>
+        <q-card-section class="text-center">
+            <span class="name" ref="text">{{ item.name.substring(0,24) }}{{ item.name.length > 25 ? '...' : '' }}</span>
         </q-card-section>
       </q-card>
     </div>
@@ -100,6 +105,15 @@ export default {
       translateY: 0,
       initialX: 0,
       initialY: 0
+    }
+  },
+  mounted () {
+    let text = this.$refs.text
+    console.log(text.offsetHeight)
+    console.log(1.25 * parseFloat(getComputedStyle(document.documentElement).fontSize))
+    console.log('ok')
+    if (text.offsetHeight > (1.25 * parseFloat(getComputedStyle(document.documentElement).fontSize))) {
+      text.className += ' two-lines'
     }
   },
   methods: {
