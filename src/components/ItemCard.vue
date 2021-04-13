@@ -112,8 +112,6 @@ export default {
   },
   watch: {
     item (newVal, oldVal) {
-      console.log(newVal.name)
-      console.log(oldVal.name)
       if (newVal.name !== oldVal.name) {
         this.$nextTick(function () {
           this.resizeText()
@@ -124,7 +122,6 @@ export default {
   methods: {
     resizeText () {
       let text = this.$refs.text
-      console.log(text.innerText)
       text.classList.remove('two-lines')
       if (text.offsetHeight > (1.25 * parseFloat(getComputedStyle(document.documentElement).fontSize))) {
         text.classList.add('two-lines')

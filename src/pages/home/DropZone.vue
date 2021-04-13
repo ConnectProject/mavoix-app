@@ -5,9 +5,6 @@
   height calc(100vh - 60px)
   overflow hidden
   background grey
-.force-portait .page
-  width 100vh
-  height calc(100vw - 60px)
 </style>
 
 <template>
@@ -192,7 +189,7 @@ export default {
       // is pointer in the active zone ?
       if (touch.pageY >= this.$refs.activeZone.$el.getBoundingClientRect().top) {
         let cards = this.$refs.activeZone.$el.getElementsByClassName('card')
-        let cardsEl = this.$refs.activeZone.$refs.card
+        let cardsEl = this.$refs.activeZone.$el.getElementsByClassName('card-item')
         // we are know trying to find "i" where is the index of the card our dragged item is over
         let i = 0
         if (cards[i] && touch.pageX > cards[i].getBoundingClientRect().right - (cards[i].closest('.content-container').getBoundingClientRect().width / 2)) {
@@ -218,7 +215,7 @@ export default {
               end = this.index
               for (let j = start; j < end; j++) {
                 if (j !== index) {
-                  cardsEl[j].$el.closest('.content-container').style.transform = 'translate(-' + (cardsEl[j].$el.closest('.content-container').offsetWidth) + 'px , 0px)'
+                  cardsEl[j].closest('.content-container').style.transform = 'translate(-' + (cardsEl[j].closest('.content-container').offsetWidth) + 'px , 0px)'
                 }
               }
             // second case:
@@ -227,13 +224,13 @@ export default {
               end = index
               for (let j = start; j < end; j++) {
                 if (j !== index) {
-                  cardsEl[j].$el.style.transform = 'translateX(' + (cardsEl[j].$el.closest('.content-container').offsetWidth) + 'px)'
+                  cardsEl[j].style.transform = 'translateX(' + (cardsEl[j].closest('.content-container').offsetWidth) + 'px)'
                 }
               }
             }
             // if the hovered index is not our dragged element index, show a dotted drop space to its left (this class adds a pseudo element)
             if (index !== i) {
-              cardsEl[i].$el.closest('.content-container').classList.add('next-card')
+              cardsEl[i].closest('.content-container').classList.add('next-card')
             }
           }
         // know we are treating the edge case that happen when i is greater than the number of active items
@@ -257,18 +254,18 @@ export default {
             // translate those element to the left so it doesn't show a hole in place of the dragged element
             for (let j = start; j < end; j++) {
               if (j !== index) {
-                cardsEl[j].$el.closest('.content-container').style.transform = 'translate(-' + (cardsEl[j].$el.closest('.content-container').offsetWidth) + 'px , 0px)'
+                cardsEl[j].closest('.content-container').style.transform = 'translate(-' + (cardsEl[j].closest('.content-container').offsetWidth) + 'px , 0px)'
               }
             }
             // if the dragged element is the last of the list, add to the one prior to it
             // a dotted drop space to its right
             if (index === cards.length - 1) {
               if (cards.length > 1) {
-                cardsEl[cards.length - 2].$el.closest('.content-container').classList.add('next-card-last')
+                cardsEl[cards.length - 2].closest('.content-container').classList.add('next-card-last')
               }
             // else do that on the last element
             } else {
-              cardsEl[cards.length - 1].$el.closest('.content-container').classList.add('next-card-last')
+              cardsEl[cards.length - 1].closest('.content-container').classList.add('next-card-last')
             }
           }
         }
@@ -281,7 +278,6 @@ export default {
     resetAllElement () {
       let cardEls = this.$refs.activeZone.$refs.card
       for (let j = 0; j < cardEls.length; j++) {
-        // console.log('jreset:' + j)
         cardEls[j].$el.style.transform = 'none'
         cardEls[j].$el.closest('.content-container').style.transform = 'none'
         cardEls[j].$el.closest('.content-container').classList.remove('next-card')
