@@ -236,17 +236,12 @@ export default {
               cardsEl[i].closest('.content-container').classList.add('next-card')
             }
           } else {
-            let start = 0
-            let end = 0
-            // check whether the dragged element is before or after the hovered one: basically, are we moving the last element ?
-            if (this.index > index) {
-              start = index
-              end = this.index
-            } else {
-              start = this.index
-              end = index
-            }
-            this.translateToLeft(start, end, index, cardsEl)
+            this.translateToLeft(
+              Math.min(index, this.index),
+              Math.max(index, this.index),
+              index,
+              cardsEl
+            )
             // if the dragged element is the last of the list, add to the one prior to it
             // a dotted drop space to its right
             if (index === cards.length - 1) {
