@@ -223,12 +223,8 @@ export default {
               this.translateToLeft(index, this.index, index, cardsEl)
             // second case:
             } else {
-              let start = this.index
-              let end = index
-              for (let j = start; j < end; j++) {
-                if (j !== index) {
-                  cardsEl[j].style.transform = 'translateX(' + (cardsEl[j].closest('.content-container').offsetWidth) + 'px)'
-                }
+              for (let j = this.index; j < index; j++) {
+                cardsEl[j].style.transform = 'translateX(' + (cardsEl[j].closest('.content-container').offsetWidth) + 'px)'
               }
             }
             // if the hovered index is not our dragged element index, show a dotted drop space to its left (this class adds a pseudo element)
@@ -253,7 +249,7 @@ export default {
               cardsEl[cards.length - 1].closest('.content-container').classList.add('next-card-last')
             }
           }
-        // know we are treating the edge case that happen when i is greater than the number of active items
+        // now we are treating the edge case that happen when i is greater than the number of active items
         }
       // we are not on the active zone, we can reset the element
       } else {
