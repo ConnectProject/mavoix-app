@@ -110,9 +110,14 @@ export default {
   mounted () {
     this.resizeText()
   },
+  computed: {
+    name () {
+      return this.item.name
+    }
+  },
   watch: {
-    item (newVal, oldVal) {
-      if (newVal.name !== oldVal.name) {
+    name (newVal, oldVal) {
+      if (newVal !== oldVal) {
         this.$nextTick(function () {
           this.resizeText()
         })

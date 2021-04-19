@@ -66,10 +66,8 @@ export default {
     }
   },
   watch: {
-    items (newVal, oldVal) {
-      if (!oldVal[0] || newVal[0].key !== oldVal[0].key) {
-        this.$refs.innerContainer.style.transform = 'translateX(0px)'
-      }
+    $route () {
+      this.$refs.innerContainer.style.transform = 'translateX(0px)'
     }
   },
   methods: {

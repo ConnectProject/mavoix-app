@@ -16,7 +16,6 @@ const routes = [
   },
   {
     path: '/tabs/:slug',
-    name: 'home',
     component: () => import('layouts/HomeLayout.vue'),
     children: [
       /* Tab */
