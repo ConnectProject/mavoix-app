@@ -39,7 +39,7 @@
         ref="card"
         :on-touch-end="onTouchEnd"
         :on-touch-start="onTouchStart"
-        :onTouchMoveProps="onTouchMoveProps"
+        :on-touch-move-props="onTouchMoveProps"
         :disabled="!item.available || item.active"
       />
     </div>

@@ -21,7 +21,7 @@
       :style="`background-color: ${hexColor}`"
       :on-touch-end="onTouchEnd"
       :on-touch-start="onTouchStart"
-      :onTouchMoveProps="onTouchMoveProps"
+      :on-touch-move-props="onTouchMoveProps"
     />
     <!-- Active items -->
     <active-items
@@ -29,7 +29,7 @@
       :items="activeItems"
       :on-touch-end="onTouchEndActive"
       :on-touch-start="onTouchStartActive"
-      :onTouchMoveProps="onTouchMoveProps"
+      :on-touch-move-props="onTouchMoveProps"
     />
 
     <!-- Clear active items button -->
@@ -138,7 +138,7 @@ export default {
         let position = this.index
         // check whether we are in the active or passive zone to know what to do:
         let zone = 'passiv'
-        let touch = $event.changedTouches[0]
+        let touch = $event.changedTouches ? $event.changedTouches[0] : $event
         if (touch.pageY >= this.$refs.activeZone.$el.getBoundingClientRect().top) {
           zone = 'active'
         }
@@ -160,7 +160,7 @@ export default {
       let position = Math.max(0, pos)
       // check whether we are in the active or passive zone to know what to do:
       let zone = 'passiv'
-      let touch = $event.changedTouches[0]
+      let touch = $event.changedTouches ? $event.changedTouches[0] : $event
       if (touch.pageY >= this.$refs.activeZone.$el.getBoundingClientRect().top) {
         zone = 'active'
       }

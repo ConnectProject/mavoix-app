@@ -135,7 +135,11 @@ export default {
     /**
      * Handle drag item
      */
-    onTouchMove ({ changedTouches: [ touch ] }) {
+    onTouchMove (e) {
+      if (!e.changedTouches && !(e.buttons === undefined ? e.which === 1 : e.buttons === 1)) {
+        return
+      }
+      let touch = e.changedTouches ? e.changedTouches[0] : e
       if (!this.disabled) {
         const card = this.$refs.card.$el
         this.onTouchMoveProps(touch, this.item, this.index)
@@ -157,9 +161,9 @@ export default {
     /**
      * Call the prop's callback and reset data
      */
-    internalOnTouchEnd ($event) {
+    internalOnTouchEnd (event) {
       if (this.item.available) {
-        this.onTouchEnd($event, this.item, this.index)
+        this.onTouchEnd(event, this.item, this.index)
         this.translateX = 0
         this.translateY = 0
         this.initialX = 0

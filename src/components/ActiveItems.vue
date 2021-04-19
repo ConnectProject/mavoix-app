@@ -85,7 +85,7 @@
           ref="card"
           :on-touch-end="onTouchEnd"
           :on-touch-start="onTouchStart"
-          :onTouchMoveProps="onTouchMoveProps"
+          :on-touch-move-props="onTouchMoveProps"
         />
         <q-card v-else class="card-drop" ref="card">
           <div class="text-drop">drop</div>
