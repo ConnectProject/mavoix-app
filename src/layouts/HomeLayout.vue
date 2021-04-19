@@ -112,7 +112,6 @@ export default {
       this.$store.dispatch('stats/startSession').then(() => {
       })
     })
-    this.$store.commit('dropZone/InitiateState')
     this.$store.commit('tabs/InitiateState')
     this.$store.dispatch('tts/init')
   }
