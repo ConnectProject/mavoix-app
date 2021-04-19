@@ -34,8 +34,7 @@
 export default {
   name: 'PageAuthHome',
   mounted () {
-    console.log(localStorage.active)
-    if (localStorage.id) {
+    if (localStorage.id && localStorage.active) {
       let tabs = JSON.parse(localStorage.tabs)
       let active = parseInt(localStorage.active.substring(2))
       this.$router.push(

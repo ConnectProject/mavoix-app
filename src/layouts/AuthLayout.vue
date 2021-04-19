@@ -33,7 +33,7 @@ export default {
      */
     logged (newValue) {
       if (newValue) {
-        this.$router.push({ name: 'home' })
+        this.$router.push({ name: 'dropZone' })
       }
     }
   }

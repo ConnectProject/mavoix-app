@@ -54,8 +54,6 @@ export default {
     },
     onSubmit () {
       this.$store.dispatch('auth/login')
-      // already handled by watching 'auth/logged' in layouts/AuthLayout.vue
-      // this.$router.push({ name: 'home' })
     }
   },
   watch: {
