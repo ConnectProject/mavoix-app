@@ -167,7 +167,7 @@ export default {
       this.$store.commit('dropZone/drop', { item, position, zone })
       this.active = false
       // reset element from the active zone
-      this.resetAllElement()
+      this._resetAllElement()
     },
     // when starting to drag an element from the top part, make it over the others, not below
     onTouchStart ($event, item, index) {
@@ -183,44 +183,26 @@ export default {
       this.$refs.activeZone.$el.style.touchAction = 'none'
       $event.target.closest('.card').style.zIndex = '50'
       this.active = true
-      this.resetAllElement()
-    },
-    retrieveDragCardPosition (touch, cards) {
-      // we are know trying to find "i" where is the index of the card our dragged item is over
-      let i = 0
-      if (cards[i] && touch.pageX > cards[i].getBoundingClientRect().right - (cards[i].closest('.content-container').getBoundingClientRect().width / 2)) {
-        while (cards[i] && cards[i].getBoundingClientRect().right - (cards[i].closest('.content-container').getBoundingClientRect().width / 2) < touch.pageX) {
-          i++
-        }
-      }
-      return i
-    },
-    translateToLeft (start, end, index, cardsEl) {
-      // translate those element to the left so it doesn't show a hole in place of the dragged element
-      for (let j = start; j < end; j++) {
-        if (j !== index) {
-          cardsEl[j].closest('.content-container').style.transform = 'translate(-' + (cardsEl[j].closest('.content-container').offsetWidth) + 'px , 0px)'
-        }
-      }
+      this._resetAllElement()
     },
     onTouchMoveProps (touch, item, index) {
       // is pointer in the active zone ?
       if (touch.pageY >= this.$refs.activeZone.$el.getBoundingClientRect().top) {
         let cards = this.$refs.activeZone.$el.getElementsByClassName('card')
         let cardsEl = this.$refs.activeZone.$el.getElementsByClassName('card-item')
-        let i = this.retrieveDragCardPosition(touch, cards)
+        let i = this._retrieveDragCardPosition(touch, cards)
         this.index = Math.min(i, cards.length)
         if (!this.active) {
           // we come from the resources part, just have to include a "fake" card in the set from the store
           this.$store.commit('dropZone/move', this.index)
         } else {
           // reinit cards to choose the one to modify
-          this.resetAllElement()
+          this._resetAllElement()
           // when moving an element it leave a blank space that we need to remove
           // it can be to its left or to its right, hence this two cases
           if (this.index < cards.length) {
             if (this.index > index) {
-              this.translateToLeft(index, this.index, index, cardsEl)
+              this._translateToLeft(index, this.index, index, cardsEl)
             // second case:
             } else {
               for (let j = this.index; j < index; j++) {
@@ -232,7 +214,7 @@ export default {
               cardsEl[i].closest('.content-container').classList.add('next-card')
             }
           } else {
-            this.translateToLeft(
+            this._translateToLeft(
               Math.min(index, this.index),
               Math.max(index, this.index),
               index,
@@ -253,11 +235,29 @@ export default {
         }
       // we are not on the active zone, we can reset the element
       } else {
-        this.resetAllElement()
+        this._resetAllElement()
+      }
+    },
+    _retrieveDragCardPosition (touch, cards) {
+      // we are know trying to find "i" where is the index of the card our dragged item is over
+      let i = 0
+      if (cards[i] && touch.pageX > cards[i].getBoundingClientRect().right - (cards[i].closest('.content-container').getBoundingClientRect().width / 2)) {
+        while (cards[i] && cards[i].getBoundingClientRect().right - (cards[i].closest('.content-container').getBoundingClientRect().width / 2) < touch.pageX) {
+          i++
+        }
+      }
+      return i
+    },
+    _translateToLeft (start, end, index, cardsEl) {
+      // translate those element to the left so it doesn't show a hole in place of the dragged element
+      for (let j = start; j < end; j++) {
+        if (j !== index) {
+          cardsEl[j].closest('.content-container').style.transform = 'translate(-' + (cardsEl[j].closest('.content-container').offsetWidth) + 'px , 0px)'
+        }
       }
     },
     // reset active elements
-    resetAllElement () {
+    _resetAllElement () {
       if (this.$refs.activeZone.$refs.card) {
         let cardEls = this.$refs.activeZone.$refs.card
         for (let j = 0; j < cardEls.length; j++) {
