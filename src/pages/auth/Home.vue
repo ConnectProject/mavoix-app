@@ -35,10 +35,9 @@ export default {
   name: 'PageAuthHome',
   mounted () {
     if (localStorage.id && localStorage.active) {
-      let tabs = JSON.parse(localStorage.tabs)
-      let active = parseInt(localStorage.active.substring(2))
+      let active = localStorage.active
       this.$router.push(
-        { path: '/tabs/' + tabs[active].slug }
+        { path: '/tabs/' + active }
       )
     }
   }

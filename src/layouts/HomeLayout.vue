@@ -8,11 +8,11 @@
       <q-tabs
         align="left"
         indicator-color="transparent"
-        v-model="active"
       >
         <q-route-tab
           v-for="(tab, index) in tabs"
           :key="index"
+          @click="active = tab.slug"
           :to="{ name: 'dropZone', params: { slug: tab.slug}}"
           style="border-radius: 24px 24px 0 0;text-transform:none"
           :style="{
@@ -97,7 +97,7 @@ export default {
      *   Else just load the color
      */
     tabs (tabs) {
-      if (!this.$route.params.slug && tabs[0]) {
+      if ((!this.$route.params.slug || !(tabs.map(t => t.slug).includes(this.$route.params.slug))) && tabs[0]) {
         this.$router.push({ name: 'dropZone', params: { slug: tabs[0].slug } })
       } else if (tabs[0]) {
         this.setActiveColor()
@@ -105,9 +105,7 @@ export default {
     }
   },
   mounted () {
-    if (this.logged) {
-      this.$store.dispatch('tabs/loadAndWatch')
-    }
+    this.$store.dispatch('tabs/loadAndWatch')
     this.$store.dispatch('stats/connectConnect').then(() => {
       this.$store.dispatch('stats/startSession').then(() => {
       })

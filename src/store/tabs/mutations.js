@@ -1,17 +1,5 @@
 import { modelToTab, tabIndex } from './utils'
 
-function storeTabs (tabs) {
-  localStorage.tabs = JSON.stringify(tabs)
-}
-
-/**
- * Initiate Tabs for saved state
- * @param {State} state
- */
-export const InitiateState = (state) => {
-  state.tabs = localStorage.tabs ? JSON.parse(localStorage.tabs) : []
-}
-
 /**
  * Set tabs.
  * @param {State} state
@@ -21,7 +9,6 @@ export const setTabs = (state, tabsModel) => {
   state.tabs = tabsModel.map((tabModel) => {
     return modelToTab(tabModel)
   })
-  storeTabs(state.tabs)
 }
 
 /**
@@ -31,7 +18,6 @@ export const setTabs = (state, tabsModel) => {
  */
 export const addTab = (state, tabModel) => {
   state.tabs.push(modelToTab(tabModel))
-  storeTabs(state.tabs)
 }
 
 /**
@@ -46,7 +32,6 @@ export const updateTab = (state, tabModel) => {
   state.tabs[i].name = tab.name
   state.tabs[i].hexColor = tab.hexColor
   state.tabs[i].slug = tab.slug
-  storeTabs(state.tabs)
 }
 
 /**
@@ -56,7 +41,6 @@ export const updateTab = (state, tabModel) => {
  */
 export const deleteTab = (state, tabModel) => {
   state.tabs.splice(tabIndex(modelToTab(tabModel), state.tabs), 1)
-  storeTabs(state.tabs)
 }
 
 /**
