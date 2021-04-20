@@ -105,24 +105,13 @@ export default {
       translateY: 0,
       initialX: 0,
       initialY: 0,
-      isMounted: false
+      labelClass: ''
     }
   },
-  mounted () {
-    this.isMounted = true
-  },
   computed: {
-    labelClass () {
-      if (this.isMounted) {
-        let text = this.$refs.text
-        if (text.offsetHeight > (1.25 * parseFloat(getComputedStyle(document.documentElement).fontSize))) {
-          return 'two-lines'
-        }
-      }
-      return ''
-    },
     labelText () {
       const maxSize = 35
+      this.resizeText()
       if (this.item.name.length > maxSize) {
         return this.item.name.substring(0, maxSize - 3) + '...'
       } else {
@@ -131,6 +120,16 @@ export default {
     }
   },
   methods: {
+    resizeText () {
+      this.$nextTick(function () {
+        let text = this.$refs.text
+        if (text.offsetHeight > (1.25 * parseFloat(getComputedStyle(document.documentElement).fontSize))) {
+          this.labelClass = 'two-lines'
+        } else {
+          this.labelClass = ''
+        }
+      })
+    },
     /**
      * Handle drag item
      */
