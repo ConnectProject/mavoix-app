@@ -42,9 +42,6 @@ export default {
     store () {
       return this.$store.getters['auth/invitationCode']
     },
-    logged () {
-      return this.$store.getters['auth/logged']
-    },
     tabs () {
       return this.$store.getters['tabs/all']
     },
@@ -64,11 +61,6 @@ export default {
     }
   },
   watch: {
-    logged (n, o) {
-      if (n) {
-        this.$store.dispatch('tabs/loadAndWatch')
-      }
-    },
     /**
      * When change route (tab) change the header color
      */

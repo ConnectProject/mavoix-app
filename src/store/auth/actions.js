@@ -7,27 +7,30 @@ import DeviceUser from '~/models/DeviceUser'
  * Login with the invitation code (has the form username:password)
  * @param {Context} ctx
  */
-export const loginCode = ({ commit, getters: { invitationCode } }) => {
+export const loginCode = ({ commit, dispatch, getters: { invitationCode } }) => {
   const [ username, password ] = invitationCode.split(':')
   console.log('login')
   DeviceUser.logIn(username, password)
     .then((user) => {
       console.log(user)
       localStorage.id = user.id
-      commit('login', user)
+      dispatch('tabs/loadAndWatch', null, { root: true })
+      this.$router.push({ name: 'dropZone' })
     })
     .catch((err) => {
       commit('setError', err)
     })
 }
 
-export const login = ({ commit, getters: { username, password } }) => {
+// use normal function in order to bind this to this function
+export function login ({ commit, dispatch, getters: { username, password } }) {
   DeviceUser.logIn(username, password)
     .then((user) => {
       console.log(user)
       localStorage.id = user.id
       console.log(localStorage.id)
-      commit('login', user)
+      dispatch('tabs/loadAndWatch', null, { root: true })
+      this.$router.push({ name: 'dropZone' })
     })
     .catch((err) => {
       commit('setError', err)
