@@ -38,7 +38,7 @@ export const startSession = async function ({ commit }) {
   response = await this.$axios.post('parse/classes/sessionTimestamp', data, {
     headers: headers
   })
-  localStorage.connectSessionId = response.objectId
+  localStorage.connectSessionId = response.data.objectId
   console.log('resp:')
   console.log(response)
 }
