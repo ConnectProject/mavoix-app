@@ -44,15 +44,6 @@ export const deleteTab = (state, tabModel) => {
 }
 
 /**
- * Set the active tab
- * @param {State} state
- * @param {Tab} active a tab object
- */
-export const setActive = (state, active) => {
-  state.active = active
-  localStorage.active = state.active
-}
-/**
  * Set an error
  * @param {State} state current state
  * @param {*} error an error to print

@@ -15,11 +15,12 @@ const routes = [
     ]
   },
   {
-    path: '/tabs/:slug',
+    path: '/tabs/',
     component: () => import('layouts/HomeLayout.vue'),
+    name: 'dropZone',
     children: [
       /* Tab */
-      { path: '', name: 'dropZone', component: () => import('pages/home/DropZone.vue') }
+      { path: ':slug', name: 'tab', component: () => import('pages/home/DropZone.vue') }
     ]
   }
 ]

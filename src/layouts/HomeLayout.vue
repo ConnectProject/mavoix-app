@@ -12,8 +12,7 @@
         <q-route-tab
           v-for="(tab, index) in tabs"
           :key="index"
-          @click="active = tab.slug"
-          :to="{ name: 'dropZone', params: { slug: tab.slug}}"
+          :to="{ name: 'tab', params: { slug: tab.slug}}"
           style="border-radius: 24px 24px 0 0;text-transform:none"
           :style="{
             backgroundColor: tab.hexColor,
@@ -51,14 +50,6 @@ export default {
     },
     activeTabName () {
       return this.$route.params.slug
-    },
-    active: {
-      get () {
-        return this.$store.getters['tabs/active']
-      },
-      set (active) {
-        this.$store.commit('tabs/setActive', active)
-      }
     }
   },
   methods: {
@@ -87,8 +78,6 @@ export default {
     '$q.appVisible' (val) {
       if (!val) {
         this.$store.dispatch('stats/endSession')
-      } else {
-        console.log('shown')
       }
     },
     /**
@@ -98,7 +87,7 @@ export default {
      */
     tabs (tabs) {
       if ((!this.$route.params.slug || !(tabs.map(t => t.slug).includes(this.$route.params.slug))) && tabs[0]) {
-        this.$router.push({ name: 'dropZone', params: { slug: tabs[0].slug } })
+        this.$router.push({ name: 'tab', params: { slug: tabs[0].slug } })
       } else if (tabs[0]) {
         this.setActiveColor()
       }

@@ -34,11 +34,10 @@
 export default {
   name: 'PageAuthHome',
   mounted () {
-    if (localStorage.id && localStorage.active) {
-      let active = localStorage.active
-      this.$router.push(
-        { path: '/tabs/' + active }
-      )
+    if (localStorage.id) {
+      console.log('before')
+      this.$router.push({ name: 'dropZone' })
+      console.log('after')
     }
   }
 }
