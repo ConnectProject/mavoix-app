@@ -78,7 +78,7 @@
           </div>
         </q-img>
         <q-card-section class="text-center">
-            <span class="name" ref="text">{{ item.name.substring(0,24) }}{{ item.name.length > 25 ? '...' : '' }}</span>
+            <span class="name" :class="labelClass" ref="text">{{ labelText }}</span>
         </q-card-section>
       </q-card>
     </div>
@@ -104,34 +104,33 @@ export default {
       translateX: 0,
       translateY: 0,
       initialX: 0,
-      initialY: 0
+      initialY: 0,
+      isMounted: false
     }
   },
   mounted () {
-    this.resizeText()
+    this.isMounted = true
   },
   computed: {
-    name () {
-      return this.item.name
-    }
-  },
-  watch: {
-    name (newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.$nextTick(function () {
-          this.resizeText()
-        })
+    labelClass () {
+      if (this.isMounted) {
+        let text = this.$refs.text
+        if (text.offsetHeight > (1.25 * parseFloat(getComputedStyle(document.documentElement).fontSize))) {
+          return 'two-lines'
+        }
+      }
+      return ''
+    },
+    labelText () {
+      const maxSize = 35
+      if (this.item.name.length > maxSize) {
+        return this.item.name.substring(0, maxSize - 3) + '...'
+      } else {
+        return this.item.name
       }
     }
   },
   methods: {
-    resizeText () {
-      let text = this.$refs.text
-      text.classList.remove('two-lines')
-      if (text.offsetHeight > (1.25 * parseFloat(getComputedStyle(document.documentElement).fontSize))) {
-        text.classList.add('two-lines')
-      }
-    },
     /**
      * Handle drag item
      */

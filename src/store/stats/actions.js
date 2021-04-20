@@ -42,7 +42,7 @@ export const startSession = async function ({ commit }) {
     headers: headers
   })
   // does not seem to be working, objectId is undefined
-  localStorage.objectId = response.objectId
+  localStorage.connectSessionId = response.objectId
   console.log('resp:')
   console.log(response)
 }
@@ -60,7 +60,7 @@ export const endSession = async function ({ commit }) {
     }
   }
   let response
-  response = await this.$axios.put('parse/classes/jsonSchemaData/' + localStorage.objectId, data, {
+  response = await this.$axios.put('parse/classes/jsonSchemaData/' + localStorage.connectSessionId, data, {
     headers: headers
   })
   console.log('end session:')
