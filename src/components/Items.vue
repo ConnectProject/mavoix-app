@@ -2,18 +2,22 @@
 .container
   position absolute
   left 0
-  display flex
-  flex-direction row
-  flex-wrap nowrap
-  min-width 100vw
+  width 100%
+  height calc(calc(100vh - 12rem) - 60px)
   z-index 10
   top 0px
-.content-container
-  display flex
+.force-portait .container
+  height calc(calc(100vw - 12rem) - 60px)
+.inner-container
+  height 100%
+  width 100%
+  display inline-flex
   flex-direction column
-  justify-content flex-start
   align-items stretch
-  max-height 100%
+  align-content baseline
+  flex-wrap wrap
+.active-card
+  opacity 0
 </style>
 
 <template>
@@ -21,27 +25,21 @@
     ref="container"
     class="container"
     v-touch-pan.horizontal.prevent.mouse="handleScroll"
-    :style="{ height: (rowHeight * (rows - 1)) + 'px' }"
   >
-    <!-- Colums of x items -->
     <div
-      v-for="n in blocksCounts(items,rows)"
-      :key="n"
-      class="content-container"
+      class="inner-container"
+      ref="innerContainer"
     >
-      <!-- The two items -->
       <item-card
-        v-for="(item, index) in pageItems(n, items, rows)"
-        :key="n * index"
+        v-for="(item, index) in items"
+        :key="index"
         :index="index"
         :item="item"
-        :rowHeight='rowHeight'
-        :columnWidth='columnWidth'
-        :style="item.active ? 'opacity:0' : ''"
+        :class="item.active ? 'active-card' : ''"
         ref="card"
         :on-touch-end="onTouchEnd"
         :on-touch-start="onTouchStart"
-        :onTouchMoveProps="onTouchMoveProps"
+        :on-touch-move-props="onTouchMoveProps"
         :disabled="!item.available || item.active"
       />
     </div>
@@ -57,11 +55,7 @@ export default {
     'items',
     'onTouchEnd',
     'onTouchMoveProps',
-    'onTouchStart',
-    'rowHeight',
-    'rows',
-    'columnWidth',
-    'columns'
+    'onTouchStart'
   ],
   components: {
     ItemCard
@@ -69,6 +63,11 @@ export default {
   data () {
     return {
       lastX: 0
+    }
+  },
+  watch: {
+    $route () {
+      this.$refs.innerContainer.style.transform = 'translateX(0px)'
     }
   },
   methods: {
@@ -85,14 +84,18 @@ export default {
     /**
      * Handle horizontal scroll
      */
-    handleScroll ({ offset, isFinal }) {
-      let container = this.$refs.container
-      let translateVal = Math.min(0, Math.max(offset.x + this.lastX, -(container.clientWidth - window.innerWidth)))
+    handleScroll ({ evt, offset, isFinal }) {
+      let scrolledElement = evt.target.closest('.card-inside')
+      if (!scrolledElement || scrolledElement.closest('.active-card')) {
+        let innerContainer = this.$refs.innerContainer
+        let lastCard = document.querySelectorAll('.inner-container .card-container')[document.querySelectorAll('.inner-container .card-container').length - 1]
+        let translateVal = Math.min(0, Math.max(offset.x + this.lastX, -(lastCard.offsetLeft + lastCard.offsetWidth - window.innerWidth)))
 
-      if (isFinal) {
-        this.lastX = translateVal
+        if (isFinal) {
+          this.lastX = translateVal
+        }
+        innerContainer.style.transform = `translateX(${translateVal}px)`
       }
-      container.style.transform = `translateX(${translateVal}px)`
     },
     /**
      * Return array of items of a spectific column

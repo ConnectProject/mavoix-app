@@ -25,15 +25,12 @@ export const init = ({ commit, dispatch, state }, slug) => {
   if (state.subscription) {
     state.subscription.unsubscribe()
   }
-  // console.log('LocalStorage.id')
-  // console.log(LocalStorage.id)
   slugToTabModel(slug)
     .then((tabModel) =>
       itemsQuery(tabModel)
         .find()
         .then((itemsModel) => {
           // Set tab's data
-          // console.log(tabModel)
           commit('setTabSlug', slug)
           commit('setTabId', tabModel.id)
           commit('setTabUser', tabModel.get('user'))
@@ -90,7 +87,6 @@ export const saveSentence = function ({ commit, getters: { activeItems } }) {
     container['wordPronounced'] = item.name
     return container
   })
-  console.log(activeImages)
   let headers = {
     'content-type': 'application/json',
     'x-parse-application-id': 'connect',

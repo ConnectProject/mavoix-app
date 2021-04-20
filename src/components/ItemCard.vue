@@ -1,7 +1,18 @@
 <style lang="stylus" scoped>
 .card-container
-  padding 10%
+  position relative
   box-sizing border-box
+  height 12rem
+  width 10rem
+.card-inside
+  height 10rem
+  width 8rem
+  position absolute
+  margin auto
+  left 0
+  right 0
+  bottom 0
+  top 0
 .card
   height 100%
   background white
@@ -21,44 +32,56 @@
   color red
 .q-card__section
   padding 0
-  height: 20%
+  height 20%
+  position relative
+  vertical-align middle
+  overflow hidden
 .name
-  line-height: normal;
+  position absolute
+  margin auto
+  font-size 1.25rem
+  line-height 1.25rem
+  top 0
+  bottom 0
+  right 0
+  left 0
+  height fit-content
+.two-lines
+  font-size .9rem
+  line-height .9rem
 </style>
 
 <template>
   <div
     class="card-container"
-    :style="{height: rowHeight + 'px', width: columnWidth + 'px'}"
   >
-    <q-card
-      ref="card"
-      class="card"
-      :style="`transform: translate(${translateX}px, ${translateY}px)`"
-      v-touch:moving="onTouchMove"
-      v-touch:end="internalOnTouchEnd"
-      v-touch:start="internalOnTouchStart"
+    <div
+      class="card-inside"
     >
-      <q-img
-        :src="item.asset.url"
-        contain
+      <q-card
+        ref="card"
+        class="card"
+        :style="`transform: translate(${translateX}px, ${translateY}px)`"
+        v-touch:moving="onTouchMove"
+        v-touch:end="internalOnTouchEnd"
+        v-touch:start="internalOnTouchStart"
       >
-        <div
-          v-if="disabled"
-          class="card-img-wrapper"
+        <q-img
+          :src="item.asset.url"
+          contain
         >
-          <img src="../assets/red_circle.svg"/>
-        </div>
-      </q-img>
-      <q-card-section>
-        <div
-          class="text-h6 text-center name"
-          :style="`font-size: ${rowHeight/8}px`"
-        >
-          {{ item.name }}
-        </div>
-      </q-card-section>
-    </q-card>
+          <div
+            v-if="disabled"
+            class="card-img-wrapper"
+          >
+            <img src="../assets/red_circle.svg"/>
+          </div>
+        </q-img>
+        <q-card-section class="text-center">
+            <span class="name" :class="labelClass" ref="text">{{ labelText }}</span>
+        </q-card-section>
+      </q-card>
+    </div>
   </div>
 </template>
 
@@ -74,23 +97,47 @@ export default {
     disabled: {
       type: [Boolean],
       default: false
-    },
-    rowHeight: Number,
-    columnWidth: Number
+    }
   },
   data () {
     return {
       translateX: 0,
       translateY: 0,
       initialX: 0,
-      initialY: 0
+      initialY: 0,
+      labelClass: ''
+    }
+  },
+  computed: {
+    labelText () {
+      const maxSize = 35
+      this.resizeText()
+      if (this.item.name.length > maxSize) {
+        return this.item.name.substring(0, maxSize - 3) + '...'
+      } else {
+        return this.item.name
+      }
     }
   },
   methods: {
+    resizeText () {
+      this.$nextTick(function () {
+        let text = this.$refs.text
+        if (text.offsetHeight > (1.25 * parseFloat(getComputedStyle(document.documentElement).fontSize))) {
+          this.labelClass = 'two-lines'
+        } else {
+          this.labelClass = ''
+        }
+      })
+    },
     /**
      * Handle drag item
      */
-    onTouchMove ({ changedTouches: [ touch ] }) {
+    onTouchMove (e) {
+      if (!e.changedTouches && !(e.buttons === undefined ? e.which === 1 : e.buttons === 1)) {
+        return
+      }
+      let touch = e.changedTouches ? e.changedTouches[0] : e
       if (!this.disabled) {
         const card = this.$refs.card.$el
         this.onTouchMoveProps(touch, this.item, this.index)
@@ -112,9 +159,9 @@ export default {
     /**
      * Call the prop's callback and reset data
      */
-    internalOnTouchEnd ($event) {
+    internalOnTouchEnd (event) {
       if (this.item.available) {
-        this.onTouchEnd($event, this.item, this.index)
+        this.onTouchEnd(event, this.item, this.index)
         this.translateX = 0
         this.translateY = 0
         this.initialX = 0

@@ -38,13 +38,13 @@ export const startSession = async function ({ commit }) {
   response = await this.$axios.post('parse/classes/sessionTimestamp', data, {
     headers: headers
   })
+  localStorage.connectSessionId = response.objectId
   console.log('resp:')
   console.log(response)
-  localStorage.objectId = response.data.objectId
 }
 
 export const endSession = async function ({ commit }) {
-  if (localStorage.objectId) {
+  if (localStorage.connectSessionId) {
     let headers = {
       'content-type': 'application/json',
       'x-parse-application-id': 'connect',
@@ -54,12 +54,12 @@ export const endSession = async function ({ commit }) {
       'sessionEnd': (new Date()).toISOString()
     }
     let response
-    response = await this.$axios.put('parse/classes/sessionTimestamp/' + localStorage.objectId, data, {
+    response = await this.$axios.put('parse/classes/sessionTimestamp/' + localStorage.connectSessionId, data, {
       headers: headers
     })
     console.log('end session:')
     console.log(response)
   } else {
-    console.log('sessionTimestamp objectId undefined, not sending anything to connect')
+    console.log('connectSessionId undefined, not sending anything to connect')
   }
 }

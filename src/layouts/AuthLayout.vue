@@ -19,23 +19,3 @@
     </q-page-container>
   </q-layout>
 </template>
-
-<script>
-export default {
-  computed: {
-    logged () {
-      return this.$store.getters['auth/logged']
-    }
-  },
-  watch: {
-    /**
-     * When the user is logged go to home page
-     */
-    logged (newValue) {
-      if (newValue) {
-        this.$router.push({ name: 'home' })
-      }
-    }
-  }
-}
-</script>

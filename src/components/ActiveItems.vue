@@ -7,13 +7,15 @@
   flex-wrap nowrap
   min-width 100vw
   border-top 1px solid black
-  bottom: 0px
+  bottom 0px
+  height 12rem
 .content-container
   display flex
   flex-direction column
   justify-content space-evenly
   align-items stretch
   max-height 100%
+  width 10 rem
 .card-drop
   height 100%
   margin 10%
@@ -36,53 +38,42 @@
  position relative
 .card-item
  position relative
+.card-item:after
+ position absolute
+ top: 0px
+ left: 0
+ width 8rem
+ max-width 8rem
+ text-align: center
+ height 10rem
+ flex-direction row
+ align-items center
+ justify-content center
+ margin: 1rem
+ content: 'drop'
+ color white
+ font-size 2em
+ border-radius 4px
+ border 2px dotted white
+ display none
 .next-card .card-item:after
- position absolute
- top: 0px
- left: 0px
- width 80%
- max-width 80%
- text-align: center
- height 80%
  display flex
- flex-direction row
- align-items center
- justify-content center
- margin: 10%
- content: 'drop'
- color white
- font-size 2em
- border-radius 4px
- border 2px dotted white
+ transform translate(-10rem,0)
 .next-card-last .card-item:after
- position absolute
- top: 0px
- width 80%
- margin: 10%
- max-width 80%
- text-align: center
- height 80%
  display flex
- flex-direction row
- align-items center
- justify-content center
- content: 'drop'
- color white
- font-size 2em
- border-radius 4px
- border 2px dotted white
+ transform translate(0em,0)
+ left 10rem
+
 </style>
 
 <template>
   <div
     ref="container"
     class="container"
-    :style="{height: rowHeight + 'px'}"
     v-touch-pan.horizontal.prevent.mouse="handleScroll"
   >
       <div
         class="content-container"
-        :style="{width: columnWidth + 'px'}"
         v-for="(item, index) in items"
         :key="index"
       >
@@ -91,12 +82,10 @@
           v-if="typeof item.drop === 'undefined'"
           :item="item"
           :index="index"
-          :rowHeight='rowHeight'
-          :columnWidth='columnWidth'
           ref="card"
           :on-touch-end="onTouchEnd"
           :on-touch-start="onTouchStart"
-          :onTouchMoveProps="onTouchMoveProps"
+          :on-touch-move-props="onTouchMoveProps"
         />
         <q-card v-else class="card-drop" ref="card">
           <div class="text-drop">drop</div>
@@ -118,28 +107,13 @@ export default {
       lastX: 0
     }
   },
-  mounted () {
-    this.editCSS(this.columnWidth)
-  },
   props: [
     'items',
     'onTouchEnd',
     'onTouchStart',
-    'onTouchMoveProps',
-    'rowHeight',
-    'columnWidth',
-    'rows'
+    'onTouchMoveProps'
   ],
-  watch: {
-    columnWidth (newVal) {
-      this.editCSS(newVal)
-    }
-  },
   methods: {
-    editCSS (columnWidth) {
-      document.styleSheets[0].addRule('.card-item:after', 'transform: translate(-' + columnWidth + 'px,0)')
-      document.styleSheets[0].addRule('.next-card-last .card-item:after', 'left: ' + 2 * columnWidth + 'px')
-    },
     /**
      * Handle horizontal scroll
      */

@@ -8,12 +8,11 @@
       <q-tabs
         align="left"
         indicator-color="transparent"
-        v-model="active"
       >
         <q-route-tab
           v-for="(tab, index) in tabs"
           :key="index"
-          :to="{ name: 'dropZone', params: { slug: tab.slug}}"
+          :to="{ name: 'tab', params: { slug: tab.slug}}"
           style="border-radius: 24px 24px 0 0;text-transform:none"
           :style="{
             backgroundColor: tab.hexColor,
@@ -43,22 +42,11 @@ export default {
     store () {
       return this.$store.getters['auth/invitationCode']
     },
-    logged () {
-      return this.$store.getters['auth/logged']
-    },
     tabs () {
       return this.$store.getters['tabs/all']
     },
     activeTabName () {
       return this.$route.params.slug
-    },
-    active: {
-      get () {
-        return this.$store.getters['tabs/active']
-      },
-      set (active) {
-        this.$store.commit('tabs/setActive', active)
-      }
     }
   },
   methods: {
@@ -73,13 +61,6 @@ export default {
     }
   },
   watch: {
-    logged (n, o) {
-      if (n) {
-        console.log('mounted')
-        console.log(localStorage.id)
-        this.$store.dispatch('tabs/loadAndWatch')
-      }
-    },
     /**
      * When change route (tab) change the header color
      */
@@ -89,8 +70,6 @@ export default {
     '$q.appVisible' (val) {
       if (!val) {
         this.$store.dispatch('stats/endSession')
-      } else {
-        console.log('shown')
       }
     },
     /**
@@ -99,23 +78,18 @@ export default {
      *   Else just load the color
      */
     tabs (tabs) {
-      if (!this.$route.params.slug && tabs[0]) {
-        this.$router.push({ name: 'dropZone', params: { slug: tabs[0].slug } })
+      if ((!this.$route.params.slug || !(tabs.map(t => t.slug).includes(this.$route.params.slug))) && tabs[0]) {
+        this.$router.push({ name: 'tab', params: { slug: tabs[0].slug } })
       } else if (tabs[0]) {
         this.setActiveColor()
       }
     }
   },
   mounted () {
-    localStorage.removeItem('objectId')
-    console.log(localStorage)
-    if (this.logged) {
-      this.$store.dispatch('tabs/loadAndWatch')
-    }
+    localStorage.removeItem('connectSessionId')
+    this.$store.dispatch('tabs/loadAndWatch')
     this.$store.dispatch('stats/connectConnect').then(() => {
-      console.log('connected')
       this.$store.dispatch('stats/startSession').then(() => {
-        console.log('session started')
       })
     })
     this.$store.dispatch('tts/init')

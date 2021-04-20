@@ -32,6 +32,13 @@
 
 <script>
 export default {
-  name: 'PageAuthHome'
+  name: 'PageAuthHome',
+  mounted () {
+    if (localStorage.id) {
+      console.log('before')
+      this.$router.push({ name: 'dropZone' })
+      console.log('after')
+    }
+  }
 }
 </script>

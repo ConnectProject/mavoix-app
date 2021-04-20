@@ -5,6 +5,7 @@ import { modelToTabItem, itemIndex } from './utils'
  * @param {State} state
  * @param {Number} hexColor new color
  */
+
 export const setTabColor = (state, color) => {
   state.tab.color = color
 }

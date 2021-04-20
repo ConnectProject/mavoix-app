@@ -16,18 +16,6 @@ export const setPassword = (state, password) => {
 }
 
 /**
- * Used to log in the user
- * @param {State} state
- */
-export const login = (state, user) => {
-  state.logged = true
-}
-
-export const logout = (state, user) => {
-  state.logged = false
-}
-
-/**
  * Used to throw an error
  * @param {State} state
  * @param {Error} error is the error to set
