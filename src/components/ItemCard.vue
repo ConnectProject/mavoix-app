@@ -111,12 +111,19 @@ export default {
   computed: {
     labelText () {
       const maxSize = 35
-      this.resizeText()
       if (this.item.name.length > maxSize) {
         return this.item.name.substring(0, maxSize - 3) + '...'
       } else {
         return this.item.name
       }
+    }
+  },
+  mounted () {
+    this.resizeText()
+  },
+  watch: {
+    labelText (newText) {
+      this.resizeText()
     }
   },
   methods: {
