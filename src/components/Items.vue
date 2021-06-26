@@ -5,9 +5,11 @@
   width 100%
   height calc(calc(100vh - 12rem) - 60px)
   z-index 10
-  top 0px
+  top 0
+
 .force-portait .container
   height calc(calc(100vw - 12rem) - 60px)
+
 .inner-container
   height 100%
   width 100%
@@ -16,6 +18,7 @@
   align-items stretch
   align-content baseline
   flex-wrap wrap
+
 .active-card
   opacity 0
 </style>
@@ -24,8 +27,10 @@
   <div
     ref="container"
     class="container"
-    v-touch-pan.horizontal.prevent.mouse="handleScroll"
+    v-touch-pan.prevent.mouse="handleScroll"
   >
+    <!-- v-touch-pan.horizontal.prevent.mouse="handleScroll" -->
+
     <div
       class="inner-container"
       ref="innerContainer"
@@ -39,7 +44,7 @@
         ref="card"
         :on-touch-end="onTouchEnd"
         :on-touch-start="onTouchStart"
-        :on-touch-move-props="onTouchMoveProps"
+        :on-touch-move="onTouchMove"
         :disabled="!item.available || item.active"
       />
     </div>
@@ -54,7 +59,7 @@ export default {
   props: [
     'items',
     'onTouchEnd',
-    'onTouchMoveProps',
+    'onTouchMove',
     'onTouchStart'
   ],
   components: {
@@ -85,17 +90,18 @@ export default {
      * Handle horizontal scroll
      */
     handleScroll ({ evt, offset, isFinal }) {
-      let scrolledElement = evt.target.closest('.card-inside')
-      if (!scrolledElement || scrolledElement.closest('.active-card')) {
-        let innerContainer = this.$refs.innerContainer
-        let lastCard = document.querySelectorAll('.inner-container .card-container')[document.querySelectorAll('.inner-container .card-container').length - 1]
-        let translateVal = Math.min(0, Math.max(offset.x + this.lastX, -(lastCard.offsetLeft + lastCard.offsetWidth - window.innerWidth)))
+      // let scrolledElement = evt.target.closest('.card')
+      // if (!scrolledElement || scrolledElement.closest('.active-card')) {
+      let innerContainer = this.$refs.innerContainer
+      let lastCard = document.querySelector('.inner-container .card:last-child')
+      let paneWidth = lastCard.offsetLeft + lastCard.offsetWidth + parseFloat(window.getComputedStyle(lastCard).marginRight)
+      let translateVal = Math.min(0, Math.max(offset.x + this.lastX, -(paneWidth - window.innerWidth)))
 
-        if (isFinal) {
-          this.lastX = translateVal
-        }
-        innerContainer.style.transform = `translateX(${translateVal}px)`
+      if (isFinal) {
+        this.lastX = translateVal
       }
+      innerContainer.style.transform = `translateX(${translateVal}px)`
+      // }
     },
     /**
      * Return array of items of a spectific column

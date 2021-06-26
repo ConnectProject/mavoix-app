@@ -102,28 +102,29 @@ export const clearActiveItems = (state) => {
  * @param {zone} zone
  * @param {position} position
  */
-export const drop = (state, { item, position, zone }) => {
+export const dropItem = (state, { item, position, zone }) => {
   state.activeItems = state.activeItems.filter((e) => { return typeof e.drop === 'undefined' })
   let i = itemIndex(item, state.activeItems)
   if (i !== -1) {
     state.activeItems.splice(i, 1)
   }
   if (zone === 'active') {
+    item.active = true
     state.activeItems.splice(position, 0, item)
   }
 }
 
-/**
- * Add fake item at specified position, remove old fake item
- * fake item is here to emulate a dropzone
- * @param {State} state
- * @param {position} position
- */
-export const move = (state, position) => {
-  let item = { 'drop': true }
-  state.activeItems = state.activeItems.filter((e) => { return typeof e.drop === 'undefined' })
-  state.activeItems.splice(position, 0, item)
-}
+// /**
+//  * Add fake item at specified position, remove old fake item
+//  * fake item is here to emulate a dropzone
+//  * @param {State} state
+//  * @param {position} position
+//  */
+// export const move = (state, position) => {
+//   let item = { 'drop': true }
+//   state.activeItems = state.activeItems.filter((e) => { return typeof e.drop === 'undefined' })
+//   state.activeItems.splice(position, 0, item)
+// }
 
 /**
  * Set subscription
