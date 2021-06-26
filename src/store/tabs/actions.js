@@ -7,17 +7,17 @@ import Tab, { HEX_COLOR_KEY, SPEED_KEY, LANGUAGE_KEY } from '~/models/Tab'
  * @param {Context} ctx vuex action context.
  */
 export const loadAndWatch = ({ commit, dispatch }) => {
-  new Parse.Query(Tab)
+  return new Parse.Query(Tab)
     .equalTo('user', localStorage.id)
     .find()
     .then((tabs) => {
       commit('setTabs', tabs)
       dispatch('watch')
     })
-    .catch((err) => {
-      alert('test loadAndWatch: ' + err)
-      commit('setError', err)
-    })
+  // .catch((err) => {
+  //   alert('loadAndWatch: ' + err)
+  //   commit('setError', err)
+  // })
 }
 
 /**

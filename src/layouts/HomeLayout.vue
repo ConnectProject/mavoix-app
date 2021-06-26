@@ -18,7 +18,8 @@
             backgroundColor: tab.hexColor,
             margin: (tab.slug===activeTabName)?'1px 0 0 1px':'10px 0 1px 1px'
           }"
-          :label="tab.name" />
+          :label="tab.name"
+        />
       </q-tabs>
     </q-header>
 
@@ -88,11 +89,19 @@ export default {
   mounted () {
     localStorage.removeItem('connectSessionId')
     this.$store.dispatch('tabs/loadAndWatch')
-    this.$store.dispatch('stats/connectConnect').then(() => {
-      this.$store.dispatch('stats/startSession').then(() => {
+      .then(() => {
+        this.$store.dispatch('stats/connectConnect')
       })
-    })
-    this.$store.dispatch('tts/init')
+      .then(() => {
+        this.$store.dispatch('stats/startSession')
+      })
+      .then(() => {
+        this.$store.dispatch('tts/init')
+      })
+      .catch(() => {
+        localStorage.removeItem('id')
+        this.$router.push('/')
+      })
   }
 }
 </script>
