@@ -115,7 +115,7 @@ export default {
     this.resizeText()
   },
   watch: {
-    labelText (newText) {
+    labelText () {
       this.resizeText()
     }
   },

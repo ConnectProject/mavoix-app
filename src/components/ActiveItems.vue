@@ -33,7 +33,7 @@
   <div
     ref="container"
     class="container"
-    v-touch-pan.prevent.mouse="handleScroll"
+    v-touch-pan.prevent.mouse="this.isDragging ? void 0 : handleScroll"
   >
     <q-card
       class="card-drop"
@@ -77,7 +77,8 @@ export default {
     'onTouchStart',
     'onTouchMove',
     'showCardDrop',
-    'cardDropX'
+    'cardDropX',
+    'isDragging'
   ],
   methods: {
     /**

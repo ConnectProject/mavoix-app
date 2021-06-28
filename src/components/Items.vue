@@ -27,7 +27,7 @@
   <div
     ref="container"
     class="container"
-    v-touch-pan.prevent.mouse="handleScroll"
+    v-touch-pan.prevent.mouse="this.isDragging ? void 0 : handleScroll"
   >
     <!-- v-touch-pan.horizontal.prevent.mouse="handleScroll" -->
 
@@ -60,7 +60,8 @@ export default {
     'items',
     'onTouchEnd',
     'onTouchMove',
-    'onTouchStart'
+    'onTouchStart',
+    'isDragging'
   ],
   components: {
     ItemCard
