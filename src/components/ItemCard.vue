@@ -51,7 +51,8 @@
     ref="card"
     class="card"
     :style="`transform: translate(${translateX}px, ${translateY}px)`"
-    v-touch-pan.prevent.mouse="disabled ? void 0 : internalOnTouchMove"
+    v-touch-pan.prevent.mouse="disabled ? void 0 : handleDrag"
+    v-on="{ click: translateX || translateY ? () => {} : handleClick }"
   >
     <q-img
       :src="item.asset.url"
@@ -138,7 +139,7 @@ export default {
     /**
      * Handle drag item
      */
-    internalOnTouchMove ({ offset, isFirst, isFinal }) {
+    handleDrag ({ offset, isFirst, isFinal }) {
       if (isFirst) {
         // Set the card initial position (should be 0 unless something went wrong)
         this.initialX = this.translateX
@@ -153,6 +154,14 @@ export default {
         // Call the prop's callback and reset data
         this.onTouchEnd(this)
       }
+    },
+    // /**
+    //  * When clicking on card:
+    //  *   toggle card between active and passive zone
+    //  */
+    handleClick () {
+      const zone = this.item.active ? 'passiv' : 'active'
+      this.onTouchEnd(this, zone)
     }
   }
 }

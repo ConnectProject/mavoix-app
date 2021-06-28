@@ -31,7 +31,7 @@
       :on-touch-end="onTouchEnd"
       :on-touch-start="onTouchStart"
       :on-touch-move="onTouchMove"
-      :show-card-drop="!!card"
+      :show-card-drop="true"
       :card-drop-x="cardDropX"
       :isDragging="!!card"
     />
@@ -171,10 +171,12 @@ export default {
       // is pointer in the active zone ?
       if (this.pageY >= this.$refs.activeZone.$el.getBoundingClientRect().top) {
         this.active = true
-        card.$el.style['box-shadow'] = 'blue 0px 0px 10px 4px'
+        card.$el.style['box-shadow'] = 'blue 0px 0px 5px 2px'
+        cardDrop.$el.style['box-shadow'] = 'blue 0px 0px 5px 2px'
       } else {
         this.active = false
         card.$el.style['box-shadow'] = null
+        cardDrop.$el.style['box-shadow'] = null
       }
       this.$nextTick(this.translateActiveCards)
     },
@@ -189,6 +191,7 @@ export default {
       this.$refs.activeZone.$el.style.zIndex = '0'
       card.$el.style.zIndex = '0'
       card.$el.style['box-shadow'] = null
+      this.$refs.activeZone.$refs.cardDrop.$el.style['box-shadow'] = null
       card.resetTranslation()
 
       // check whether we are in the active or passive zone to know what to do:
