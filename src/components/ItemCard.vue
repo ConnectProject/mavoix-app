@@ -10,17 +10,17 @@
   height 80%
 
 .card-img-wrapper
-  position absolute
+  // position absolute
   height 100%
   width 100%
-  display flex
-  justify-content center
-  align-items center
+  padding .5rem
+  // display flex
+  // justify-content center
+  // align-items center
 
-.circle:before
-  content '\25CF'
-  font-size 100%
-  color red
+.disabled-symbol
+  height 100%
+  width 100%
 
 .q-card__section
   padding 0
@@ -52,7 +52,7 @@
     class="card"
     :style="`transform: translate(${translateX}px, ${translateY}px)`"
     v-touch-pan.prevent.mouse="disabled ? void 0 : handleDrag"
-    v-on="{ click: translateX || translateY ? () => {} : handleClick }"
+    v-on="{ click: translateX || translateY || disabled ? () => {} : handleClick }"
   >
     <q-img
       :src="item.asset.url"
@@ -65,7 +65,8 @@
         class="card-img-wrapper"
       >
         <q-img
-          src="../assets/Indisponible-symbol.svg"
+          src="../assets/red_cross.svg"
+          class="disabled-symbol"
           draggable="false"
         />
       </div>
