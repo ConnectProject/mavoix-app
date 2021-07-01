@@ -6,7 +6,7 @@
   width 8rem
   margin 1rem
 
-.q-img
+.picto
   height 80%
 
 .card-img-wrapper
@@ -56,6 +56,7 @@
   >
     <q-img
       :src="item.asset.url"
+      class="picto"
       draggable="false"
       contain
     >
@@ -64,7 +65,7 @@
         class="card-img-wrapper"
       >
         <q-img
-          src="../assets/red_circle.svg"
+          src="../assets/Indisponible-symbol.svg"
           draggable="false"
         />
       </div>
