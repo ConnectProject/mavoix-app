@@ -7,40 +7,27 @@ import DeviceUser from '~/models/DeviceUser'
  * Login with the invitation code (has the form username:password)
  * @param {Context} ctx
  */
-export const loginCode = ({ commit, dispatch, getters: { invitationCode } }) => {
-  const [ username, password ] = invitationCode.split(':')
-  console.log('login')
+export async function loginCode ({ commit, dispatch, getters: { invitationCode } }) {
+  const [username, password] = invitationCode.split(':')
   try {
-    DeviceUser.logIn(username, password)
-      .then((user) => {
-        console.log(user)
-        localStorage.id = user.id
-        dispatch('tabs/loadAndWatch', null, { root: true })
-        this.$router.push({ name: 'dropZone' })
-      })
-      .catch((err) => {
-        commit('setError', err)
-      })
+    const user = await DeviceUser.logIn(username, password)
+    console.log(user)
+    localStorage.id = user.id
+    this.$router.push({ name: 'dropZone' })
   } catch (e) {
-    commit('setError', new Error('Unable to initiate Parse: ' + e))
+    commit('setError', e)
   }
 }
 
 // use normal function in order to bind this to this function
-export function login ({ commit, dispatch, getters: { username, password } }) {
+export async function login ({ commit, dispatch, getters: { username, password } }) {
   try {
-    DeviceUser.logIn(username, password)
-      .then((user) => {
-        console.log(user)
-        localStorage.id = user.id
-        console.log(localStorage.id)
-        dispatch('tabs/loadAndWatch', null, { root: true })
-        this.$router.push({ name: 'dropZone' })
-      })
-      .catch((err) => {
-        commit('setError', err)
-      })
+    const user = await DeviceUser.logIn(username, password)
+    console.log(user)
+    localStorage.id = user.id
+    console.log(localStorage.id)
+    this.$router.push({ name: 'dropZone' })
   } catch (e) {
-    commit('setError', new Error('Unable to initiate Parse: ' + e))
+    commit('setError', e)
   }
 }

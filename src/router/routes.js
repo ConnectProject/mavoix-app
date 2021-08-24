@@ -5,7 +5,7 @@ const routes = [
     component: () => import('layouts/AuthLayout.vue'),
     children: [
       /* Auth homepage */
-      { name: 'auth', path: '/', component: () => import('pages/auth/Home.vue') },
+      { name: 'auth', path: '/', component: () => import('pages/auth/AuthHome.vue') },
 
       /* Auth manual mode */
       { name: 'auth-manual', path: '/manual', component: () => import('pages/auth/Manual.vue') },

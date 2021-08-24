@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import Parse from 'parse'
 
 export default {
   data () {
@@ -86,22 +87,28 @@ export default {
       }
     }
   },
-  mounted () {
+  async mounted () {
+    var currentUser = Parse.User.current()
+    if (!currentUser) {
+      console.log('No parse user found. Routing to auth page.')
+      this.$router.push('/')
+      return
+    }
     localStorage.removeItem('connectSessionId')
-    this.$store.dispatch('tabs/loadAndWatch')
-      .then(() => {
-        this.$store.dispatch('stats/connectConnect')
-      })
-      .then(() => {
-        this.$store.dispatch('stats/startSession')
-      })
-      .then(() => {
-        this.$store.dispatch('tts/init')
-      })
-      .catch(() => {
-        localStorage.removeItem('id')
+    try {
+      await this.$store.dispatch('tabs/loadAndWatch')
+    } catch (e) {
+      console.error(e)
+      try {
+        await Parse.User.logOut()
+      } finally {
         this.$router.push('/')
-      })
+      }
+    }
+    this.$store.dispatch('stats/connectConnect').then(() => {
+      this.$store.dispatch('stats/startSession')
+    })
+    this.$store.dispatch('tts/init')
   }
 }
 </script>

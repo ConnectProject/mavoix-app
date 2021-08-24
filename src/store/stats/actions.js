@@ -9,8 +9,7 @@ const username = process.env.CONNECT_APP_ID
  */
 
 export const connectConnect = async function ({ commit }) {
-  let response
-  response = await this.$axios.get(`parse/login?password=${password}&username=${username}&=`, {
+  let response = await this.$axios.get(`parse/login?password=${password}&username=${username}&=`, {
     headers: {
       'x-parse-application-id': 'connect',
       'x-parse-revocable-session': '1'
@@ -34,8 +33,7 @@ export const startSession = async function ({ commit }) {
     'userId': localStorage.id,
     'sessionBegin': (new Date()).toISOString()
   }
-  let response
-  response = await this.$axios.post('parse/classes/sessionTimestamp', data, {
+  let response = await this.$axios.post('parse/classes/sessionTimestamp', data, {
     headers: headers
   })
   localStorage.connectSessionId = response.data.objectId
@@ -53,8 +51,7 @@ export const endSession = async function ({ commit }) {
     let data = {
       'sessionEnd': (new Date()).toISOString()
     }
-    let response
-    response = await this.$axios.put('parse/classes/sessionTimestamp/' + localStorage.connectSessionId, data, {
+    let response = await this.$axios.put('parse/classes/sessionTimestamp/' + localStorage.connectSessionId, data, {
       headers: headers
     })
     console.log('end session:')

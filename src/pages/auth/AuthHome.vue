@@ -31,13 +31,15 @@
 </template>
 
 <script>
+import Parse from 'parse'
+
 export default {
   name: 'PageAuthHome',
   mounted () {
-    if (localStorage.id) {
-      console.log('before')
+    var currentUser = Parse.User.current()
+    if (currentUser) {
+      // await this.$store.dispatch('tabs/loadAndWatch')
       this.$router.push({ name: 'dropZone' })
-      console.log('after')
     }
   }
 }
