@@ -1,5 +1,8 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
+
+const { CLIEngine } = require("eslint")
+const ESLintPlugin = require('eslint-webpack-plugin')
 const Dotenv = require('dotenv-webpack')
 
 module.exports = function (ctx) {
@@ -53,15 +56,11 @@ module.exports = function (ctx) {
       // analyze: true,
       // extractCSS: false,
       extendWebpack (cfg) {
-        cfg.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /node_modules/,
-          options: {
-            formatter: require('eslint').CLIEngine.getFormatter('stylish')
-          }
-        })
+        cfg.plugins.push(
+          new ESLintPlugin({
+            formatter: CLIEngine.getFormatter('stylish')
+          })
+        )
         cfg.plugins.push(
           new Dotenv({
             systemvars: true
