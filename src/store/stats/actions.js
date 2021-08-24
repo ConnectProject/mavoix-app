@@ -1,3 +1,5 @@
+import getCurrentUser from '~/utils/getCurrentUser'
+
 /**
  * Here are the credentials to connect to connect
  */
@@ -30,7 +32,7 @@ export const startSession = async function ({ commit }) {
   let data = {
     'appId': 'mavoix-app',
     'sessionId': localStorage.sessionToken,
-    'userId': localStorage.id,
+    'userId': getCurrentUser(),
     'sessionBegin': (new Date()).toISOString()
   }
   let response = await this.$axios.post('parse/classes/sessionTimestamp', data, {

@@ -7,12 +7,12 @@ import DeviceUser from '~/models/DeviceUser'
  * Login with the invitation code (has the form username:password)
  * @param {Context} ctx
  */
-export async function loginCode ({ commit, dispatch, getters: { invitationCode } }) {
+export async function loginCode ({ commit }, invitationCode) {
   const [username, password] = invitationCode.split(':')
   try {
     const user = await DeviceUser.logIn(username, password)
     console.log(user)
-    localStorage.id = user.id
+    // localStorage.id = user.id
     this.$router.push({ name: 'dropZone' })
   } catch (e) {
     commit('setError', e)
@@ -20,12 +20,12 @@ export async function loginCode ({ commit, dispatch, getters: { invitationCode }
 }
 
 // use normal function in order to bind this to this function
-export async function login ({ commit, dispatch, getters: { username, password } }) {
+export async function login ({ commit }, [username, password]) {
   try {
     const user = await DeviceUser.logIn(username, password)
     console.log(user)
-    localStorage.id = user.id
-    console.log(localStorage.id)
+    // localStorage.id = user.id
+    // console.log(localStorage.id)
     this.$router.push({ name: 'dropZone' })
   } catch (e) {
     commit('setError', e)

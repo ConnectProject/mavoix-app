@@ -1,6 +1,7 @@
 import Parse from 'parse'
 
 import Tab, { HEX_COLOR_KEY, SPEED_KEY, LANGUAGE_KEY } from '~/models/Tab'
+import getCurrentUser from '~/utils/getCurrentUser'
 
 /**
  * Load available tabs and watch for changes.
@@ -8,7 +9,7 @@ import Tab, { HEX_COLOR_KEY, SPEED_KEY, LANGUAGE_KEY } from '~/models/Tab'
  */
 export const loadAndWatch = ({ commit, dispatch }) => {
   return new Parse.Query(Tab)
-    .equalTo('user', localStorage.id)
+    .equalTo('user', getCurrentUser())
     .find()
     .then((tabs) => {
       commit('setTabs', tabs)

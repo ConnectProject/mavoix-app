@@ -1,19 +1,19 @@
-/**
- * Used to set a new invitation code
- * @param {State} state
- * @param {String} invitationCode is the new invitation code
- */
-export const setInvitationCode = (state, invitationCode) => {
-  state.invitationCode = invitationCode
-}
+// /**
+//  * Used to set a new invitation code
+//  * @param {State} state
+//  * @param {String} invitationCode is the new invitation code
+//  */
+// export const setInvitationCode = (state, invitationCode) => {
+//   state.invitationCode = invitationCode
+// }
 
-export const setUsername = (state, username) => {
-  state.username = username.toLowerCase()
-}
+// export const setUsername = (state, username) => {
+//   state.username = username.toLowerCase()
+// }
 
-export const setPassword = (state, password) => {
-  state.password = password
-}
+// export const setPassword = (state, password) => {
+//   state.password = password
+// }
 
 /**
  * Used to throw an error

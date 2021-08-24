@@ -6,20 +6,19 @@
     >
       <!-- Invitation code input -->
       <q-input
-        :value="username"
-        @input="setUsername"
+        v-model="username"
         outlined
         label="nom d'utilisateur"
       />
-      <br/>
+      <br />
       <q-input
-        :value="password"
+        v-model="password"
         @input="setPassword"
         outlined
         type="password"
         label="mot de passe"
       />
-      <br/>
+      <br />
       <!-- Submit -->
       <q-btn
         flat
@@ -34,26 +33,32 @@
 <script>
 export default {
   name: 'PageAuthManual',
+  data () {
+    return {
+      username: '',
+      password: ''
+    }
+  },
   computed: {
-    username () {
-      return this.$store.getters['auth/username']
-    },
-    password () {
-      return this.$store.getters['auth/password']
-    },
+    // username () {
+    //   return this.$store.getters['auth/username']
+    // },
+    // password () {
+    //   return this.$store.getters['auth/password']
+    // },
     error () {
       return this.$store.getters['auth/error']
     }
   },
   methods: {
-    setUsername (value) {
-      this.$store.commit('auth/setUsername', value)
-    },
-    setPassword (value) {
-      this.$store.commit('auth/setPassword', value)
-    },
+    // setUsername (value) {
+    //   this.$store.commit('auth/setUsername', value)
+    // },
+    // setPassword (value) {
+    //   this.$store.commit('auth/setPassword', value)
+    // },
     onSubmit () {
-      this.$store.dispatch('auth/login')
+      this.$store.dispatch('auth/login', [this.username, this.password])
     }
   },
   watch: {
