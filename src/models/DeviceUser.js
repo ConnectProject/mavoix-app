@@ -25,6 +25,6 @@ export default class DeviceUser extends Parse.User {
   }
 
   static Password () {
-    return randomString(16)
+    return randomString(8)
   }
 }

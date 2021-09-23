@@ -5,7 +5,6 @@ import Parse from 'parse'
  */
 export default () => {
   const currentUser = Parse.User.current()
-  console.log(currentUser)
 
   return currentUser.get('linkedAccount') || currentUser.id
 }

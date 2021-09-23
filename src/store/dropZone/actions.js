@@ -79,30 +79,3 @@ export const watch = ({ commit }, slug) => {
       commit('setError', err)
     })
 }
-
-export const saveSentence = function ({ commit, getters: { activeItems } }) {
-  const activeImages = activeItems.map(item => {
-    const container = {}
-    container['imageURL'] = item.asset.url
-    container['wordPronounced'] = item.name
-    return container
-  })
-  let headers = {
-    'content-type': 'application/json',
-    'x-parse-application-id': 'connect',
-    'x-parse-session-token': localStorage.sessionToken
-  }
-  let data = {
-    'appId': 'mavoix-app',
-    'sessionId': localStorage.sessionToken,
-    'userId': localStorage.id,
-    'timestamp': (new Date()).toISOString(),
-    'phrase': activeImages
-  }
-  this.$axios.post('parse/classes/phraseProduced', data, {
-    headers: headers
-  }).then(function (response) {
-    console.log('sentence saved:')
-    console.log(response)
-  })
-}

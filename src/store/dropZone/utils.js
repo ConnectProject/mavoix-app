@@ -11,7 +11,7 @@ import {
   TAB_KEY
 } from '~/models/TabItem'
 
-import getCurrentUser from '~/utils/getCurrentUser'
+import getCurrentUserId from '~/utils/getCurrentUserId'
 
 /**
  * Return the index of a tab in a list of tabs
@@ -43,6 +43,6 @@ export const modelToTabItem = (itemModel) => {
 export const slugToTabModel = (slug) => {
   return new Parse.Query(Tab)
     .equalTo(SLUG_KEY, slug)
-    .equalTo('user', getCurrentUser())
+    .equalTo('user', getCurrentUserId())
     .first()
 }

@@ -1,64 +1,104 @@
-import getCurrentUser from '~/utils/getCurrentUser'
-
-/**
- * Here are the credentials to connect to connect
- */
-const password = process.env.CONNECT_TOKEN
-const username = process.env.CONNECT_APP_ID
+import Parse from 'parse'
+import randomString from '~/utils/randomString'
 
 /**
  * connect to connect...
  */
-
 export const connectConnect = async function ({ commit }) {
-  let response = await this.$axios.get(`parse/login?password=${password}&username=${username}&=`, {
-    headers: {
-      'x-parse-application-id': 'connect',
-      'x-parse-revocable-session': '1'
-    }
-  })
-  console.log('sessionToken:')
-  console.log(response.data.sessionToken)
-  console.log(response)
-  localStorage.sessionToken = response.data.sessionToken
+  try {
+    const { accessToken } = await Parse.Cloud.run('getConnectToken')
+    commit('setAccessToken', accessToken)
+  } catch (e) {
+    console.error(e)
+  }
 }
 
-export const startSession = async function ({ commit }) {
+export const startSession = async function ({ state, commit }) {
+  const { accessToken } = state
+  if (!accessToken) {
+    console.log('not connected to connect')
+    return
+  }
+  const connectSessionId = randomString(8)
   let headers = {
     'content-type': 'application/json',
     'x-parse-application-id': 'connect',
-    'x-parse-session-token': localStorage.sessionToken
+    Authorization: 'Bearer ' + state.accessToken
   }
   let data = {
-    'appId': 'mavoix-app',
-    'sessionId': localStorage.sessionToken,
-    'userId': getCurrentUser(),
+    'sessionId': connectSessionId,
     'sessionBegin': (new Date()).toISOString()
   }
-  let response = await this.$axios.post('parse/classes/sessionTimestamp', data, {
-    headers: headers
-  })
-  localStorage.connectSessionId = response.data.objectId
-  console.log('resp:')
-  console.log(response)
+  try {
+    let response = await this.$axios.post('parse/classes/sessionTimestamp', data, {
+      headers: headers
+    })
+    commit('setConnectSessionId', connectSessionId)
+    console.log('start session:')
+    console.log(response)
+  } catch (e) {
+    console.error('error when sending data to connect')
+    console.log(e.response.data)
+  }
 }
 
-export const endSession = async function ({ commit }) {
-  if (localStorage.connectSessionId) {
-    let headers = {
-      'content-type': 'application/json',
-      'x-parse-application-id': 'connect',
-      'x-parse-session-token': localStorage.sessionToken
-    }
-    let data = {
-      'sessionEnd': (new Date()).toISOString()
-    }
-    let response = await this.$axios.put('parse/classes/sessionTimestamp/' + localStorage.connectSessionId, data, {
+export const endSession = async function ({ state }) {
+  const { accessToken, connectSessionId } = state
+  if (!connectSessionId) {
+    console.log('connectSessionId undefined, not sending anything to connect')
+    return
+  }
+  let headers = {
+    'content-type': 'application/json',
+    'x-parse-application-id': 'connect',
+    Authorization: 'Bearer ' + accessToken
+  }
+  let data = {
+    'sessionId': connectSessionId,
+    'sessionEnd': (new Date()).toISOString()
+  }
+  try {
+    let response = await this.$axios.post('parse/classes/sessionTimestamp', data, {
       headers: headers
     })
     console.log('end session:')
     console.log(response)
-  } else {
+  } catch (e) {
+    console.error('error when sending data to connect')
+    console.log(e.response.data)
+  }
+}
+
+export const saveSentence = async function ({ state, rootGetters }) {
+  const { accessToken, connectSessionId } = state
+  if (!connectSessionId) {
     console.log('connectSessionId undefined, not sending anything to connect')
+    return
+  }
+  const activeImages = rootGetters['dropZone/activeItems'].map(item => {
+    const container = {}
+    container['imageURL'] = item.asset.url
+    container['wordPronounced'] = item.name
+    return container
+  })
+  let headers = {
+    'content-type': 'application/json',
+    'x-parse-application-id': 'connect',
+    Authorization: 'Bearer ' + accessToken
+  }
+  let data = {
+    'sessionId': connectSessionId,
+    'timestamp': (new Date()).toISOString(),
+    'phrase': activeImages
+  }
+  try {
+    let response = await this.$axios.post('parse/classes/phraseProduced', data, {
+      headers: headers
+    })
+    console.log('sentence saved:')
+    console.log(response)
+  } catch (e) {
+    console.error('error when sending data to connect')
+    console.log(e.response.data)
   }
 }

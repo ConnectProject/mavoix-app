@@ -150,7 +150,7 @@ export default {
         sequence += `${activeItem.name} `
       })
       this.$store.dispatch('tts/speak', sequence).then(() => {
-        this.$store.dispatch('dropZone/saveSentence')
+        this.$store.dispatch('stats/saveSentence')
       })
     },
     onClearActiveItems () {
