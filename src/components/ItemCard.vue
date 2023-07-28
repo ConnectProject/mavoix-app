@@ -157,13 +157,14 @@ export default {
         this.onTouchEnd(this)
       }
     },
-    // /**
-    //  * When clicking on card:
-    //  *   toggle card between active and passive zone
-    //  */
+    /**
+     * When clicking on card:
+     *  - if item is in passive zone add it to active zone
+     *  - if item is in active zone keep it there (do nothing)
+     */
     handleClick () {
-      const zone = this.item.active ? 'passiv' : 'active'
-      this.onTouchEnd(this, zone)
+      if (!this.item.active) 
+        this.onTouchEnd(this, 'active')
     }
   }
 }
