@@ -1,6 +1,6 @@
 import Parse from 'parse'
 
-import TabItem, { TAB_KEY, ORDER_KEY } from '~/models/TabItem'
+import TabItemModel, { TAB_KEY, ORDER_KEY, ASSET_KEY } from '~/models/TabItem'
 import { slugToTabModel } from './utils'
 import { HEX_COLOR_KEY, SPEED_KEY, LANGUAGE_KEY } from '~/models/Tab'
 
@@ -9,7 +9,7 @@ import { HEX_COLOR_KEY, SPEED_KEY, LANGUAGE_KEY } from '~/models/Tab'
  * @param {TabModel} tabModel the items's parent
  */
 const itemsQuery = (tabModel) => (
-  new Parse.Query(TabItem).equalTo(TAB_KEY, tabModel).ascending(ORDER_KEY)
+  new Parse.Query(TabItemModel).equalTo(TAB_KEY, tabModel).include(ASSET_KEY).ascending(ORDER_KEY)
 )
 
 /**
@@ -61,16 +61,22 @@ export const watch = ({ commit }, slug) => {
       itemsQuery(tabModel)
         .subscribe()
         .then((subscription) => {
-          subscription.on('create', (tabModel) => {
-            commit('addItem', tabModel)
+          subscription.on('create', async (itemModel) => {
+            try {
+              await itemModel.get('asset').fetch()
+            } catch (error) {
+              // Handle the case where the 'asset' object has been deleted
+              console.warn('Error fetching asset:', error)
+            }
+            commit('addItem', itemModel)
           })
 
-          subscription.on('update', (tabModel) => {
-            commit('updateItem', tabModel)
+          subscription.on('update', (itemModel) => {
+            commit('updateItem', itemModel)
           })
 
-          subscription.on('delete', (tabModel) => {
-            commit('deleteItem', tabModel)
+          subscription.on('delete', (itemModel) => {
+            commit('deleteItem', itemModel)
           })
           commit('setSubscription', subscription)
         })

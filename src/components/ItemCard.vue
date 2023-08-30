@@ -163,8 +163,9 @@ export default {
      *  - if item is in active zone keep it there (do nothing)
      */
     handleClick () {
-      if (!this.item.active) 
+      if (!this.item.active) {
         this.onTouchEnd(this, 'active')
+      }
     }
   }
 }

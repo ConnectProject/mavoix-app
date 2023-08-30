@@ -22,16 +22,32 @@ export const itemIndex = (item, items) => (
   items.findIndex((pItem) => item.key === pItem.key)
 )
 
-export const modelToTabItem = (itemModel) => {
-  var asset = itemModel.get(ASSET_KEY)
-  const parseFile = asset.file
-  // update asset url if asset is a Parse file
-  if (parseFile) {
-    asset.url = `${Parse.serverURL}/files/${Parse.applicationId}/${parseFile._name}`
+export const assetFromModel = (assetModel) => {
+  try {
+    const parseFile = assetModel.get('file')
+    // update asset url if asset is a Parse file
+    const url = parseFile
+      ? parseFile.url()
+      // ? `${Parse.serverURL}/files/${Parse.applicationId}/${parseFile._name}`
+      : assetModel.get('url')
+
+    return {
+      id: assetModel.id,
+      name: assetModel.get('name'),
+      url: url,
+      file: parseFile
+    }
+  } catch (e) {
+    console.log(e)
+    return {}
   }
+}
+
+export const modelToTabItem = (itemModel) => {
+  const asset = assetFromModel(itemModel.get(ASSET_KEY))
   return {
     name: itemModel.get(NAME_KEY),
-    asset: asset,
+    asset,
     available: itemModel.get(AVAILABLE_KEY),
     hidden: itemModel.get(HIDDEN_KEY),
     key: itemModel.get(KEY_KEY),
