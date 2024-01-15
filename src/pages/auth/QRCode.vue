@@ -22,15 +22,11 @@ export default {
   beforeDestroy () {
   },
   methods: {
-    // setInvitationCode (value) {
-    //   this.$store.commit('auth/setInvitationCode', value)
-    // },
     displayContents (err, text) {
       if (err) {
         // an error occurred, or the scan was canceled (error code `6`)
       } else {
         // The scan completed, display the contents of the QR code:
-        // this.setInvitationCode(text)
         this.$store.dispatch('auth/loginCode', text)
       }
     },

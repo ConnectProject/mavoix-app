@@ -13,7 +13,6 @@
       <br />
       <q-input
         v-model="password"
-        @input="setPassword"
         outlined
         type="password"
         label="mot de passe"
@@ -40,23 +39,11 @@ export default {
     }
   },
   computed: {
-    // username () {
-    //   return this.$store.getters['auth/username']
-    // },
-    // password () {
-    //   return this.$store.getters['auth/password']
-    // },
     error () {
       return this.$store.getters['auth/error']
     }
   },
   methods: {
-    // setUsername (value) {
-    //   this.$store.commit('auth/setUsername', value)
-    // },
-    // setPassword (value) {
-    //   this.$store.commit('auth/setPassword', value)
-    // },
     onSubmit () {
       this.$store.dispatch('auth/login', [this.username, this.password])
     }
