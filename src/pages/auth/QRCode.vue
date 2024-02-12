@@ -1,25 +1,55 @@
 <template>
   <q-page
     class="flex flex-center justify-around"
-    style="background:transparent; opacity:0"
   >
+  <video id="qr-video"></video>
   </q-page>
 </template>
 
 <script>
+import { Platform } from 'quasar'
+import QrScanner from 'qr-scanner'
+
+let qrScanner
+let isLoggingIn
+isLoggingIn = false
 
 export default {
   name: 'PageAuthManual',
   computed: {
+    error () {
+      return this.$store.getters['auth/error']
+    }
   },
   data () {
     return {
     }
   },
-  mounted () {
-    window.QRScanner.prepare(this.showScan)
+  async mounted () {
+    if (Platform.is.capacitor) {
+      // npm qr-scanner is not working with capacitor, we need to use the cordova plugin
+      window.QRScanner.prepare(this.showScan)
+    } else {
+      const videoElem = document.getElementById('qr-video')
+      qrScanner = new QrScanner(
+        videoElem,
+        this.tryLogin,
+        {
+          highlightScanRegion: true,
+          returnDetailedScanResult: false,
+          onDecodeError: () => {}
+        }
+      )
+      try {
+        await qrScanner.start()
+      } catch (err) {
+        alert(err)
+      }
+    }
   },
   beforeDestroy () {
+    qrScanner?.stop()
+    window.QRScanner?.cancelScan()
   },
   methods: {
     displayContents (err, text) {
@@ -36,6 +66,26 @@ export default {
       } else {
         window.QRScanner.scan(this.displayContents)
         window.QRScanner.show()
+      }
+    },
+    async tryLogin (result) {
+      console.log('isLoggingIn:', isLoggingIn)
+      if (isLoggingIn) {
+        // do not try to connect twice at the same time
+        return
+      }
+      isLoggingIn = true
+      const userId = await this.$store.dispatch('auth/loginCode', result.data)
+      if (!userId) {
+        isLoggingIn = false
+      }
+    }
+  },
+  watch: {
+    error (newVal) {
+      if (newVal) {
+        this.$q.notify({ position: 'top-right', message: newVal, color: 'red' })
+        this.$store.commit('auth/resetError')
       }
     }
   }
