@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Ma Voix</string>
-    <string name="title_activity_main">Ma Voix</string>
+    <string name="app_name">MaVoix</string>
+    <string name="title_activity_main">MaVoix</string>
     <string name="package_name">io.connect.mavoix</string>
     <string name="fileprovider_authority">io.connect.mavoix.fileprovider</string>
     <string name="custom_url_scheme">io.connect.mavoix</string>

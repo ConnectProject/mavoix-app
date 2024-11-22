@@ -89,8 +89,8 @@ module.exports = function (ctx) {
       // workboxPluginMode: 'InjectManifest',
       // workboxOptions: {}, // only for NON InjectManifest
       manifest: {
-        // name: 'Ma Voix',
-        // short_name: 'Ma Voix',
+        // name: 'MaVoix',
+        // short_name: 'MaVoix',
         // description: 'SPECS communication app',
         display: 'standalone',
         orientation: 'portrait',

@@ -2,7 +2,7 @@
   "name": "mavoix-app",
   "version": "0.0.1",
   "description": "SPECS communication app",
-  "productName": "Ma Voix",
+  "productName": "MaVoix",
   "author": "pierre <pierreguthauser@gmail.com>",
   "private": true,
   "scripts": {

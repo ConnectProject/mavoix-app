@@ -6,7 +6,7 @@
     >
       <q-toolbar>
         <q-btn  stretch flat class="q-mr-sm">
-          Ma voix
+          MaVoix
         </q-btn>
         <q-separator dark vertical inset v-if="$route.path !== '/'" />
         <q-btn stretch flat label="back" v-if="$route.path !== '/'" @click="$router.push({ name: 'auth' })" />

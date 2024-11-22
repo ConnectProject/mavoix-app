@@ -1,4 +1,4 @@
-# Ma Voix -- Application
+# MaVoix -- Application
 
 ## Preparation
 1. Prepare the API
