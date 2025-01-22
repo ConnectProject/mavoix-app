@@ -9,7 +9,7 @@ function loadVoices ({ commit }) {
 
     // Organize voices by language
     voices.forEach((voice) => {
-      const { lang } = voice
+      const lang = voice.lang.replace('_', '-')
       if (!languagesObject[lang]) {
         languagesObject[lang] = []
       }
