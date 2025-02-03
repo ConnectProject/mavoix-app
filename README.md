@@ -1,21 +1,30 @@
 # MaVoix -- Application
 
 ## Preparation
+
 1. Prepare the API
-> Go to https://github.com/ConnectProject/mavoix-api
+
+    Go to <https://github.com/ConnectProject/mavoix-api>
 
 2. Prepare the repo
-> `git clone https://github.com/ConnectProject/mavoix-app.git`
 
-> `npm install`
+    ```sh
+    git clone https://github.com/ConnectProject/mavoix-app.git
+
+    cd mavoix-app
+
+    # Install all dependencies
+    npm install
+    ```
 
 3. Load environment variables
-> To load environment variables you can copy `.env.example` to a file called `.env` and set the variables to match the api.
 
-4. Install Quasar CLI
-> `npm install -g @quasar/cli`
+    To load environment variables you can copy `.env.example` to a file called `.env` and set the variables to match the api.
 
 ## Running
-> `quasar dev -m capacitor -T [ios, android]`
 
-## Enjoy
+Only the development mode is available for now:
+
+```sh
+npm run dev
+```
