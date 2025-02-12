@@ -18,7 +18,7 @@ module.exports = function (ctx) {
     ],
 
     css: [
-      'app.styl'
+      'app.css'
     ],
 
     plugins: [

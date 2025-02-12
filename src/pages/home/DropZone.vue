@@ -1,10 +1,11 @@
-<style lang="stylus" scoped>
-.page
-  position relative
-  width 100vw
-  height calc(100vh - 60px)
-  overflow hidden
-  background grey
+<style scoped>
+.page {
+  position: relative;
+  width: 100vw;
+  height: calc(100vh - 60px);
+  overflow: hidden;
+  background: grey;
+}
 </style>
 
 <template>

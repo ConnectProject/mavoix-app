@@ -1,49 +1,52 @@
-<style lang="stylus" scoped>
-.card
-  background white
-  position relative
-  height 10rem
-  width 8rem
-  margin 1rem
+<style scoped>
+.card {
+  background: #fff;
+  position: relative;
+  height: 10rem;
+  width: 8rem;
+  margin: 1rem;
+}
 
-.picto
-  height 80%
+.picto {
+  height: 80%;
+}
 
-.card-img-wrapper
-  // position absolute
-  height 100%
-  width 100%
-  padding .5rem
-  // display flex
-  // justify-content center
-  // align-items center
+.card-img-wrapper {
+  height: 100%;
+  width: 100%;
+  padding: 0.5rem;
+}
 
-.disabled-symbol
-  height 100%
-  width 100%
+.disabled-symbol {
+  height: 100%;
+  width: 100%;
+}
 
-.q-card__section
-  padding 0
-  height 20%
-  position relative
-  vertical-align middle
-  overflow hidden
+.q-card__section {
+  padding: 0;
+  height: 20%;
+  position: relative;
+  vertical-align: middle;
+  overflow: hidden;
+}
 
-.name
-  position absolute
-  margin auto
-  font-size 1.25rem
-  line-height 1.25rem
-  top 0
-  bottom 0
-  right 0
-  left 0
-  height fit-content
-  user-select none
+.name {
+  position: absolute;
+  margin: auto;
+  font-size: 1.25rem;
+  line-height: 1.25rem;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: fit-content;
+  user-select: none;
+}
 
-.two-lines
-  font-size .9rem
-  line-height .9rem
+.two-lines {
+  font-size: 0.9rem;
+  line-height: 0.9rem;
+}
 </style>
 
 <template>

@@ -1,32 +1,35 @@
-<style lang="stylus" scoped>
-.container
-  position absolute
-  left 0
-  display flex
-  flex-direction row
-  flex-wrap nowrap
-  min-width 100vw
-  border-top 1px solid black
-  bottom 0
-  height 12rem
+<style scoped>
+.container {
+  position: absolute;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  min-width: 100vw;
+  border-top: 1px solid #000;
+  bottom: 0;
+  height: 12rem;
+}
 
-.content-container
-  display flex
-  flex-direction column
-  justify-content space-evenly
-  align-items stretch
-  max-height 100%
-  width 10 rem
+.content-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: stretch;
+  max-height: 100%;
+  width: 10rem;
+}
 
-.card-drop
-  background transparent
-  border 2px dotted white
-  font-size 2em
-  color white
-  position absolute
-  height 10rem
-  width 8rem
-  margin 1rem
+.card-drop {
+  background: transparent;
+  border: 2px dotted #fff;
+  font-size: 2em;
+  color: #fff;
+  position: absolute;
+  height: 10rem;
+  width: 8rem;
+  margin: 1rem;
+}
 </style>
 
 <template>

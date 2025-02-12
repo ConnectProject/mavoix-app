@@ -1,26 +1,27 @@
-<style lang="stylus" scoped>
-.container
-  position absolute
-  left 0
-  width 100%
-  height calc(calc(100vh - 12rem) - 60px)
-  z-index 10
-  top 0
-
-.force-portait .container
-  height calc(calc(100vw - 12rem) - 60px)
-
-.inner-container
-  height 100%
-  width 100%
-  display inline-flex
-  flex-direction column
-  align-items stretch
-  align-content baseline
-  flex-wrap wrap
-
-.active-card
-  opacity 0
+<style scoped>
+.container {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: calc(calc(100vh - 12rem) - 60px);
+  z-index: 10;
+  top: 0;
+}
+.force-portait .container {
+  height: calc(calc(100vw - 12rem) - 60px);
+}
+.inner-container {
+  height: 100%;
+  width: 100%;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-content: baseline;
+  flex-wrap: wrap;
+}
+.active-card {
+  opacity: 0;
+}
 </style>
 
 <template>
