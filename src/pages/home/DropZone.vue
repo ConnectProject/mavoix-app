@@ -5,12 +5,104 @@
   height calc(100vh - 60px)
   overflow hidden
   background grey
+
+// Clear control — flush left on the sentence strip
+.clear-strip-btn
+  width 3rem
+  height 3rem
+  min-width 3rem
+  min-height 3rem
+  border-radius 8px
+  background #fff
+  color #1976d2
+  box-shadow 0 2px 8px rgba(25, 118, 210, 0.35)
+
+// Large play control: rainbow conic ring + white frame; inner disk dark blue when pressed / speaking
+.sentence-play-btn
+  position relative
+  display flex
+  align-items center
+  justify-content center
+  width 7.25rem
+  height 7.25rem
+  padding 0
+  border none
+  border-radius 50%
+  background transparent
+  cursor pointer
+  outline none
+  -webkit-tap-highlight-color transparent
+  // Soft float + outer white cushion (neumorphic frame)
+  filter drop-shadow(0 5px 14px rgba(0, 0, 0, 0.12))
+
+  &__ring
+    position absolute
+    inset 0
+    border-radius 50%
+    z-index 0
+    pointer-events none
+    // Full rainbow ring: red → orange → yellow → green → cyan → blue → violet → red
+    background conic-gradient(
+      from -90deg,
+      #e53935 0deg,
+      #fb8c00 51deg,
+      #fdd835 102deg,
+      #7cb342 154deg,
+      #26c6da 205deg,
+      #1e88e5 257deg,
+      #8e24aa 308deg,
+      #e53935 360deg
+    )
+    // White rim outside color + soft tinted glow
+    box-shadow 0 0 0 5px #fff,
+      0 0 28px rgba(251, 140, 0, 0.35),
+      0 0 36px rgba(30, 136, 229, 0.28)
+
+  &__inner
+    position relative
+    z-index 1
+    display flex
+    align-items center
+    justify-content center
+    width 5.35rem
+    height 5.35rem
+    border-radius 50%
+    background #fff
+    color #1976d2
+    transition background 0.12s ease, color 0.12s ease
+    // Crisp white ring between gradient and center (reference mockup)
+    box-shadow 0 0 0 3px #fff,
+      inset 0 2px 4px rgba(255, 255, 255, 0.95),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.06)
+
+  &:active .sentence-play-btn__inner,
+  &--playing .sentence-play-btn__inner
+    background #0d47a1
+    color #fff
+    box-shadow 0 0 0 3px #fff,
+      inset 0 2px 6px rgba(0, 0, 0, 0.15)
+
+  &:disabled
+    filter grayscale(0.25) opacity(0.55)
+    cursor not-allowed
+
+  &:disabled &__inner
+    background #f0f4f8
+    color #90a4ae
+
+  &:disabled:active .sentence-play-btn__inner
+    background #f0f4f8
+    color #90a4ae
+    box-shadow 0 0 0 3px #fff,
+      inset 0 2px 4px rgba(255, 255, 255, 0.95),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.06)
 </style>
 
 <template>
   <q-page
     class="page"
     ref="page"
+    :style="{ '--strip-height': stripHeightRem + 'rem' }"
   >
 
     <!-- Available items -->
@@ -36,32 +128,47 @@
       :isDragging="!!card"
     />
 
-    <!-- Clear active items button -->
+    <!-- Clear active items — dedicated lane (strip has matching padding-left) -->
     <q-page-sticky
-      position="bottom-right"
-      :offset="[18, 85]"
+      position="bottom-left"
+      :offset="clearStickyOffset"
     >
       <q-btn
-        class="q-mx-xs"
-        fab
+        unelevated
+        dense
+        no-wrap
+        color="white"
+        text-color="primary"
+        class="clear-strip-btn"
         icon="clear"
-        color="negative"
         @click="onClearActiveItems"
       />
     </q-page-sticky>
 
-    <!-- Play active items button -->
+    <!-- Play sequence — sized & offset to sit on vertical center of 12rem strip -->
     <q-page-sticky
       position="bottom-right"
-      :offset="[18, 18]"
+      :offset="playStickyOffset"
     >
-      <q-btn
-        class="q-mx-xs"
-        fab
-        :icon="$store.state.tts.playing ? 'pause' : 'play_arrow'"
-        color="primary"
+      <button
+        type="button"
+        class="sentence-play-btn"
+        :class="{ 'sentence-play-btn--playing': playing && canPlaySentence }"
+        :disabled="!canPlaySentence"
+        :aria-label="!canPlaySentence ? 'Play sentence — add pictures to the strip first' : (playing ? 'Pause' : 'Play sentence')"
         @click="onPlaySequence"
-      />
+      >
+        <span
+          class="sentence-play-btn__ring"
+          aria-hidden="true"
+        />
+        <span class="sentence-play-btn__inner">
+          <q-icon
+            :name="playing && canPlaySentence ? 'pause' : 'play_arrow'"
+            size="xl"
+          />
+        </span>
+      </button>
     </q-page-sticky>
   </q-page>
 </template>
@@ -114,6 +221,34 @@ export default {
     activeItems () {
       return this.$store.getters['dropZone/activeItems']
     },
+    canPlaySentence () {
+      return this.activeItems.length > 0
+    },
+    /**
+     * Sentence strip height (cards + margin); must fit ItemCard--* heights.
+     */
+    stripHeightRem () {
+      const k = this.$store.getters['dropZone/imageSizeKey']
+      if (k === 'large') {
+        return 21
+      }
+      if (k === 'small') {
+        return 11.5
+      }
+      return 15.25
+    },
+    /** Vertical center of strip for 7.25rem play FAB */
+    playStickyOffset () {
+      const stripPx = this.stripHeightRem * 16
+      const btnPx = 7.25 * 16
+      return [20, Math.max(8, Math.round(stripPx / 2 - btnPx / 2))]
+    },
+    /** Vertical center for 3rem clear button */
+    clearStickyOffset () {
+      const stripPx = this.stripHeightRem * 16
+      const btnPx = 3 * 16
+      return [10, Math.max(8, Math.round(stripPx / 2 - btnPx / 2))]
+    },
     dragIndex () {
       // we are now trying to find "i" where is the index of the card our dragged item is over
       // if we are not in the active zone, consider we want to drop at the far right
@@ -145,15 +280,23 @@ export default {
      * Tranform a list of word into a string (join array members with ` `) and send it to the text to speech plugin
      */
     onPlaySequence () {
+      if (!this.canPlaySentence) {
+        return
+      }
       let sequence = ''
       this.activeItems.forEach((activeItem) => {
         sequence += `${activeItem.name} `
       })
-      this.$store.dispatch('tts/speak', sequence).then(() => {
+      const trimmed = sequence.trim()
+      if (!trimmed) {
+        return
+      }
+      this.$store.dispatch('tts/speak', trimmed).then(() => {
         this.$store.dispatch('stats/saveSentence')
       })
     },
     onClearActiveItems () {
+      this.$store.dispatch('tts/cancel')
       this.$store.commit('dropZone/clearActiveItems')
     },
     // when starting to drag an element from a zone, make it over the others, not below

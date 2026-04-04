@@ -4,7 +4,8 @@ export default {
     slug: '', // Slug
     color: '', // Color
     speed: '',
-    language: ''
+    language: '',
+    imageSize: 'medium' // small | medium | large — matches panel grid
   },
   items: [], // Items
   activeItems: [], // Active items

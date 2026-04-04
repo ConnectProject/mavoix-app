@@ -1,4 +1,10 @@
 <style lang="stylus" scoped>
+// Light bluish sentence strip (matches kid app reference)
+$sentence-strip-bg = #e8f2fa
+// Reserve space for sticky controls (clear left, play right) so cards never sit underneath
+$clear-slot-width = calc(3rem + 20px)
+$play-slot-width = calc(7.25rem + 28px)
+
 .container
   position absolute
   left 0
@@ -6,9 +12,13 @@
   flex-direction row
   flex-wrap nowrap
   min-width 100vw
-  border-top 1px solid black
+  border-top 1px solid rgba(25, 118, 210, 0.25)
   bottom 0
-  height 12rem
+  height var(--strip-height, 12rem)
+  background $sentence-strip-bg
+  padding-left $clear-slot-width
+  padding-right $play-slot-width
+  box-sizing border-box
 
 .content-container
   display flex
@@ -16,23 +26,35 @@
   justify-content space-evenly
   align-items stretch
   max-height 100%
-  width 10 rem
+  flex 0 0 auto
+  width auto
 
 .card-drop
   background transparent
-  border 2px dotted white
+  border 2px dashed #1976d2
   font-size 2em
-  color white
+  color #1976d2
   position absolute
-  height 10rem
-  width 8rem
   margin 1rem
+  box-sizing border-box
+  // medium — match ItemCard--medium inner picto area
+  width 170px
+  height 168px
+
+.active-strip--small .card-drop
+  width 120px
+  height 118px
+
+.active-strip--large .card-drop
+  width 240px
+  height 238px
 </style>
 
 <template>
   <div
     ref="container"
     class="container"
+    :class="activeStripClass"
     v-touch-pan.prevent.mouse="this.isDragging ? void 0 : handleScroll"
   >
     <q-card
@@ -59,6 +81,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import ItemCard from './ItemCard'
 
 export default {
@@ -70,6 +93,9 @@ export default {
     return {
       lastX: 0
     }
+  },
+  computed: {
+    ...mapGetters('dropZone', ['activeStripClass'])
   },
   props: [
     'items',

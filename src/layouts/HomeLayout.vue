@@ -8,6 +8,7 @@
       <q-tabs
         align="left"
         indicator-color="transparent"
+        inline-label
       >
         <q-route-tab
           v-for="(tab, index) in tabs"
@@ -18,6 +19,7 @@
             backgroundColor: tab.hexColor,
             margin: (tab.slug===activeTabName)?'1px 0 0 1px':'10px 0 1px 1px'
           }"
+          :icon="tab.icon || 'category'"
           :label="tab.name"
         />
       </q-tabs>

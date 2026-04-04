@@ -2,7 +2,7 @@ import Parse from 'parse'
 
 import TabItemModel, { TAB_KEY, ORDER_KEY, ASSET_KEY } from '~/models/TabItem'
 import { slugToTabModel } from './utils'
-import { HEX_COLOR_KEY, SPEED_KEY, LANGUAGE_KEY } from '~/models/Tab'
+import { HEX_COLOR_KEY, SPEED_KEY, LANGUAGE_KEY, IMAGE_SIZE_KEY } from '~/models/Tab'
 
 /**
  * Return a parse query to find all TabItem from their TabModel parent
@@ -37,6 +37,7 @@ export const init = ({ commit, dispatch, state }, slug) => {
           commit('setTabColor', tabModel.get(HEX_COLOR_KEY))
           commit('setTabSpeed', tabModel.get(SPEED_KEY))
           commit('setTabLanguage', tabModel.get(LANGUAGE_KEY))
+          commit('setTabImageSize', tabModel.get(IMAGE_SIZE_KEY))
           commit('setItems', itemsModel)
 
           // Launch subscriptions
