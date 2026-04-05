@@ -32,6 +32,8 @@ export const updateTab = (state, tabModel) => {
   state.tabs[i].name = tab.name
   state.tabs[i].hexColor = tab.hexColor
   state.tabs[i].slug = tab.slug
+  state.tabs[i].icon = tab.icon
+  state.tabs[i].imageSize = tab.imageSize
 }
 
 /**

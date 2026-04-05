@@ -1,13 +1,29 @@
 <style lang="stylus" scoped>
+// Widths align with mavoix-panel TabEditor (.item-size--*)
 .card
   background white
   position relative
-  height 10rem
-  width 8rem
   margin 1rem
+  display flex
+  flex-direction column
+  box-sizing border-box
+
+.card--small
+  width 120px
+  height 150px
+
+.card--medium
+  width 170px
+  height 210px
+
+.card--large
+  width 240px
+  height 300px
 
 .picto
-  height 80%
+  flex 1 1 0
+  min-height 0
+  width 100%
 
 .card-img-wrapper
   // position absolute
@@ -24,7 +40,8 @@
 
 .q-card__section
   padding 0
-  height 20%
+  flex 0 0 auto
+  min-height 2.25rem
   position relative
   vertical-align middle
   overflow hidden
@@ -50,6 +67,7 @@
   <q-card
     ref="card"
     class="card"
+    :class="imageSizeClass"
     :style="`transform: translate(${translateX}px, ${translateY}px)`"
     v-touch-pan.prevent.mouse="disabled ? void 0 : handleDrag"
     v-on="{ click: translateX || translateY || disabled ? () => {} : handleClick }"
@@ -82,6 +100,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'ItemCardComponent',
   props: {
@@ -105,6 +125,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('dropZone', ['imageSizeClass']),
     labelText () {
       const maxSize = 35
       if (this.item.name.length > maxSize) {

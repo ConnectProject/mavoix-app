@@ -1,6 +1,6 @@
 import Parse from 'parse'
 
-import Tab, { HEX_COLOR_KEY, SPEED_KEY, LANGUAGE_KEY } from '~/models/Tab'
+import Tab, { HEX_COLOR_KEY, SPEED_KEY, LANGUAGE_KEY, IMAGE_SIZE_KEY } from '~/models/Tab'
 import getCurrentUserId from '~/utils/getCurrentUserId'
 
 /**
@@ -39,6 +39,7 @@ export const watch = ({ commit, rootState, state }) => {
           commit('dropZone/setTabColor', tab.get(HEX_COLOR_KEY), { root: true })
           commit('dropZone/setTabSpeed', tab.get(SPEED_KEY), { root: true })
           commit('dropZone/setTabLanguage', tab.get(LANGUAGE_KEY), { root: true })
+          commit('dropZone/setTabImageSize', tab.get(IMAGE_SIZE_KEY), { root: true })
         }
       })
 

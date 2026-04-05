@@ -9,6 +9,22 @@ export const language = ({ tab: { language } }) => language
 export const speed = ({ tab: { speed } }) => speed
 
 /**
+ * @returns {'small'|'medium'|'large'}
+ */
+export const imageSizeKey = ({ tab: { imageSize } }) =>
+  imageSize === 'small' || imageSize === 'large' ? imageSize : 'medium'
+
+/**
+ * @returns {string} BEM suffix for ItemCard / strip (card--small, …)
+ */
+export const imageSizeClass = (state) => `card--${imageSizeKey(state)}`
+
+/**
+ * @returns {string} modifier on sentence strip (active-strip--small, …)
+ */
+export const activeStripClass = (state) => `active-strip--${imageSizeKey(state)}`
+
+/**
  * Return all unactive items
  * @param State state
  */

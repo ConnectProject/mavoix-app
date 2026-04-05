@@ -43,12 +43,29 @@ export const init = ({ commit }) => {
 }
 
 /**
+ * Stop any in-progress speech and clear the playing flag.
+ * @param {Context} context
+ */
+export const cancel = ({ commit }) => {
+  try {
+    speechSynthesis.cancel()
+  } catch (e) {
+    // ignore (e.g. non-browser / no API)
+  }
+  commit('setPlaying', false)
+}
+
+/**
  * Speek a text using the capacitor plugin
  * @param {Context} context
  * @param {String} text the phrase to speek
  */
 export const speak = ({ commit, rootState, getters: { tts } }, text) => {
   try {
+    const phrase = String(text || '').trim()
+    if (!phrase) {
+      return
+    }
     if (!tts) {
       console.log('trying to load voices')
       loadVoices({ commit })
@@ -56,7 +73,7 @@ export const speak = ({ commit, rootState, getters: { tts } }, text) => {
     if (tts) {
       commit('setPlaying', true)
 
-      const utterance = new SpeechSynthesisUtterance(text)
+      const utterance = new SpeechSynthesisUtterance(phrase)
       utterance.rate = parseFloat(rootState.dropZone.tab.speed) || 1
       const locale = rootState.dropZone.tab.language.replace('_', '-')
       utterance.voice = languagesObject[locale][0]

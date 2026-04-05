@@ -22,6 +22,10 @@ export const setTabSpeed = (state, speed) => {
   state.tab.speed = speed
 }
 
+export const setTabImageSize = (state, imageSize) => {
+  state.tab.imageSize = imageSize === 'small' || imageSize === 'large' ? imageSize : 'medium'
+}
+
 /**
  * Set tab's slug
  * @param {State} state
