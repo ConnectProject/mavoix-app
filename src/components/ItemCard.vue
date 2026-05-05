@@ -9,16 +9,16 @@
   box-sizing border-box
 
 .card--small
-  width 120px
-  height 150px
+  width calc(120px * var(--px-scale, 1))
+  height calc(150px * var(--px-scale, 1))
 
 .card--medium
-  width 170px
-  height 210px
+  width calc(170px * var(--px-scale, 1))
+  height calc(210px * var(--px-scale, 1))
 
 .card--large
-  width 240px
-  height 300px
+  width calc(240px * var(--px-scale, 1))
+  height calc(300px * var(--px-scale, 1))
 
 .picto
   flex 1 1 0

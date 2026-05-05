@@ -229,13 +229,14 @@ export default {
      */
     stripHeightRem () {
       const k = this.$store.getters['dropZone/imageSizeKey']
+      const scale = Math.min(1, (window.devicePixelRatio || 1) / 2)
       if (k === 'large') {
-        return 21
+        return 21 * scale
       }
       if (k === 'small') {
-        return 11.5
+        return 11.5 * scale
       }
-      return 15.25
+      return 15.25 * scale
     },
     /** Vertical center of strip for 7.25rem play FAB */
     playStickyOffset () {

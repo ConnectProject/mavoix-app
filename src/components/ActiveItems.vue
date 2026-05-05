@@ -38,16 +38,16 @@ $play-slot-width = calc(7.25rem + 28px)
   margin 1rem
   box-sizing border-box
   // medium — match ItemCard--medium inner picto area
-  width 170px
-  height 168px
+  width calc(170px * var(--px-scale, 1))
+  height calc(168px * var(--px-scale, 1))
 
 .active-strip--small .card-drop
-  width 120px
-  height 118px
+  width calc(120px * var(--px-scale, 1))
+  height calc(118px * var(--px-scale, 1))
 
 .active-strip--large .card-drop
-  width 240px
-  height 238px
+  width calc(240px * var(--px-scale, 1))
+  height calc(238px * var(--px-scale, 1))
 </style>
 
 <template>
