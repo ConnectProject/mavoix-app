@@ -2,6 +2,18 @@ import Parse from 'parse'
 import randomString from '~/utils/randomString'
 
 /**
+ * Headers of every request to Connect. With CONNECT_SANDBOX=true the data goes to Connect's test environment.
+ * @param {string} accessToken Connect access token
+ * @returns {Object} headers
+ */
+const connectHeaders = (accessToken) => ({
+  'content-type': 'application/json',
+  'x-parse-application-id': 'connect',
+  Authorization: 'Bearer ' + accessToken,
+  ...(process.env.CONNECT_SANDBOX === 'true' && { 'x-is-sandbox': 'true' })
+})
+
+/**
  * connect to connect...
  */
 export const connectConnect = async function ({ commit }) {
@@ -20,11 +32,7 @@ export const startSession = async function ({ state, commit }) {
     return
   }
   const connectSessionId = randomString(8)
-  let headers = {
-    'content-type': 'application/json',
-    'x-parse-application-id': 'connect',
-    Authorization: 'Bearer ' + state.accessToken
-  }
+  let headers = connectHeaders(state.accessToken)
   let data = {
     'sessionId': connectSessionId,
     'sessionBegin': (new Date()).toISOString()
@@ -48,11 +56,7 @@ export const endSession = async function ({ state }) {
     console.log('connectSessionId undefined, not sending anything to connect')
     return
   }
-  let headers = {
-    'content-type': 'application/json',
-    'x-parse-application-id': 'connect',
-    Authorization: 'Bearer ' + accessToken
-  }
+  let headers = connectHeaders(accessToken)
   let data = {
     'sessionId': connectSessionId,
     'sessionEnd': (new Date()).toISOString()
@@ -81,11 +85,7 @@ export const saveSentence = async function ({ state, rootGetters }) {
     container['wordPronounced'] = item.name
     return container
   })
-  let headers = {
-    'content-type': 'application/json',
-    'x-parse-application-id': 'connect',
-    Authorization: 'Bearer ' + accessToken
-  }
+  let headers = connectHeaders(accessToken)
   let data = {
     'sessionId': connectSessionId,
     'timestamp': (new Date()).toISOString(),
