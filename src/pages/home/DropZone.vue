@@ -294,6 +294,8 @@ export default {
       if (!trimmed) {
         return
       }
+      // recorded when the child plays the sentence, whether or not the speech works on this device
+      this.$store.dispatch('usage/recordPhrase')
       this.$store.dispatch('tts/speak', trimmed).then(() => {
         this.$store.dispatch('stats/saveSentence')
       })

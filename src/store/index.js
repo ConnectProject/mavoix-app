@@ -6,6 +6,7 @@ import tabs from './tabs'
 import dropZone from './dropZone'
 import tts from './tts'
 import stats from './stats'
+import usage from './usage'
 
 Vue.use(Vuex)
 
@@ -16,7 +17,8 @@ export default function (/* { ssrContext } */) {
       tabs,
       dropZone,
       tts,
-      stats
+      stats,
+      usage
     },
 
     strict: process.env.DEV

@@ -25,7 +25,7 @@
         size="3em"
         name="keyboard"
       />
-      <div>Manuel</div>
+      <div>Code</div>
     </q-btn>
   </q-page>
 </template>

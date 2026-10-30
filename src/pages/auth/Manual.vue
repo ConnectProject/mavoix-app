@@ -4,24 +4,21 @@
       @submit="onSubmit"
       class="column flex-center"
     >
-      <!-- Invitation code input -->
+      <!-- Connection code copied from the panel ("Lier un appareil") -->
       <q-input
-        v-model="username"
+        v-model="code"
         outlined
-        label="nom d'utilisateur"
-      />
-      <br />
-      <q-input
-        v-model="password"
-        outlined
-        type="password"
-        label="mot de passe"
+        autofocus
+        autocomplete="off"
+        label="Code de connexion"
+        hint="Collez le code affiché dans le panneau (Lier un appareil)"
+        style="min-width: 320px"
       />
       <br />
       <!-- Submit -->
       <q-btn
         flat
-        label="Submit"
+        label="Se connecter"
         type="submit"
         color="primary"
       />
@@ -34,8 +31,7 @@ export default {
   name: 'PageAuthManual',
   data () {
     return {
-      username: '',
-      password: ''
+      code: ''
     }
   },
   computed: {
@@ -45,7 +41,13 @@ export default {
   },
   methods: {
     onSubmit () {
-      this.$store.dispatch('auth/login', [this.username, this.password])
+      const code = this.code.trim()
+      // the code has the form username:password, see auth/loginCode
+      if (!code.includes(':')) {
+        this.$q.notify({ position: 'top-right', message: 'Code invalide : copiez-le en entier depuis le panneau.', color: 'red' })
+        return
+      }
+      this.$store.dispatch('auth/loginCode', code)
     }
   },
   watch: {

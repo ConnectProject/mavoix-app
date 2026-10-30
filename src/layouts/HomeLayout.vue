@@ -86,6 +86,8 @@ export default {
     '$q.appVisible' (val) {
       if (!val) {
         this.$store.dispatch('stats/endSession')
+      } else {
+        this.$store.dispatch('usage/touch')
       }
     },
     /**
@@ -122,6 +124,7 @@ export default {
     this.$store.dispatch('stats/connectConnect').then(() => {
       this.$store.dispatch('stats/startSession')
     })
+    this.$store.dispatch('usage/touch')
     this.$store.dispatch('tts/init')
   }
 }
