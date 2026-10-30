@@ -35,19 +35,22 @@ $play-slot-width = calc(7.25rem + 28px)
   font-size 2em
   color #1976d2
   position absolute
-  margin 1rem
+  // vertically centred in the strip, like the cards (auto margins + top/bottom 0)
+  top 0
+  bottom 0
+  margin auto 1rem
   box-sizing border-box
-  // medium — match ItemCard--medium inner picto area
+  // same size as ItemCard--medium
   width calc(170px * var(--px-scale, 1))
-  height calc(168px * var(--px-scale, 1))
+  height calc(210px * var(--px-scale, 1))
 
 .active-strip--small .card-drop
   width calc(120px * var(--px-scale, 1))
-  height calc(118px * var(--px-scale, 1))
+  height calc(150px * var(--px-scale, 1))
 
 .active-strip--large .card-drop
   width calc(240px * var(--px-scale, 1))
-  height calc(238px * var(--px-scale, 1))
+  height calc(300px * var(--px-scale, 1))
 </style>
 
 <template>

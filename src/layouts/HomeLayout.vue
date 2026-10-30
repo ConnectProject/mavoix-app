@@ -6,14 +6,16 @@
       style="background:grey"
     >
       <q-tabs
+        :value="activeTabName"
         align="left"
         indicator-color="transparent"
         inline-label
+        @input="goToTab"
       >
-        <q-route-tab
+        <q-tab
           v-for="(tab, index) in tabs"
           :key="index"
-          :to="{ name: 'tab', params: { slug: tab.slug}}"
+          :name="tab.slug"
           style="border-radius: 24px 24px 0 0;text-transform:none"
           :style="{
             backgroundColor: tab.hexColor,
@@ -54,6 +56,16 @@ export default {
     }
   },
   methods: {
+    /**
+     * Go to the tab with the given slug (tabs are not links, so no url is shown on hover)
+     * @param {string} slug slug of the tab
+     */
+    goToTab (slug) {
+      if (slug !== this.$route.params.slug) {
+        this.$router.push({ name: 'tab', params: { slug } })
+      }
+    },
+
     /**
      * Change the active color by loading the color in the right tab object
      */

@@ -267,7 +267,9 @@ export default {
     cardDropX () {
       if (this.dragIndex > 0) {
         const el = this.cardEls[this.dragIndex - 1].closest('.content-container')
-        return el.offsetLeft + el.offsetWidth
+        // offsetLeft already includes the strip's left padding, which the placeholder's own position includes too
+        const padding = parseFloat(getComputedStyle(el.parentElement).paddingLeft) || 0
+        return el.offsetLeft + el.offsetWidth - padding
       } else {
         return 0
       }
