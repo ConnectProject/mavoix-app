@@ -306,6 +306,8 @@ export default {
     onTouchStart (card) {
       this.$refs.itemsZone.$el.style.zIndex = card.item.active ? '0' : '50'
       this.$refs.activeZone.$el.style.zIndex = card.item.active ? '50' : '0'
+      // the strip covers the shadow of the items zone while it is lifted, so it draws that shadow itself
+      this.$refs.activeZone.$el.classList.toggle('lifted', card.item.active)
       card.$el.style.zIndex = '50'
     },
     onTouchMove (card) {
@@ -333,8 +335,10 @@ export default {
      */
     onTouchEnd (card, zone) {
       // first reset it to its prior state
-      this.$refs.itemsZone.$el.style.zIndex = '0'
-      this.$refs.activeZone.$el.style.zIndex = '0'
+      // back to the stylesheet z-index, which keeps the items zone (and its shadow) above the strip
+      this.$refs.itemsZone.$el.style.zIndex = ''
+      this.$refs.activeZone.$el.style.zIndex = ''
+      this.$refs.activeZone.$el.classList.remove('lifted')
       card.$el.style.zIndex = '0'
       card.$el.style['box-shadow'] = null
       this.$refs.activeZone.$refs.cardDrop.$el.style['box-shadow'] = null

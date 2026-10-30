@@ -20,6 +20,18 @@ $play-slot-width = calc(7.25rem + 28px)
   padding-right $play-slot-width
   box-sizing border-box
 
+// Same shadow as the items zone (shadow-10), drawn here when the strip is above that zone
+.container.lifted::before
+  content ''
+  position absolute
+  top 0
+  left 0
+  right 0
+  height 0
+  pointer-events none
+  box-shadow 0 6px 6px -3px rgba(0, 0, 0, 0.2), 0 10px 14px 1px rgba(0, 0, 0, 0.14), 0 4px 18px 3px rgba(0, 0, 0, 0.12)
+  clip-path inset(0 0 -60px 0)
+
 .content-container
   display flex
   flex-direction column
