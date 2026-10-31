@@ -3,7 +3,7 @@
 
     <q-header
       class="text-black"
-      style="background:grey"
+      style="background:dimgray"
     >
       <q-tabs
         :value="activeTabName"

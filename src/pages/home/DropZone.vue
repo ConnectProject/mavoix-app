@@ -4,7 +4,7 @@
   width 100vw
   height calc(100vh - 60px)
   overflow hidden
-  background grey
+  background dimgray
 
 // Clear control — flush left on the sentence strip
 .clear-strip-btn
@@ -321,8 +321,8 @@ export default {
       // is pointer in the active zone ?
       if (this.pageY >= this.$refs.activeZone.$el.getBoundingClientRect().top) {
         this.active = true
-        card.$el.style['box-shadow'] = 'blue 0px 0px 5px 2px'
-        cardDrop.$el.style['box-shadow'] = 'blue 0px 0px 5px 2px'
+        card.$el.style['box-shadow'] = 'white 0px 0px 5px 2px'
+        cardDrop.$el.style['box-shadow'] = 'white 0px 0px 5px 2px'
       } else {
         this.active = false
         card.$el.style['box-shadow'] = null

@@ -1,6 +1,6 @@
 <style lang="stylus" scoped>
-// Light bluish sentence strip (matches kid app reference)
-$sentence-strip-bg = #e8f2fa
+// Sentence strip, same colour as the header
+$sentence-strip-bg = dimgray
 // Reserve space for sticky controls (clear left, play right) so cards never sit underneath
 $clear-slot-width = calc(3rem + 20px)
 $play-slot-width = calc(7.25rem + 28px)
@@ -43,9 +43,9 @@ $play-slot-width = calc(7.25rem + 28px)
 
 .card-drop
   background transparent
-  border 2px dashed #1976d2
+  border 2px dashed white
   font-size 2em
-  color #1976d2
+  color white
   position absolute
   // vertically centred in the strip, like the cards (auto margins + top/bottom 0)
   top 0
