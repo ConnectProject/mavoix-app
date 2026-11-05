@@ -3,7 +3,8 @@
 .card
   background white
   position relative
-  margin 1rem
+  // halved in the compact sentence strip (small phones)
+  margin calc(1rem * var(--card-margin-scale, 1))
   display flex
   flex-direction column
   box-sizing border-box

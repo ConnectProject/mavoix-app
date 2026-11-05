@@ -5,23 +5,49 @@ $sentence-strip-bg = dimgray
 $clear-slot-width = calc(3rem + 20px)
 $play-slot-width = calc(7.25rem + 28px)
 
-.container
+// Root: full-width strip (background, border, shadow). The controls (clear / play) sit in the
+// reserved left / right lanes; the cards scroll only inside the viewport between them.
+.strip
   position absolute
   left 0
-  display flex
-  flex-direction row
-  flex-wrap nowrap
-  min-width 100vw
-  border-top 1px solid rgba(25, 118, 210, 0.25)
+  right 0
   bottom 0
   height var(--strip-height, 12rem)
   background $sentence-strip-bg
-  padding-left $clear-slot-width
-  padding-right $play-slot-width
+  border-top 1px solid rgba(25, 118, 210, 0.25)
   box-sizing border-box
+  --lane-left $clear-slot-width
+  --lane-right $play-slot-width
+
+// Small screens: controls move to a right column, so the left lane shrinks and cards sit closer
+.strip.active-strip--compact
+  --card-margin-scale 0.5
+  --lane-left 0.5rem
+  --lane-right calc(3.5rem + 18px)
+
+.viewport
+  position absolute
+  top 0
+  bottom 0
+  left var(--lane-left)
+  right var(--lane-right)
+  overflow hidden
+
+// a card being dragged must be able to leave the strip
+.strip.is-dragging .viewport
+  overflow visible
+
+.container
+  position relative
+  display flex
+  flex-direction row
+  flex-wrap nowrap
+  width max-content
+  min-width 100%
+  height 100%
 
 // Same shadow as the items zone (shadow-10), drawn here when the strip is above that zone
-.container.lifted::before
+.strip.lifted::before
   content ''
   position absolute
   top 0
@@ -50,7 +76,7 @@ $play-slot-width = calc(7.25rem + 28px)
   // vertically centred in the strip, like the cards (auto margins + top/bottom 0)
   top 0
   bottom 0
-  margin auto 1rem
+  margin auto calc(1rem * var(--card-margin-scale, 1))
   box-sizing border-box
   // same size as ItemCard--medium
   width calc(170px * var(--px-scale, 1))
@@ -67,9 +93,13 @@ $play-slot-width = calc(7.25rem + 28px)
 
 <template>
   <div
+    class="strip"
+    :class="[activeStripClass, { 'active-strip--compact': compact, 'is-dragging': isDragging }]"
+  >
+  <div class="viewport" ref="viewport">
+  <div
     ref="container"
     class="container"
-    :class="activeStripClass"
     v-touch-pan.prevent.mouse="this.isDragging ? void 0 : handleScroll"
   >
     <q-card
@@ -92,6 +122,8 @@ $play-slot-width = calc(7.25rem + 28px)
         :on-touch-move="onTouchMove"
       />
     </div>
+  </div>
+  </div>
   </div>
 </template>
 
@@ -119,7 +151,8 @@ export default {
     'onTouchMove',
     'showCardDrop',
     'cardDropX',
-    'isDragging'
+    'isDragging',
+    'compact'
   ],
   methods: {
     /**
@@ -127,7 +160,8 @@ export default {
      */
     handleScroll ({ offset, isFinal }) {
       let container = this.$refs.container
-      let translateVal = Math.min(0, Math.max(offset.x + this.lastX, -(container.clientWidth - window.innerWidth)))
+      const maxScroll = Math.max(0, container.scrollWidth - this.$refs.viewport.clientWidth)
+      let translateVal = Math.min(0, Math.max(offset.x + this.lastX, -maxScroll))
 
       if (isFinal) {
         this.lastX = translateVal

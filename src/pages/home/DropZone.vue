@@ -3,6 +3,8 @@
   position relative
   width 100vw
   height calc(100vh - 60px)
+  // mobile browsers: 100vh includes the URL bar and crops the bottom of the page
+  height calc(100dvh - 60px)
   overflow hidden
   background dimgray
 
@@ -16,6 +18,13 @@
   background #fff
   color #1976d2
   box-shadow 0 2px 8px rgba(25, 118, 210, 0.35)
+
+// Compact clear control
+.clear-strip-btn--compact
+  width 2.5rem
+  height 2.5rem
+  min-width 2.5rem
+  min-height 2.5rem
 
 // Large play control: rainbow conic ring + white frame; inner disk dark blue when pressed / speaking
 .sentence-play-btn
@@ -34,6 +43,33 @@
   -webkit-tap-highlight-color transparent
   // Soft float + outer white cushion (neumorphic frame)
   filter drop-shadow(0 5px 14px rgba(0, 0, 0, 0.12))
+
+  // Compact variant for small screens: a bit larger than the clear button
+  &--compact
+    width 3.5rem
+    height 3.5rem
+    filter drop-shadow(0 3px 8px rgba(0, 0, 0, 0.12))
+
+  &--compact &__ring
+    box-shadow 0 0 0 3px #fff
+
+  &--compact &__inner
+    width 2.8rem
+    height 2.8rem
+    // white padding inside the rainbow ring: 1/3 of the large one (3px -> 1px)
+    box-shadow 0 0 0 1px #fff,
+      inset 0 2px 4px rgba(255, 255, 255, 0.95),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.06)
+
+  &--compact:active &__inner,
+  &--compact&--playing &__inner
+    box-shadow 0 0 0 1px #fff,
+      inset 0 2px 6px rgba(0, 0, 0, 0.15)
+
+  &--compact:disabled:active &__inner
+    box-shadow 0 0 0 1px #fff,
+      inset 0 2px 4px rgba(255, 255, 255, 0.95),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.06)
 
   &__ring
     position absolute
@@ -126,10 +162,12 @@
       :show-card-drop="true"
       :card-drop-x="cardDropX"
       :isDragging="!!card"
+      :compact="compact"
     />
 
     <!-- Clear active items — dedicated lane (strip has matching padding-left) -->
     <q-page-sticky
+      v-if="!compact"
       position="bottom-left"
       :offset="clearStickyOffset"
     >
@@ -147,6 +185,7 @@
 
     <!-- Play sequence — sized & offset to sit on vertical center of 12rem strip -->
     <q-page-sticky
+      v-if="!compact"
       position="bottom-right"
       :offset="playStickyOffset"
     >
@@ -170,6 +209,39 @@
         </span>
       </button>
     </q-page-sticky>
+
+    <!-- Small screens: play on top of clear, in a column at the right of the strip -->
+    <q-page-sticky
+      v-if="compact"
+      position="bottom-right"
+      :offset="compactStickyOffset"
+    >
+      <div class="column items-center no-wrap" style="gap: 0.75rem">
+        <button
+          type="button"
+          class="sentence-play-btn sentence-play-btn--compact"
+          :class="{ 'sentence-play-btn--playing': playing && canPlaySentence }"
+          :disabled="!canPlaySentence"
+          :aria-label="!canPlaySentence ? 'Play sentence — add pictures to the strip first' : (playing ? 'Pause' : 'Play sentence')"
+          @click="onPlaySequence"
+        >
+          <span class="sentence-play-btn__ring" aria-hidden="true" />
+          <span class="sentence-play-btn__inner">
+            <q-icon :name="playing && canPlaySentence ? 'pause' : 'play_arrow'" size="md" />
+          </span>
+        </button>
+        <q-btn
+          unelevated
+          dense
+          no-wrap
+          color="white"
+          text-color="primary"
+          class="clear-strip-btn clear-strip-btn--compact"
+          icon="clear"
+          @click="onClearActiveItems"
+        />
+      </div>
+    </q-page-sticky>
   </q-page>
 </template>
 
@@ -192,12 +264,18 @@ export default {
       columns: 1,
       triggered: false,
       card: null,
+      compact: false,
       cardEls: []
     }
   },
   mounted () {
     this.initDropZone()
     this.updateCardEls()
+    this.updateCompact()
+    window.addEventListener('resize', this.updateCompact)
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.updateCompact)
   },
   computed: {
     hexColor () {
@@ -230,13 +308,21 @@ export default {
     stripHeightRem () {
       const k = this.$store.getters['dropZone/imageSizeKey']
       const scale = Math.min(1, (window.devicePixelRatio || 1) / 2)
+      // compact: card margins are halved, so the strip is 1rem shorter
+      const trim = this.compact ? 1 : 0
       if (k === 'large') {
-        return 21 * scale
+        return (21 - trim) * scale
       }
       if (k === 'small') {
-        return 11.5 * scale
+        return (11.5 - trim) * scale
       }
-      return 15.25 * scale
+      return (15.25 - trim) * scale
+    },
+    /** Right column (play 3.5rem + gap + clear 2.5rem) centred on the strip */
+    compactStickyOffset () {
+      const stripPx = this.stripHeightRem * 16
+      const columnPx = (3.5 + 0.75 + 2.5) * 16
+      return [10, Math.max(4, Math.round(stripPx / 2 - columnPx / 2))]
     },
     /** Vertical center of strip for 7.25rem play FAB */
     playStickyOffset () {
@@ -276,6 +362,10 @@ export default {
     }
   },
   methods: {
+    // phones (landscape: short; portrait: narrow) get the compact strip
+    updateCompact () {
+      this.compact = window.innerHeight <= 520 || window.innerWidth <= 600
+    },
     initDropZone () {
       this.$store.dispatch('dropZone/init', this.$route.params.slug)
     },
