@@ -3,11 +3,14 @@
   position absolute
   left 0
   width 100%
-  height calc(100vh - var(--strip-height, 12rem) - 60px)
+  // fills the page above the strip; unlike a 100vh calc this follows the visible area on mobile
+  // browsers, where 100vh includes the URL bar and pushed this zone over the strip
+  bottom var(--strip-height, 12rem)
   z-index 10
   top 0
 
 .force-portait .container
+  bottom auto
   height calc(100vw - var(--strip-height, 12rem) - 60px)
 
 .inner-container
