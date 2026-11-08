@@ -1,0 +1,78 @@
+name: Android APK
+
+# Builds a debug APK of the native Android app and attaches it to the run as an artifact.
+# Download it from the run page (Actions > Android APK > Artifacts), then:
+#   adb install -r mavoix-debug.apk
+on:
+  workflow_dispatch:
+  push:
+    tags: ['android-*']
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      # The project is Quasar v1 / webpack 4 / Capacitor 2: keep Node old enough.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 16
+          cache: npm
+
+      # Gradle 4.10.1 + Android Gradle Plugin 3.3.2 need JDK 8.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 8
+
+      - uses: android-actions/setup-android@v3
+      - name: Install Android SDK packages
+        run: sdkmanager "platforms;android-28" "platforms;android-30" "build-tools;28.0.3"
+
+      - name: Write .env
+        env:
+          PARSE_APP_ID: ${{ secrets.PARSE_APP_ID }}
+          PARSE_JS_KEY: ${{ secrets.PARSE_JS_KEY }}
+          PARSE_URL: ${{ secrets.PARSE_URL }}
+          CONNECT_URL: ${{ secrets.CONNECT_URL || 'https://connect-project.io' }}
+          CONNECT_CLIENT_ID: ${{ secrets.CONNECT_CLIENT_ID }}
+        run: |
+          cat > .env <<EOF
+          PARSE_APP_ID=$PARSE_APP_ID
+          PARSE_JS_KEY=$PARSE_JS_KEY
+          PARSE_URL=$PARSE_URL
+          CONNECT_URL=$CONNECT_URL
+          CONNECT_CLIENT_ID=$CONNECT_CLIENT_ID
+          CONNECT_SANDBOX=false
+          EOF
+
+      # The committed capacitor config carries a dev live-reload "server.url"
+      # (a LAN address). Remove it so the APK uses its bundled files.
+      - name: Remove dev server URL from Capacitor config
+        run: |
+          for f in src-capacitor/capacitor.config.json src-capacitor/android/app/src/main/assets/capacitor.config.json; do
+            jq 'del(.server)' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+          done
+
+      - run: npm ci
+      - run: npm ci
+        working-directory: src-capacitor
+
+      - name: Build debug APK
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
+        run: npx quasar build -m capacitor -T android --debug
+
+      - name: Collect APK
+        run: |
+          apk=$(find dist/capacitor -name '*.apk' | head -n 1)
+          test -n "$apk"
+          mkdir -p out && cp "$apk" out/mavoix-debug.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mavoix-debug-apk
+          path: out/mavoix-debug.apk
+          if-no-files-found: error
