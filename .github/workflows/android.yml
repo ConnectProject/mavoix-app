@@ -68,6 +68,24 @@ jobs:
       - run: npm ci
         working-directory: src-capacitor
 
+      # jcenter / bintray are shut down; org.apache.cordova:framework:7.0.0 only existed there.
+      # Resolve from Maven Central instead, using the oldest published framework (10.x).
+      - name: Gradle init script (repositories + Cordova framework)
+        run: |
+          mkdir -p ~/.gradle/init.d
+          cat > ~/.gradle/init.d/fix-repos.gradle <<'EOF'
+          allprojects {
+            repositories { mavenCentral() }
+            configurations.all {
+              resolutionStrategy.eachDependency { d ->
+                if (d.requested.group == 'org.apache.cordova' && d.requested.name == 'framework') {
+                  d.useVersion '10.1.1'
+                }
+              }
+            }
+          }
+          EOF
+
       - name: Make gradlew executable (stored as 644 in git)
         run: chmod +x src-capacitor/android/gradlew
 
