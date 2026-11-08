@@ -68,23 +68,18 @@ jobs:
       - run: npm ci
         working-directory: src-capacitor
 
-      # jcenter / bintray are shut down; org.apache.cordova:framework:7.0.0 only existed there.
-      # Resolve from Maven Central instead, using the oldest published framework (10.x).
-      - name: Gradle init script (repositories + Cordova framework)
+      # jcenter / bintray are shut down and org.apache.cordova:framework:7.0.0 (needed by
+      # Capacitor 2) only existed there; Maven Central starts at 10.x, which is incompatible.
+      # Build the 7.0.0 jar from the original sources on npm; Gradle finds it in app/libs.
+      - name: Build Cordova framework 7.0.0 jar
         run: |
-          mkdir -p ~/.gradle/init.d
-          cat > ~/.gradle/init.d/fix-repos.gradle <<'EOF'
-          allprojects {
-            repositories { mavenCentral() }
-            configurations.all {
-              resolutionStrategy.eachDependency { d ->
-                if (d.requested.group == 'org.apache.cordova' && d.requested.name == 'framework') {
-                  d.useVersion '10.1.1'
-                }
-              }
-            }
-          }
-          EOF
+          work=$(mktemp -d)
+          (cd "$work" && npm pack cordova-android@7.0.0 --silent && tar xzf cordova-android-7.0.0.tgz)
+          mkdir -p "$work/classes" src-capacitor/android/app/libs
+          javac -nowarn -source 8 -target 8 \
+            -cp "$ANDROID_HOME/platforms/android-28/android.jar" \
+            -d "$work/classes" $(find "$work/package/framework/src" -name '*.java')
+          jar cf src-capacitor/android/app/libs/framework-7.0.0.jar -C "$work/classes" .
 
       - name: Make gradlew executable (stored as 644 in git)
         run: chmod +x src-capacitor/android/gradlew
