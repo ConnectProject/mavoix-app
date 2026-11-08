@@ -1,5 +1,9 @@
 package io.connect.mavoix;
 
+import android.content.Context;
+import android.media.AudioManager;
+import android.media.audiofx.LoudnessEnhancer;
+import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 
@@ -22,6 +26,13 @@ public class TtsPlugin extends Plugin implements TextToSpeech.OnInitListener {
     private PluginCall speakCall;
     private String speakId;
     private int counter = 0;
+
+    // The media volume is already at its maximum and the engine's own volume
+    // parameter cannot exceed 1.0, so the speech is boosted with a LoudnessEnhancer
+    // attached to the audio session the engine plays in.
+    private static final int DEFAULT_GAIN_MB = 600; // +6 dB, in millibels
+    private int audioSessionId = AudioManager.ERROR;
+    private LoudnessEnhancer enhancer;
 
     @PluginMethod()
     public void load(PluginCall call) {
@@ -53,9 +64,24 @@ public class TtsPlugin extends Plugin implements TextToSpeech.OnInitListener {
                     finishSpeak(utteranceId);
                 }
             });
+            this.setupBoost();
             this.initCall.success();
         } else {
             this.initCall.error(initStatus + ": Failed to init TTS");
+        }
+    }
+
+    private void setupBoost() {
+        try {
+            AudioManager audio = (AudioManager) this.getContext().getSystemService(Context.AUDIO_SERVICE);
+            this.audioSessionId = audio.generateAudioSessionId();
+            this.enhancer = new LoudnessEnhancer(this.audioSessionId);
+            this.enhancer.setTargetGain(DEFAULT_GAIN_MB);
+            this.enhancer.setEnabled(true);
+        } catch (Exception e) {
+            // no boost on this device: the speech is just played at normal level
+            this.enhancer = null;
+            this.audioSessionId = AudioManager.ERROR;
         }
     }
 
@@ -106,10 +132,23 @@ public class TtsPlugin extends Plugin implements TextToSpeech.OnInitListener {
             this.speakId = null;
             previous.success();
         }
+        // optional "gain" in millibels (0 = no boost) overrides the default
+        String gain = call.getString("gain");
+        if (this.enhancer != null && gain != null) {
+            try {
+                this.enhancer.setTargetGain(Math.max(0, Math.min(1500, Integer.parseInt(gain))));
+            } catch (Exception e) {
+                // keep the current gain
+            }
+        }
+        Bundle params = new Bundle();
+        if (this.enhancer != null) {
+            params.putInt(TextToSpeech.Engine.KEY_PARAM_SESSION_ID, this.audioSessionId);
+        }
         this.counter++;
         this.speakId = "iSpeak" + this.counter;
         this.speakCall = call;
-        int status = this.tts.speak(value, TextToSpeech.QUEUE_FLUSH, null, this.speakId);
+        int status = this.tts.speak(value, TextToSpeech.QUEUE_FLUSH, params, this.speakId);
         if (status != TextToSpeech.SUCCESS) {
             this.speakCall = null;
             this.speakId = null;
@@ -129,5 +168,17 @@ public class TtsPlugin extends Plugin implements TextToSpeech.OnInitListener {
             pending.success();
         }
         call.success();
+    }
+
+    @Override
+    protected void handleOnDestroy() {
+        if (this.enhancer != null) {
+            this.enhancer.release();
+            this.enhancer = null;
+        }
+        if (this.tts != null) {
+            this.tts.shutdown();
+        }
+        super.handleOnDestroy();
     }
 }
