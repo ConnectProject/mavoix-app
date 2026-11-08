@@ -69,8 +69,6 @@ jobs:
         working-directory: src-capacitor
 
       - name: Build debug APK
-        env:
-          NODE_OPTIONS: --openssl-legacy-provider
         run: npx quasar build -m capacitor -T android --debug
 
       - name: Collect APK
