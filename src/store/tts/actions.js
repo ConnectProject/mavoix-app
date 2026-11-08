@@ -1,4 +1,20 @@
+import { Capacitor, Plugins } from '@capacitor/core'
+
 let languagesObject
+
+// Android's WebView has no window.speechSynthesis: use the native TtsPlugin there.
+const isAndroidNative = () => Capacitor.isNative && Capacitor.platform === 'android'
+
+const speakNative = ({ commit }, phrase, tab) => {
+  commit('setPlaying', true)
+  Plugins.TtsPlugin.speak({
+    text: phrase,
+    locale: tab.language || 'fr_FR',
+    rate: String(parseFloat(tab.speed) || 1)
+  })
+    .catch((err) => commit('setError', err))
+    .then(() => commit('setPlaying', false))
+}
 
 function loadVoices ({ commit }) {
   try {
@@ -30,6 +46,12 @@ function loadVoices ({ commit }) {
  */
 export const init = ({ commit }) => {
   try {
+    if (isAndroidNative()) {
+      Plugins.TtsPlugin.load()
+        .then(() => commit('ttsEnabled'))
+        .catch((err) => commit('setError', err))
+      return
+    }
     // Execute loadVoices.
     loadVoices({ commit })
 
@@ -48,7 +70,11 @@ export const init = ({ commit }) => {
  */
 export const cancel = ({ commit }) => {
   try {
-    speechSynthesis.cancel()
+    if (isAndroidNative()) {
+      Plugins.TtsPlugin.stop()
+    } else {
+      speechSynthesis.cancel()
+    }
   } catch (e) {
     // ignore (e.g. non-browser / no API)
   }
@@ -64,6 +90,12 @@ export const speak = ({ commit, rootState, getters: { tts } }, text) => {
   try {
     const phrase = String(text || '').trim()
     if (!phrase) {
+      return
+    }
+    if (isAndroidNative()) {
+      if (tts) {
+        speakNative({ commit }, phrase, rootState.dropZone.tab)
+      }
       return
     }
     if (!tts) {

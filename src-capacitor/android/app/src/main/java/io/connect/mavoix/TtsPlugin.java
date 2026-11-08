@@ -1,8 +1,8 @@
 package io.connect.mavoix;
 
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 
-import com.getcapacitor.JSObject;
 import com.getcapacitor.NativePlugin;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -10,73 +10,124 @@ import com.getcapacitor.PluginMethod;
 
 import java.util.Locale;
 
+/**
+ * Text to speech through the Android engine. Android's WebView has no
+ * window.speechSynthesis, so the app calls this plugin when it runs natively.
+ */
 @NativePlugin()
 public class TtsPlugin extends Plugin implements TextToSpeech.OnInitListener {
 
     private TextToSpeech tts;
     private PluginCall initCall;
+    private PluginCall speakCall;
+    private String speakId;
+    private int counter = 0;
 
     @PluginMethod()
     public void load(PluginCall call) {
-        this.tts = new TextToSpeech(this.getContext(),this);
         this.initCall = call;
+        this.tts = new TextToSpeech(this.getContext(), this);
     }
 
     @Override
     public void onInit(int initStatus) {
         if (initStatus == TextToSpeech.SUCCESS) {
             this.tts.setLanguage(Locale.FRENCH);
+            this.tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                @Override
+                public void onStart(String utteranceId) {
+                }
+
+                @Override
+                public void onDone(String utteranceId) {
+                    finishSpeak(utteranceId);
+                }
+
+                @Override
+                public void onError(String utteranceId) {
+                    finishSpeak(utteranceId);
+                }
+
+                @Override
+                public void onStop(String utteranceId, boolean interrupted) {
+                    finishSpeak(utteranceId);
+                }
+            });
             this.initCall.success();
         } else {
             this.initCall.error(initStatus + ": Failed to init TTS");
         }
     }
 
+    /** Resolve the pending speak call once its utterance is over. */
+    private synchronized void finishSpeak(String utteranceId) {
+        if (this.speakCall != null && utteranceId != null && utteranceId.equals(this.speakId)) {
+            PluginCall call = this.speakCall;
+            this.speakCall = null;
+            this.speakId = null;
+            call.success();
+        }
+    }
+
     @PluginMethod()
-    public void speak(PluginCall call) {
+    public synchronized void speak(PluginCall call) {
+        if (this.tts == null) {
+            call.error("TTS not loaded");
+            return;
+        }
         String value = call.getString("text");
         String lang = call.getString("locale");
         String speed = call.getString("rate");
-        Float rate = Float.parseFloat(speed);
-        if(rate != null) {
-          this.tts.setSpeechRate(rate);
-        }else {
-          this.tts.setSpeechRate(1.0f);
+
+        float rate = 1.0f;
+        try {
+            if (speed != null) {
+                rate = Float.parseFloat(speed);
+            }
+        } catch (NumberFormatException e) {
+            rate = 1.0f;
         }
-        switch(lang) {
-          case "fr_FR":
-            this.tts.setLanguage(Locale.FRENCH);
-            break;
-          case "en_US":
-            Locale us = new Locale("en", "US");
-            this.tts.setLanguage(us);
-            break;
-          case "it_IT":
-            this.tts.setLanguage(Locale.ITALIAN);
-            break;
-          case "pt_PT":
-            Locale pt = new Locale("pt", "PT");
-            this.tts.setLanguage(pt);
-            break;
-          case "en_UK":
-            Locale uk = new Locale("en", "UL");
-            this.tts.setLanguage(uk);
-            break;
-          case "es_ES":
-            Locale spanish = new Locale("es", "ES");
-            this.tts.setLanguage(spanish);
-            break;
-          case "de_DE":
-            this.tts.setLanguage(Locale.GERMAN);
-            break;
-          case "nl_NL":
-            Locale dutch = new Locale("nl", "NL");
-            this.tts.setLanguage(dutch);
-            break;
-          default:
-            this.tts.setLanguage(Locale.FRENCH);
+        this.tts.setSpeechRate(rate);
+
+        Locale locale = Locale.FRENCH;
+        if (lang != null && !lang.isEmpty()) {
+            locale = Locale.forLanguageTag(lang.replace('_', '-'));
         }
-        this.tts.speak(value, TextToSpeech.QUEUE_FLUSH, null, "iSpeak");
+        int result = this.tts.setLanguage(locale);
+        if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+            call.error("Language not available: " + lang);
+            return;
+        }
+
+        // a new phrase replaces the one being spoken
+        if (this.speakCall != null) {
+            PluginCall previous = this.speakCall;
+            this.speakCall = null;
+            this.speakId = null;
+            previous.success();
+        }
+        this.counter++;
+        this.speakId = "iSpeak" + this.counter;
+        this.speakCall = call;
+        int status = this.tts.speak(value, TextToSpeech.QUEUE_FLUSH, null, this.speakId);
+        if (status != TextToSpeech.SUCCESS) {
+            this.speakCall = null;
+            this.speakId = null;
+            call.error("speak failed: " + status);
+        }
+    }
+
+    @PluginMethod()
+    public synchronized void stop(PluginCall call) {
+        if (this.tts != null) {
+            this.tts.stop();
+        }
+        if (this.speakCall != null) {
+            PluginCall pending = this.speakCall;
+            this.speakCall = null;
+            this.speakId = null;
+            pending.success();
+        }
         call.success();
     }
 }
