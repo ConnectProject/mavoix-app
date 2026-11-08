@@ -124,7 +124,9 @@ public class TtsPlugin extends Plugin implements TextToSpeech.OnInitListener {
             locale = Locale.forLanguageTag(lang.replace('_', '-'));
         }
         int result = this.tts.setLanguage(locale);
-        if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+        // LANG_MISSING_DATA (-1) is also what a slow engine answers while it is still
+        // starting (about 12 s on a cold start): only give up when the language is really unsupported.
+        if (result == TextToSpeech.LANG_NOT_SUPPORTED) {
             call.error("Language not available: " + lang);
             return;
         }
@@ -158,6 +160,25 @@ public class TtsPlugin extends Plugin implements TextToSpeech.OnInitListener {
             this.speakId = null;
             call.error("speak failed: " + status);
         }
+    }
+
+    /**
+     * Wake the engine up: a silent utterance makes it load the voice, so the first real
+     * sentence is not delayed by the cold start (about 12 s on a slow tablet).
+     */
+    @PluginMethod()
+    public synchronized void warmup(PluginCall call) {
+        if (this.tts != null) {
+            String lang = call.getString("locale");
+            Locale locale = (lang == null || lang.isEmpty())
+                ? Locale.FRENCH
+                : Locale.forLanguageTag(lang.replace('_', '-'));
+            this.tts.setLanguage(locale);
+            Bundle params = new Bundle();
+            params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, 0f);
+            this.tts.speak(".", TextToSpeech.QUEUE_ADD, params, "warmup");
+        }
+        call.success();
     }
 
     @PluginMethod()

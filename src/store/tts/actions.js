@@ -47,12 +47,14 @@ function loadVoices ({ commit }) {
  * Init capacitor's text to speech plugin
  * @param {Context} context
  */
-export const init = ({ commit }) => {
+export const init = ({ commit, rootState }) => {
   try {
     if (isAndroidNative()) {
       // one retry: the first attempt can fail while the speech engine is still starting
       loadNative({ commit })
         .catch(() => new Promise((resolve) => setTimeout(resolve, 3000)).then(() => loadNative({ commit })))
+        // wake the engine up with a silent utterance so the first real sentence is not slow
+        .then(() => Plugins.TtsPlugin.warmup({ locale: rootState.dropZone.tab.language || 'fr_FR' }))
         .catch((err) => commit('setError', err))
       return
     }
