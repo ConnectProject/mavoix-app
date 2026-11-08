@@ -68,6 +68,9 @@ jobs:
       - run: npm ci
         working-directory: src-capacitor
 
+      - name: Make gradlew executable (stored as 644 in git)
+        run: chmod +x src-capacitor/android/gradlew
+
       - name: Build debug APK
         run: npx quasar build -m capacitor -T android --debug
 
