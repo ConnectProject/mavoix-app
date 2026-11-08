@@ -81,6 +81,16 @@ jobs:
             -d "$work/classes" $(find "$work/package/framework/src" -name '*.java')
           jar cf src-capacitor/android/app/libs/framework-7.0.0.jar -C "$work/classes" .
 
+      # Every module (not just :app) must be able to find the jar.
+      - name: Gradle init script (flatDir for all projects)
+        run: |
+          mkdir -p ~/.gradle/init.d
+          cat > ~/.gradle/init.d/cordova-framework.gradle <<EOF
+          allprojects {
+            repositories { flatDir { dirs '$GITHUB_WORKSPACE/src-capacitor/android/app/libs' } }
+          }
+          EOF
+
       - name: Make gradlew executable (stored as 644 in git)
         run: chmod +x src-capacitor/android/gradlew
 
