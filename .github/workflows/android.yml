@@ -91,6 +91,16 @@ jobs:
           }
           EOF
 
+      # Sign every build with the same key, so a new APK installs over the previous one.
+      # The Android Gradle Plugin signs debug builds with ~/.android/debug.keystore.
+      - name: Restore debug keystore
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_B64 }}
+        run: |
+          test -n "$KEYSTORE_B64" || { echo "::error::Missing secret ANDROID_DEBUG_KEYSTORE_B64"; exit 1; }
+          mkdir -p ~/.android
+          echo "$KEYSTORE_B64" | base64 -d > ~/.android/debug.keystore
+
       - name: Make gradlew executable (stored as 644 in git)
         run: chmod +x src-capacitor/android/gradlew
 
