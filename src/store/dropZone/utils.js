@@ -1,5 +1,6 @@
 import Parse from 'parse'
 
+import { PARSE_FILE_KEY } from '~/models/Asset'
 import Tab, { SLUG_KEY } from '~/models/Tab'
 import {
   NAME_KEY,
@@ -24,7 +25,7 @@ export const itemIndex = (item, items) => (
 
 export const assetFromModel = (assetModel) => {
   try {
-    const parseFile = assetModel.get('file')
+    const parseFile = assetModel.get(PARSE_FILE_KEY)
     // update asset url if asset is a Parse file
     const url = parseFile
       ? parseFile.url()
