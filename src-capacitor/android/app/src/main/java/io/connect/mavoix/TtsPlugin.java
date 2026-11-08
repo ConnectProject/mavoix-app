@@ -36,6 +36,10 @@ public class TtsPlugin extends Plugin implements TextToSpeech.OnInitListener {
 
     @PluginMethod()
     public void load(PluginCall call) {
+        // a second load() (retry) must not leave the first engine bound
+        if (this.tts != null) {
+            this.tts.shutdown();
+        }
         this.initCall = call;
         this.tts = new TextToSpeech(this.getContext(), this);
     }

@@ -5,6 +5,9 @@ let languagesObject
 // Android's WebView has no window.speechSynthesis: use the native TtsPlugin there.
 const isAndroidNative = () => Capacitor.isNative && Capacitor.platform === 'android'
 
+// The engine can be slow or not ready right after the app starts: load() resolves when it is.
+const loadNative = ({ commit }) => Plugins.TtsPlugin.load().then(() => commit('ttsEnabled'))
+
 const speakNative = ({ commit }, phrase, tab) => {
   commit('setPlaying', true)
   Plugins.TtsPlugin.speak({
@@ -47,8 +50,9 @@ function loadVoices ({ commit }) {
 export const init = ({ commit }) => {
   try {
     if (isAndroidNative()) {
-      Plugins.TtsPlugin.load()
-        .then(() => commit('ttsEnabled'))
+      // one retry: the first attempt can fail while the speech engine is still starting
+      loadNative({ commit })
+        .catch(() => new Promise((resolve) => setTimeout(resolve, 3000)).then(() => loadNative({ commit })))
         .catch((err) => commit('setError', err))
       return
     }
@@ -93,9 +97,11 @@ export const speak = ({ commit, rootState, getters: { tts } }, text) => {
       return
     }
     if (isAndroidNative()) {
-      if (tts) {
-        speakNative({ commit }, phrase, rootState.dropZone.tab)
-      }
+      // not ready yet (slow start, failed init): load the engine now, then speak
+      const ready = tts ? Promise.resolve() : loadNative({ commit })
+      ready
+        .then(() => speakNative({ commit }, phrase, rootState.dropZone.tab))
+        .catch((err) => commit('setError', err))
       return
     }
     if (!tts) {
