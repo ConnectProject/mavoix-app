@@ -100,8 +100,8 @@
     display flex
     align-items center
     justify-content center
-    width 5.35rem
-    height 5.35rem
+    width 73.8%
+    height 73.8%
     border-radius 50%
     background #fff
     color #1976d2
@@ -193,6 +193,7 @@
         type="button"
         class="sentence-play-btn"
         :class="{ 'sentence-play-btn--playing': playing && canPlaySentence }"
+        :style="playBtnStyle"
         :disabled="!canPlaySentence"
         :aria-label="!canPlaySentence ? 'Play sentence — add pictures to the strip first' : (playing ? 'Pause' : 'Play sentence')"
         @click="onPlaySequence"
@@ -324,10 +325,17 @@ export default {
       const columnPx = (3.5 + 0.75 + 2.5) * 16
       return [10, Math.max(4, Math.round(stripPx / 2 - columnPx / 2))]
     },
-    /** Vertical center of strip for 7.25rem play FAB */
+    /** Play FAB size in px: 7.25rem, shrunk so button + 5px white rim fit inside a short strip */
+    playBtnPx () {
+      return Math.round(Math.min(7.25 * 16, this.stripHeightRem * 16 - 20))
+    },
+    playBtnStyle () {
+      return { width: this.playBtnPx + 'px', height: this.playBtnPx + 'px' }
+    },
+    /** Vertical center of strip for the play FAB */
     playStickyOffset () {
       const stripPx = this.stripHeightRem * 16
-      const btnPx = 7.25 * 16
+      const btnPx = this.playBtnPx
       return [20, Math.max(8, Math.round(stripPx / 2 - btnPx / 2))]
     },
     /** Vertical center for 3rem clear button */
