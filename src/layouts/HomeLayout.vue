@@ -56,6 +56,16 @@ export default {
     }
   },
   methods: {
+    onVisible () {
+      if (document.visibilityState === 'visible') {
+        this.$store.dispatch('tts/wake')
+      }
+    },
+    keepSpeechAwake () {
+      // after sleep / returning to the app, and every 4 min while it is open
+      document.addEventListener('visibilitychange', this.onVisible)
+      this.wakeTimer = setInterval(this.onVisible, 4 * 60 * 1000)
+    },
     /**
      * Go to the tab with the given slug (tabs are not links, so no url is shown on hover)
      * @param {string} slug slug of the tab
@@ -126,6 +136,11 @@ export default {
     })
     this.$store.dispatch('usage/touch')
     this.$store.dispatch('tts/init')
+    this.keepSpeechAwake()
+  },
+  beforeDestroy () {
+    document.removeEventListener('visibilitychange', this.onVisible)
+    clearInterval(this.wakeTimer)
   }
 }
 </script>

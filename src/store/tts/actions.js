@@ -71,6 +71,22 @@ export const init = ({ commit, rootState }) => {
 }
 
 /**
+ * Keep the native engine awake: the system frees the engine service during sleep and it
+ * then needs ~12 s to restart. A silent utterance restarts it before the child presses Play.
+ * If the engine is dead, reload it first. No-op outside Android native.
+ * @param {Context} context
+ */
+export const wake = ({ commit, rootState }) => {
+  if (!isAndroidNative()) {
+    return
+  }
+  const warmup = () => Plugins.TtsPlugin.warmup({ locale: rootState.dropZone.tab.language || 'fr_FR' })
+  warmup()
+    .catch(() => loadNative({ commit }).then(warmup))
+    .catch((err) => commit('setError', err))
+}
+
+/**
  * Stop any in-progress speech and clear the playing flag.
  * @param {Context} context
  */

@@ -168,7 +168,11 @@ public class TtsPlugin extends Plugin implements TextToSpeech.OnInitListener {
      */
     @PluginMethod()
     public synchronized void warmup(PluginCall call) {
-        if (this.tts != null) {
+        if (this.tts == null) {
+            call.error("TTS not loaded");
+            return;
+        }
+        {
             String lang = call.getString("locale");
             Locale locale = (lang == null || lang.isEmpty())
                 ? Locale.FRENCH
@@ -176,7 +180,13 @@ public class TtsPlugin extends Plugin implements TextToSpeech.OnInitListener {
             this.tts.setLanguage(locale);
             Bundle params = new Bundle();
             params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, 0f);
-            this.tts.speak(".", TextToSpeech.QUEUE_ADD, params, "warmup");
+            // never cut a sentence being spoken
+            int status = this.tts.speak(".", TextToSpeech.QUEUE_ADD, params, "warmup");
+            if (status != TextToSpeech.SUCCESS) {
+                // the engine service died (system freed it during sleep): the caller reloads it
+                call.error("warmup failed: " + status);
+                return;
+            }
         }
         call.success();
     }
