@@ -121,6 +121,8 @@ export default {
       return
     }
     localStorage.removeItem('connectSessionId')
+    // start the speech engine first: it needs ~20 s to be ready, so do not wait for the tabs
+    this.$store.dispatch('tts/init')
     try {
       await this.$store.dispatch('tabs/loadAndWatch')
     } catch (e) {
@@ -135,7 +137,6 @@ export default {
       this.$store.dispatch('stats/startSession')
     })
     this.$store.dispatch('usage/touch')
-    this.$store.dispatch('tts/init')
     this.keepSpeechAwake()
   },
   beforeDestroy () {
