@@ -1,0 +1,80 @@
+name: iOS IPA (unsigned)
+
+# Builds an UNSIGNED .ipa of the native iOS app and attaches it to the run as an artifact.
+# No Apple account is needed here. Sign and install it from a Mac with a free Apple ID,
+# e.g. with Sideloadly (https://sideloadly.io): plug the iPad, drag mavoix-unsigned.ipa in.
+# A free Apple ID signature lasts 7 days; the app must then be re-signed the same way.
+on:
+  workflow_dispatch:
+  push:
+    tags: ['ios-*']
+
+jobs:
+  build:
+    runs-on: macos-14
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      # The project is Quasar v1 / webpack 4 / Capacitor 2: keep Node old enough.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 16
+          cache: npm
+
+      - name: Write .env
+        env:
+          PARSE_APP_ID: ${{ secrets.PARSE_APP_ID }}
+          PARSE_JS_KEY: ${{ secrets.PARSE_JS_KEY }}
+          PARSE_URL: ${{ secrets.PARSE_URL }}
+          CONNECT_URL: ${{ secrets.CONNECT_URL || 'https://connect-project.io' }}
+          CONNECT_CLIENT_ID: ${{ secrets.CONNECT_CLIENT_ID }}
+        run: |
+          cat > .env <<EOF
+          PARSE_APP_ID=$PARSE_APP_ID
+          PARSE_JS_KEY=$PARSE_JS_KEY
+          PARSE_URL=$PARSE_URL
+          CONNECT_URL=$CONNECT_URL
+          CONNECT_CLIENT_ID=$CONNECT_CLIENT_ID
+          CONNECT_SANDBOX=false
+          EOF
+
+      # The committed Capacitor configs carry a dev live-reload "server.url" (a LAN address).
+      # Remove it so the app uses its bundled files.
+      - name: Remove dev server URL from Capacitor config
+        run: |
+          for f in src-capacitor/capacitor.config.json src-capacitor/ios/App/App/capacitor.config.json; do
+            jq 'del(.server)' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+          done
+
+      - run: npm ci
+      - run: npm ci
+        working-directory: src-capacitor
+
+      # Web build + "cap sync ios" (copies www, generates the Cordova plugin pod, pod install).
+      # --skip-pkg stops before Quasar's own xcodebuild call, which would try to code sign.
+      - name: Build web bundle and sync iOS project
+        run: npx quasar build -m capacitor -T ios --skip-pkg
+
+      - name: Compile for device without code signing
+        working-directory: src-capacitor/ios/App
+        run: |
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release \
+            -sdk iphoneos -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Package unsigned IPA
+        run: |
+          app=$(find src-capacitor/ios/App/build/Build/Products -name 'App.app' -maxdepth 3 | head -n 1)
+          test -n "$app"
+          mkdir -p out/Payload
+          cp -R "$app" out/Payload/
+          (cd out && zip -qry mavoix-unsigned.ipa Payload && rm -rf Payload)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mavoix-unsigned-ipa
+          path: out/mavoix-unsigned.ipa
+          if-no-files-found: error
