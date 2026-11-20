@@ -396,9 +396,21 @@ export default {
       this.$store.dispatch('usage/recordPhrase')
       this.$store.dispatch('tts/speak', trimmed).then(() => {
         this.$store.dispatch('stats/saveSentence')
+        this.clearAfterSpeech(trimmed)
       })
     },
+    // empty the strip 1 s after the speech ended, unless the sentence changed or is being played again
+    clearAfterSpeech (spoken) {
+      clearTimeout(this.clearTimer)
+      this.clearTimer = setTimeout(() => {
+        const current = this.activeItems.map((item) => item.name).join(' ').trim()
+        if (current === spoken && !this.$store.getters['tts/playing']) {
+          this.$store.commit('dropZone/clearActiveItems')
+        }
+      }, 1000)
+    },
     onClearActiveItems () {
+      clearTimeout(this.clearTimer)
       this.$store.dispatch('tts/cancel')
       this.$store.commit('dropZone/clearActiveItems')
     },

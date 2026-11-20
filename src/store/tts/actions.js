@@ -10,7 +10,7 @@ const loadNative = ({ commit }) => Plugins.TtsPlugin.load().then(() => commit('t
 
 const speakNative = ({ commit }, phrase, tab) => {
   commit('setPlaying', true)
-  Plugins.TtsPlugin.speak({
+  return Plugins.TtsPlugin.speak({
     text: phrase,
     locale: tab.language || 'fr_FR',
     rate: String(parseFloat(tab.speed) || 1)
@@ -117,10 +117,9 @@ export const speak = ({ commit, rootState, getters: { tts } }, text) => {
     if (isAndroidNative()) {
       // not ready yet (slow start, failed init): load the engine now, then speak
       const ready = tts ? Promise.resolve() : loadNative({ commit })
-      ready
+      return ready
         .then(() => speakNative({ commit }, phrase, rootState.dropZone.tab))
         .catch((err) => commit('setError', err))
-      return
     }
     if (!tts) {
       console.log('trying to load voices')
@@ -135,10 +134,16 @@ export const speak = ({ commit, rootState, getters: { tts } }, text) => {
       utterance.voice = languagesObject[locale][0]
       console.log(utterance)
 
-      utterance.onend = function () {
-        commit('setPlaying', false)
-      }
-      speechSynthesis.speak(utterance)
+      // resolves when the speech is over (ended, cancelled or failed)
+      return new Promise((resolve) => {
+        const done = () => {
+          commit('setPlaying', false)
+          resolve()
+        }
+        utterance.onend = done
+        utterance.onerror = done
+        speechSynthesis.speak(utterance)
+      })
     }
   } catch (err) {
     commit('setError', err)
