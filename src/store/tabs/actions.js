@@ -2,24 +2,34 @@ import Parse from 'parse'
 
 import Tab, { HEX_COLOR_KEY, SPEED_KEY, LANGUAGE_KEY, IMAGE_SIZE_KEY } from '~/models/Tab'
 import getCurrentUserId from '~/utils/getCurrentUserId'
+import { requestCached } from '~/utils/dataCache'
+import { syncOfflineData } from '~/utils/offlineSync'
+
+const tabsQuery = () => new Parse.Query(Tab).equalTo('user', getCurrentUserId())
 
 /**
  * Load available tabs and watch for changes.
  * @param {Context} ctx vuex action context.
  */
 export const loadAndWatch = ({ commit, dispatch }) => {
-  return new Parse.Query(Tab)
-    .equalTo('user', getCurrentUserId())
-    .find()
-    .then((tabs) => {
-      commit('setTabs', tabs)
-      dispatch('watch')
-    })
-  // .catch((err) => {
-  //   alert('loadAndWatch: ' + err)
-  //   commit('setError', err)
-  // })
+  return dispatch('load').then(() => dispatch('watch'))
 }
+
+/**
+ * Load the tabs (from the offline copy when the server cannot be reached) and refresh the offline copy of every card.
+ * @param {Context} ctx vuex action context.
+ */
+export const load = async ({ commit }) => {
+  const tabs = await requestCached('tabs', () => tabsQuery().find())
+  commit('setTabs', tabs)
+  syncOfflineData(tabs)
+}
+
+/**
+ * Reload the tabs, e.g. when the connection is back: changes made meanwhile are not sent by the live query.
+ * @param {Context} ctx vuex action context.
+ */
+export const refresh = ({ dispatch }) => dispatch('load').catch((err) => console.warn('tabs not refreshed:', err))
 
 /**
  * Watch for changes in tabs

@@ -13,6 +13,7 @@ module.exports = function (ctx) {
     boot: [
       'i18n',
       'parse',
+      'offline',
       'touch',
       'axios'
     ],

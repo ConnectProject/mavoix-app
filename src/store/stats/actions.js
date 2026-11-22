@@ -1,104 +1,76 @@
 import Parse from 'parse'
+
+import { enqueue } from '~/utils/outbox'
 import randomString from '~/utils/randomString'
 
-/**
- * Headers of every request to Connect. With CONNECT_SANDBOX=true the data goes to Connect's test environment.
- * @param {string} accessToken Connect access token
- * @returns {Object} headers
+/*
+ * Optional data sharing with Connect. The posts go through the outbox (utils/outbox.js, sent by store/stats/outbox.js):
+ * without internet they wait on the device. Whether the account is linked to Connect is remembered in localStorage,
+ * because it cannot be asked to the server offline.
  */
-const connectHeaders = (accessToken) => ({
-  'content-type': 'application/json',
-  'x-parse-application-id': 'connect',
-  Authorization: 'Bearer ' + accessToken,
-  ...(process.env.CONNECT_SANDBOX === 'true' && { 'x-is-sandbox': 'true' })
-})
+const LINKED_KEY = 'mavoix.connectLinked'
+
+const rememberLinked = (linked) => {
+  try {
+    localStorage.setItem(LINKED_KEY, linked ? Parse.User.current().id : '')
+  } catch (e) {
+    // storage not available: the link is checked again at the next start
+  }
+}
+
+const isLinked = (state) => {
+  try {
+    return Boolean(state.accessToken) || (Boolean(Parse.User.current()) && localStorage.getItem(LINKED_KEY) === Parse.User.current().id)
+  } catch (e) {
+    return Boolean(state.accessToken)
+  }
+}
+
+const post = (path, body) => enqueue('connect-post', { path: 'parse/classes/' + path, body })
 
 /**
- * connect to connect...
+ * Get the Connect access token.
+ * @returns {Promise<string>} 'linked', 'unlinked' (the server answered: no link) or 'error' (not reachable)
  */
 export const connectConnect = async function ({ commit }) {
   try {
     const { accessToken } = await Parse.Cloud.run('getConnectToken')
     commit('setAccessToken', accessToken)
+    rememberLinked(Boolean(accessToken))
+
+    return accessToken ? 'linked' : 'unlinked'
   } catch (e) {
     console.error(e)
+
+    return 'error'
   }
 }
 
 export const startSession = async function ({ state, commit }) {
-  const { accessToken } = state
-  if (!accessToken) {
+  if (!isLinked(state)) {
     console.log('not connected to connect')
     return
   }
   const connectSessionId = randomString(8)
-  let headers = connectHeaders(state.accessToken)
-  let data = {
-    'sessionId': connectSessionId,
-    'sessionBegin': (new Date()).toISOString()
-  }
-  try {
-    let response = await this.$axios.post('parse/classes/sessionTimestamp', data, {
-      headers: headers
-    })
-    commit('setConnectSessionId', connectSessionId)
-    console.log('start session:')
-    console.log(response)
-  } catch (e) {
-    console.error('error when sending data to connect')
-    console.log(e.response.data)
-  }
+  commit('setConnectSessionId', connectSessionId)
+  await post('sessionTimestamp', { sessionId: connectSessionId, sessionBegin: (new Date()).toISOString() })
 }
 
 export const endSession = async function ({ state }) {
-  const { accessToken, connectSessionId } = state
+  const { connectSessionId } = state
   if (!connectSessionId) {
     console.log('connectSessionId undefined, not sending anything to connect')
     return
   }
-  let headers = connectHeaders(accessToken)
-  let data = {
-    'sessionId': connectSessionId,
-    'sessionEnd': (new Date()).toISOString()
-  }
-  try {
-    let response = await this.$axios.post('parse/classes/sessionTimestamp', data, {
-      headers: headers
-    })
-    console.log('end session:')
-    console.log(response)
-  } catch (e) {
-    console.error('error when sending data to connect')
-    console.log(e.response.data)
-  }
+  await post('sessionTimestamp', { sessionId: connectSessionId, sessionEnd: (new Date()).toISOString() })
 }
 
 export const saveSentence = async function ({ state, rootGetters }) {
-  const { accessToken, connectSessionId } = state
+  const { connectSessionId } = state
   if (!connectSessionId) {
     console.log('connectSessionId undefined, not sending anything to connect')
     return
   }
-  const activeImages = rootGetters['dropZone/activeItems'].map(item => {
-    const container = {}
-    container['imageURL'] = item.asset.url
-    container['wordPronounced'] = item.name
-    return container
-  })
-  let headers = connectHeaders(accessToken)
-  let data = {
-    'sessionId': connectSessionId,
-    'timestamp': (new Date()).toISOString(),
-    'phrase': activeImages
-  }
-  try {
-    let response = await this.$axios.post('parse/classes/phraseProduced', data, {
-      headers: headers
-    })
-    console.log('sentence saved:')
-    console.log(response)
-  } catch (e) {
-    console.error('error when sending data to connect')
-    console.log(e.response.data)
-  }
+  const phrase = rootGetters['dropZone/activeItems'].map(item => ({ imageURL: item.asset.url, wordPronounced: item.name }))
+  await post('phraseProduced', { sessionId: connectSessionId, timestamp: (new Date()).toISOString(), phrase })
 }

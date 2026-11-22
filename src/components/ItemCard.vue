@@ -74,7 +74,7 @@
     v-on="{ click: translateX || translateY || disabled ? () => {} : handleClick }"
   >
     <q-img
-      :src="item.asset.url"
+      :src="imageSrc"
       class="picto"
       draggable="false"
       contain
@@ -103,6 +103,8 @@
 <script>
 import { mapGetters } from 'vuex'
 
+import { cachedImage, downloadImage, peekImage } from '~/utils/imageCache'
+
 export default {
   name: 'ItemCardComponent',
   props: {
@@ -122,7 +124,9 @@ export default {
       translateY: 0,
       initialX: 0,
       initialY: 0,
-      labelClass: ''
+      labelClass: '',
+      // the cached copy when there is one (it works without internet), else the picture's address
+      imageSrc: peekImage(this.item.asset.url) || this.item.asset.url
     }
   },
   computed: {
@@ -138,13 +142,30 @@ export default {
   },
   mounted () {
     this.resizeText()
+    this.useCachedImage()
   },
   watch: {
+    'item.asset.url' () {
+      this.imageSrc = this.item.asset.url
+      this.useCachedImage()
+    },
     labelText () {
       this.resizeText()
     }
   },
   methods: {
+    /**
+     * Show the cached picture; when it is not cached yet, keep it for the next time without internet
+     */
+    async useCachedImage () {
+      const url = this.item.asset.url
+      const cached = await cachedImage(url)
+      if (cached && url === this.item.asset.url) {
+        this.imageSrc = cached
+      } else if (!cached) {
+        downloadImage(url)
+      }
+    },
     resizeText () {
       this.$nextTick(function () {
         let text = this.$refs.text

@@ -37,6 +37,8 @@
 <script>
 import Parse from 'parse'
 
+import { isNetworkError } from '~/utils/dataCache'
+
 export default {
   data () {
     return {
@@ -140,10 +142,13 @@ export default {
       await this.$store.dispatch('tabs/loadAndWatch')
     } catch (e) {
       console.error(e)
-      try {
-        await Parse.User.logOut()
-      } finally {
-        this.$router.push('/')
+      // without internet and without an offline copy yet: stay logged in, the tabs load when the connection is back
+      if (!isNetworkError(e)) {
+        try {
+          await Parse.User.logOut()
+        } finally {
+          this.$router.push('/')
+        }
       }
     }
     this.$store.dispatch('stats/connectConnect').then(() => {

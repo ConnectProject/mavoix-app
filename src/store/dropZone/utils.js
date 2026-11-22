@@ -13,6 +13,7 @@ import {
 } from '~/models/TabItem'
 
 import getCurrentUserId from '~/utils/getCurrentUserId'
+import { isNetworkError, loadObjects } from '~/utils/dataCache'
 
 /**
  * Return the index of a tab in a list of tabs
@@ -57,9 +58,23 @@ export const modelToTabItem = (itemModel) => {
   }
 }
 
-export const slugToTabModel = (slug) => {
-  return new Parse.Query(Tab)
-    .equalTo(SLUG_KEY, slug)
-    .equalTo('user', getCurrentUserId())
-    .first()
+export const slugToTabModel = async (slug) => {
+  try {
+    if (navigator.onLine === false && (await loadObjects('tabs'))) {
+      throw Object.assign(new Error('offline'), { code: Parse.Error.CONNECTION_FAILED })
+    }
+
+    return await new Parse.Query(Tab)
+      .equalTo(SLUG_KEY, slug)
+      .equalTo('user', getCurrentUserId())
+      .first()
+  } catch (err) {
+    if (!isNetworkError(err)) {
+      throw err
+    }
+    // offline: use the copy of the tabs
+    const tabs = (await loadObjects('tabs')) || []
+
+    return tabs.find((tab) => tab.get(SLUG_KEY) === slug)
+  }
 }

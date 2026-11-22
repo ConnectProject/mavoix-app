@@ -1,7 +1,7 @@
 import { Plugins } from '@capacitor/core'
 import Parse from 'parse'
 
-import getCurrentUserId from '~/utils/getCurrentUserId'
+import { enqueue } from '~/utils/outbox'
 import randomString from '~/utils/randomString'
 
 /*
@@ -10,28 +10,26 @@ import randomString from '~/utils/randomString'
  *   UsagePhrase  { sessionId, user, device, timestamp, cards: [{ assetId, word, imageURL, tabId, tabName }] }
  * `user` is the caregiver account and `device` the account that wrote the row; the API (cloud/setBeforeSave.js) sets
  * both and the owner-only ACL. A session ends after IDLE_MS without a phrase; its end is the last phrase of the session.
- * Rows that cannot be written (offline) are lost: recording must never get in the way of the child.
+ * Rows go through the outbox (utils/outbox.js): without internet they wait on the device and are sent later.
+ * Recording must never get in the way of the child.
  */
 const IDLE_MS = 20 * 60 * 1000
 
-let session = null // Parse.Object of the current UsageSession
-let opening = null // promise while a session is being created, so that quick phrases share it
+let session = null // { sessionId, begin, end } of the current session
 
 /**
  * @param {Object} state module state
  * @param {Date} now current time
- * @returns {Promise<Parse.Object>} the current session, a new one when there is none or after a pause
+ * @returns {Object} the current session, a new one when there is none or after a pause
  */
 const ensureSession = (state, now) => {
-  if (session && state.lastActivity && now - state.lastActivity <= IDLE_MS) {
-    return opening || Promise.resolve(session)
+  if (!session || !state.lastActivity || now - state.lastActivity > IDLE_MS) {
+    const begin = state.activeSince && now - state.activeSince <= IDLE_MS ? state.activeSince : now
+    session = { sessionId: randomString(12), begin, end: now }
   }
-  const begin = state.activeSince && now - state.activeSince <= IDLE_MS ? state.activeSince : now
-  session = new Parse.Object('UsageSession')
-  session.set({ sessionId: randomString(12), user: getCurrentUserId(), begin, end: now })
-  opening = session.save().finally(() => { opening = null })
+  session.end = now
 
-  return opening
+  return session
 }
 
 /**
@@ -57,7 +55,7 @@ export const touch = ({ commit }) => {
 /**
  * Record the sentence of the strip as a phrase (call when the child plays it).
  * @param {Context} ctx vuex action context
- * @returns {Promise} resolves when written; never rejects
+ * @returns {Promise} resolves when stored; never rejects
  */
 export const recordPhrase = async ({ state, commit, rootState, rootGetters }) => {
   const items = rootGetters['dropZone/activeItems']
@@ -66,13 +64,11 @@ export const recordPhrase = async ({ state, commit, rootState, rootGetters }) =>
   }
   const now = new Date()
   try {
-    const current = await ensureSession(state, now)
+    const current = ensureSession(state, now)
     commit('setLastActivity', now)
-    const phrase = new Parse.Object('UsagePhrase')
-    phrase.set({ sessionId: current.get('sessionId'), user: getCurrentUserId(), timestamp: now, cards: toCards(rootState, items) })
-    await phrase.save()
-    current.set('end', now)
-    await current.save()
+    const phrase = { sessionId: current.sessionId, timestamp: now.toISOString(), cards: toCards(rootState, items) }
+    await enqueue('usage-phrase', phrase)
+    await enqueue('usage-session', { sessionId: current.sessionId, begin: current.begin.toISOString(), end: now.toISOString() }, 'session:' + current.sessionId)
   } catch (err) {
     console.error('usage not recorded:', err)
   }
