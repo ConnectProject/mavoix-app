@@ -1,3 +1,4 @@
+import { Plugins } from '@capacitor/core'
 import Parse from 'parse'
 
 import getCurrentUserId from '~/utils/getCurrentUserId'
@@ -74,5 +75,41 @@ export const recordPhrase = async ({ state, commit, rootState, rootGetters }) =>
     await current.save()
   } catch (err) {
     console.error('usage not recorded:', err)
+  }
+}
+
+/**
+ * @returns {Promise<{level: (number|null), charging: boolean}>} battery of this device (level 0-100), null when unknown
+ */
+const readBattery = async () => {
+  try {
+    const info = await Plugins.Device.getBatteryInfo()
+    if (typeof info.batteryLevel === 'number') {
+      return { level: Math.round(info.batteryLevel * 100), charging: Boolean(info.isCharging) }
+    }
+  } catch (err) {
+    // fall through to the web API
+  }
+  try {
+    const battery = await navigator.getBattery()
+
+    return { level: Math.round(battery.level * 100), charging: battery.charging }
+  } catch (err) {
+    return { level: null, charging: false }
+  }
+}
+
+/**
+ * Tell the server that this device is connected, with its battery level (the panel shows it to the caregiver).
+ * @returns {Promise} resolves when sent; never rejects
+ */
+export const reportStatus = async () => {
+  if (!Parse.User.current()) {
+    return
+  }
+  try {
+    await Parse.Cloud.run('reportDeviceStatus', await readBattery())
+  } catch (err) {
+    console.error('status not reported:', err)
   }
 }

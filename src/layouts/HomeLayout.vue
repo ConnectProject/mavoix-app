@@ -61,6 +61,19 @@ export default {
         this.$store.dispatch('tts/wake')
       }
     },
+    /**
+     * Report battery and presence to the server now and every minute while the app is visible
+     */
+    startStatusReports () {
+      const report = () => {
+        if (document.visibilityState === 'visible') {
+          this.$store.dispatch('usage/reportStatus')
+        }
+      }
+      document.addEventListener('visibilitychange', report)
+      this.statusTimer = setInterval(report, 60 * 1000)
+      report()
+    },
     keepSpeechAwake () {
       // after sleep / returning to the app, and every 4 min while it is open
       document.addEventListener('visibilitychange', this.onVisible)
@@ -138,10 +151,12 @@ export default {
     })
     this.$store.dispatch('usage/touch')
     this.keepSpeechAwake()
+    this.startStatusReports()
   },
   beforeDestroy () {
     document.removeEventListener('visibilitychange', this.onVisible)
     clearInterval(this.wakeTimer)
+    clearInterval(this.statusTimer)
   }
 }
 </script>
