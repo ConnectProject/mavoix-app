@@ -17,12 +17,12 @@ export const imageSizeKey = ({ tab: { imageSize } }) =>
 /**
  * @returns {string} BEM suffix for ItemCard / strip (card--small, …)
  */
-export const imageSizeClass = (state) => `card--${imageSizeKey(state)}`
+export const imageSizeClass = (state) => state.deviceImageScale === null ? `card--${imageSizeKey(state)}` : 'card--custom'
 
 /**
  * @returns {string} modifier on sentence strip (active-strip--small, …)
  */
-export const activeStripClass = (state) => `active-strip--${imageSizeKey(state)}`
+export const activeStripClass = (state) => state.deviceImageScale === null ? `active-strip--${imageSizeKey(state)}` : 'active-strip--custom'
 
 /**
  * Return all unactive items
@@ -43,3 +43,8 @@ export const activeItems = ({ activeItems }) => activeItems
  * @param State state
  */
 export const subscription = ({ subscription }) => subscription
+
+/**
+ * @returns {(number|null)} image scale chosen for this device (0-100), null when it follows the tab's image size
+ */
+export const deviceImageScale = ({ deviceImageScale }) => deviceImageScale

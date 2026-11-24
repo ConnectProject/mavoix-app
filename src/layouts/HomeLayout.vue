@@ -155,6 +155,7 @@ export default {
       this.$store.dispatch('stats/startSession')
     })
     this.$store.dispatch('usage/touch')
+    this.$store.dispatch('dropZone/watchDeviceSettings')
     this.keepSpeechAwake()
     this.startStatusReports()
   },

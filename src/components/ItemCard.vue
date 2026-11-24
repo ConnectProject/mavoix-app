@@ -21,6 +21,10 @@
   width calc(240px * var(--px-scale, 1))
   height calc(300px * var(--px-scale, 1))
 
+.card--custom
+  width calc(var(--custom-card-w, 170px) * var(--px-scale, 1))
+  height calc(var(--custom-card-h, 210px) * var(--px-scale, 1))
+
 .picto
   flex 1 1 0
   min-height 0

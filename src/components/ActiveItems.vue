@@ -89,6 +89,9 @@ $play-slot-width = calc(7.25rem + 28px)
 .active-strip--large .card-drop
   width calc(240px * var(--px-scale, 1))
   height calc(300px * var(--px-scale, 1))
+.active-strip--custom .card-drop
+  width calc(var(--custom-card-w, 170px) * var(--px-scale, 1))
+  height calc(var(--custom-card-h, 210px) * var(--px-scale, 1))
 </style>
 
 <template>

@@ -148,3 +148,23 @@ export const setError = (state, error) => {
   console.error(error)
   state.error = error
 }
+
+/**
+ * Set the image scale chosen for this device in the panel
+ * @param {State} state
+ * @param {(number|null)} scale 0 (smallest) to 100 (largest), null to follow the tab's image size
+ */
+export const setDeviceImageScale = (state, scale) => {
+  const value = typeof scale === 'number' && Number.isFinite(scale) ? Math.min(100, Math.max(0, scale)) : null
+  state.deviceImageScale = value
+  // card size in px (before the screen density scale), read by the 'card--custom' / 'active-strip--custom' styles
+  const root = document.documentElement.style
+  if (value === null) {
+    root.removeProperty('--custom-card-w')
+    root.removeProperty('--custom-card-h')
+  } else {
+    const width = 120 + (240 - 120) * value / 100
+    root.setProperty('--custom-card-w', width + 'px')
+    root.setProperty('--custom-card-h', width * 1.25 + 'px')
+  }
+}

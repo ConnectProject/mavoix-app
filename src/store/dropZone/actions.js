@@ -111,3 +111,32 @@ export const watch = ({ commit }, slug) => {
       commit('setError', err)
     })
 }
+
+const SCALE_STORAGE_KEY = 'mavoix.deviceImageScale'
+
+/**
+ * Follow the image size chosen for this device in the panel (it overrides the tab's image size).
+ * The last value is kept in localStorage so that it also applies offline.
+ * @param {Context} ctx
+ */
+export const watchDeviceSettings = async ({ commit }) => {
+  const stored = localStorage.getItem(SCALE_STORAGE_KEY)
+  commit('setDeviceImageScale', stored === null ? null : Number(stored))
+  const apply = (row) => {
+    const scale = row ? row.get('imageScale') : null
+    const value = typeof scale === 'number' ? scale : null
+    value === null ? localStorage.removeItem(SCALE_STORAGE_KEY) : localStorage.setItem(SCALE_STORAGE_KEY, String(value))
+    commit('setDeviceImageScale', value)
+  }
+  try {
+    const query = new Parse.Query('DeviceSettings').equalTo('device', Parse.User.current().id)
+    apply(await query.first())
+    const subscription = await query.subscribe()
+    subscription.on('create', apply)
+    subscription.on('update', apply)
+    subscription.on('enter', apply)
+    subscription.on('delete', () => apply(null))
+  } catch (err) {
+    console.warn('device settings not loaded:', err)
+  }
+}

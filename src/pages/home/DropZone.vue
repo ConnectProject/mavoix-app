@@ -311,6 +311,11 @@ export default {
       const scale = Math.min(1, (window.devicePixelRatio || 1) / 2)
       // compact: card margins are halved, so the strip is 1rem shorter
       const trim = this.compact ? 1 : 0
+      const custom = this.$store.getters['dropZone/deviceImageScale']
+      if (custom !== null) {
+        // linear between the small (11.5rem) and large (21rem) strips
+        return (11.5 + 9.5 * custom / 100 - trim) * scale
+      }
       if (k === 'large') {
         return (21 - trim) * scale
       }
