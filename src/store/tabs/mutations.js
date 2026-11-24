@@ -34,6 +34,7 @@ export const updateTab = (state, tabModel) => {
   state.tabs[i].slug = tab.slug
   state.tabs[i].icon = tab.icon
   state.tabs[i].imageSize = tab.imageSize
+  state.tabs[i].order = tab.order
 }
 
 /**

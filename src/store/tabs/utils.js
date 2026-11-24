@@ -17,5 +17,7 @@ export const modelToTab = (tabModel) => ({
   hexColor: tabModel.get(HEX_COLOR_KEY),
   slug: tabModel.get(SLUG_KEY),
   icon: tabModel.get(ICON_KEY) || 'category',
-  imageSize: tabModel.get(IMAGE_SIZE_KEY)
+  imageSize: tabModel.get(IMAGE_SIZE_KEY),
+  order: tabModel.get('order'),
+  createdAt: tabModel.createdAt ? new Date(tabModel.createdAt).getTime() : 0
 })
